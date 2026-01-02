@@ -626,15 +626,20 @@ body {
     align-self: stretch;
     text-align: center;
     line-height: 43.40px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sec2-sub-line {
     opacity: 0;
     transform: translateY(50px);
     transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
 
-.sec2-content.visible .sec2-sub-text {
+.sec2-sub-line.visible {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0.9s;
 }
 
 .sec2-sub-gray {

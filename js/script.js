@@ -93,6 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec2Content = document.querySelector('.sec2-content');
     const sec2TextLine1 = document.querySelector('.sec2-text-line-1');
     const sec2TextLine2 = document.querySelector('.sec2-text-line-2');
+    const sec2SubLine1 = document.querySelector('.sec2-sub-line-1');
+    const sec2SubLine2 = document.querySelector('.sec2-sub-line-2');
+    
+    let sec2AnimationTriggered = false;
     
     function handleSec2Animation() {
         if (sec2 && sec2Content) {
@@ -102,20 +106,46 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (window.scrollY >= triggerPoint && window.scrollY < sec2Top + sec2Height) {
                 sec2Content.classList.add('visible');
-                // 첫 번째 줄 먼저 나타남
-                if (sec2TextLine1) {
-                    sec2TextLine1.classList.add('visible');
+                
+                if (!sec2AnimationTriggered) {
+                    sec2AnimationTriggered = true;
+                    
+                    // 1. 첫 번째 줄 먼저 나타남
+                    setTimeout(() => {
+                        if (sec2TextLine1) {
+                            sec2TextLine1.classList.add('visible');
+                        }
+                    }, 200);
+                    
+                    // 2. 두 번째 줄 약간의 딜레이 후 나타남
+                    setTimeout(() => {
+                        if (sec2TextLine2) {
+                            sec2TextLine2.classList.add('visible');
+                        }
+                    }, 500);
+                    
+                    // 3. 세 번째 줄 (첫 번째 서브텍스트)
+                    setTimeout(() => {
+                        if (sec2SubLine1) {
+                            sec2SubLine1.classList.add('visible');
+                        }
+                    }, 800);
+                    
+                    // 4. 네 번째 줄 (두 번째 서브텍스트)
+                    setTimeout(() => {
+                        if (sec2SubLine2) {
+                            sec2SubLine2.classList.add('visible');
+                        }
+                    }, 1100);
                 }
-                // 두 번째 줄 약간의 딜레이 후 나타남
-                setTimeout(() => {
-                    if (sec2TextLine2) {
-                        sec2TextLine2.classList.add('visible');
-                    }
-                }, 300);
             } else if (window.scrollY < triggerPoint) {
+                // 스크롤이 위로 올라가면 애니메이션 리셋
+                sec2AnimationTriggered = false;
                 sec2Content.classList.remove('visible');
                 if (sec2TextLine1) sec2TextLine1.classList.remove('visible');
                 if (sec2TextLine2) sec2TextLine2.classList.remove('visible');
+                if (sec2SubLine1) sec2SubLine1.classList.remove('visible');
+                if (sec2SubLine2) sec2SubLine2.classList.remove('visible');
             }
         }
     }
