@@ -10,6 +10,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 로고 클릭 시 맨 위로 스크롤
+    const logoContainer = document.querySelector('.logo-container');
+    if (logoContainer) {
+        logoContainer.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+            
+            // 모바일 메뉴가 열려있으면 닫기
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
+            }
+        });
+    }
+    
     // 네비게이션 메뉴 스크롤 이동
     const navLinks = document.querySelectorAll('.nav-link[data-section]');
     
@@ -38,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Smooth scroll for other anchor links
-    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.nav-link[data-section])');
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not(.nav-link[data-section]):not(.sec6-campus-link)');
     anchorLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -1810,25 +1827,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec1Subtitle1Wrapper = document.querySelector('.sec1-subtitle-1-wrapper');
     
     // 폰트 로드 확인 함수
-    function waitForFont(fontFamily, callback, timeout = 2000) {
-        if ('fonts' in document && document.fonts && document.fonts.ready) {
+    function waitForFont(fontFamily, callback, timeout = 3000) {
+        if ('fonts' in document && document.fonts) {
             let fontLoaded = false;
             const startTime = Date.now();
             
+            // 폰트 로드 확인 함수
             function checkFont() {
                 const now = Date.now();
                 
                 // 타임아웃 체크
                 if ((now - startTime) > timeout) {
-                    callback();
+                    if (!fontLoaded) {
+                        fontLoaded = true;
+                        callback();
+                    }
                     return;
                 }
                 
                 // 폰트가 로드되었는지 확인
                 try {
                     if (document.fonts.check(`16px "${fontFamily}"`)) {
-                        fontLoaded = true;
-                        callback();
+                        if (!fontLoaded) {
+                            fontLoaded = true;
+                            callback();
+                        }
                         return;
                     }
                 } catch (e) {
@@ -1840,22 +1863,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // document.fonts.ready가 완료된 후 확인 시작
-            document.fonts.ready.then(() => {
+            if (document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                    checkFont();
+                }).catch(() => {
+                    // 에러 발생 시 체크 시작
+                    checkFont();
+                });
+            } else {
+                // ready가 없으면 바로 체크 시작
                 checkFont();
-            }).catch(() => {
-                // 에러 발생 시 즉시 실행
-                callback();
-            });
+            }
             
-            // 타임아웃 설정
+            // 타임아웃 설정 (안전장치)
             setTimeout(() => {
                 if (!fontLoaded) {
+                    fontLoaded = true;
                     callback();
                 }
             }, timeout);
         } else {
-            // Font Loading API 미지원 브라우저는 즉시 실행
-            callback();
+            // Font Loading API 미지원 브라우저는 약간의 딜레이 후 실행
+            setTimeout(() => {
+                callback();
+            }, 100);
         }
     }
     
@@ -2323,6 +2354,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 초기 설정
     updateCampus(0);
+    
+    // sec6-campus-link 클릭 시 외부 링크로 이동 보장
+    if (campusLink) {
+        campusLink.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            // 외부 링크인 경우 (http:// 또는 https://로 시작)
+            if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+                // 기본 동작 허용 (외부 링크로 이동)
+                // target="_blank"가 이미 HTML에 설정되어 있음
+                return true;
+            }
+        });
+    }
     
     // Section 6 entrance animation - 배경 4개 차례대로 보여주고 카드 나타나게
     const sec6 = document.getElementById('sec6');
