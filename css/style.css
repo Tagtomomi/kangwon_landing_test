@@ -1154,6 +1154,23 @@ body {
         line-height: 28px;
     }
     
+    /* Section 2 인라인 스타일 모바일 최적화 */
+    .sec2-inner-content {
+        gap: 30px !important;
+        width: 85% !important;
+        word-break: keep-all !important;
+    }
+    
+    .sec2-main-text-inline {
+        font-size: 28px !important;
+        line-height: 38px !important;
+    }
+    
+    .sec2-sub-text-inline {
+        font-size: 18px !important;
+        line-height: 26px !important;
+    }
+    
     /* Section 3 모바일 최적화 */
     .sec3-scrollfx {
         height: 100vh; /* 화면을 고정하기 위해 100vh로 설정 */
@@ -1195,17 +1212,26 @@ body {
         line-height: 28px;
     }
     
+    
     .sec3-campus-chuncheon .sec3-campus-image-wrapper,
     .sec3-campus-gangneung .sec3-campus-image-wrapper,
     .sec3-campus-samcheok .sec3-campus-image-wrapper,
     .sec3-campus-wonju .sec3-campus-image-wrapper {
-        width: 150px !important;
-        height: 150px !important;
+        width: 130px !important;
+        height: 130px !important;
+    }
+    
+    .sec3-campus {
+        gap: 0px !important;
+    }
+    
+    .sec3-campus-info {
+        gap: 6px !important;
     }
     
     .sec3-campus-name {
-        font-size: 20px;
-        line-height: 28px;
+        font-size: 16px !important;
+        line-height: 1.2;
     }
     
     .sec3-campus-chuncheon .sec3-campus-circle,
@@ -1233,6 +1259,10 @@ body {
     }
     
     /* Section 4 모바일 최적화 */
+    .sec4 {
+        height: 100%;
+    }
+    
     .sec4-content {
         padding: 0 20px;
     }
@@ -1242,7 +1272,7 @@ body {
     }
     
     .sec4-text-line {
-        font-size: 28px !important;
+        font-size: 24px !important;
         line-height: 40px !important;
     }
     
@@ -1260,6 +1290,10 @@ body {
     }
     
     /* Section 5 모바일 최적화 */
+    .sec5 {
+        height: 100%;
+    }
+    
     .sec5-content {
         padding: 0 20px;
     }
@@ -1714,7 +1748,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    height: 130vh;
+    height: 100vh;
 }
 
 .sec5-background {

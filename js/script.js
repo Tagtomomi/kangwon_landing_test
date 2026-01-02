@@ -211,7 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 애니메이션 타이밍 (밀리초)
     const DURATIONS = {
-        fadeIn: 800,           // 카드 페이드 인 + 둥둥 떠오름: 0.8초
+        fadeIn: 1200,          // 각 카드 페이드 인 시간: 1.2초 (더 천천히)
+        fadeInDelay: 300,      // 각 카드 간 딜레이: 0.3초
         textDelay: 400,        // 텍스트 시작 지연: 0.4초
         textTitle: 800,        // 타이틀 나타남: 0.8초
         textSubtitle: 800,     // 서브타이틀 나타남: 0.8초
@@ -224,12 +225,16 @@ document.addEventListener('DOMContentLoaded', function() {
         backgroundTransition: 800 // 배경 전환: 0.8초
     };
     
+    // 캠퍼스 페이드인 순서: 춘천(0), 삼석(2), 강릉(1), 원주(3)
+    const CAMPUS_FADE_ORDER = [0, 2, 1, 3]; // HTML 순서를 원하는 순서로 매핑
+    const CAMPUS_FADE_DELAYS = [0, 300, 600, 900]; // 각 캠퍼스의 딜레이 (밀리초)
+    
     // 모바일용 타이밍 (텍스트 먼저, 그 다음 캠퍼스)
     const MOBILE_DURATIONS = {
         textTitle: 800,        // 타이틀 나타남: 0.8초
         textSubtitle: 800,     // 서브타이틀 나타남: 0.8초
         textCompleteWait: 2000, // 텍스트 완료 후 대기: 2초 (캠퍼스가 나타나기 전)
-        campusGridFadeIn: 800, // 캠퍼스 2x2 그리드로 나타남: 0.8초
+        campusGridFadeIn: 2100, // 캠퍼스 2x2 그리드로 나타남: 2.1초 (원주 900ms 딜레이 + 1200ms 페이드인)
         campusGridWait: 2000,  // 2x2 그리드 유지: 2초
         cardMerge: 100,       // 카드 합치기: 4초
         textHide: 300,         // 텍스트 사라짐: 0.3초
@@ -249,7 +254,9 @@ document.addEventListener('DOMContentLoaded', function() {
                        MOBILE_DURATIONS.mergeToCircle + MOBILE_DURATIONS.whiteFadeOut + 
                        MOBILE_DURATIONS.backgroundTransition;
     } else {
-        totalDuration = DURATIONS.fadeIn + DURATIONS.textDelay + DURATIONS.textTitle + DURATIONS.textSubtitle + 
+        // 마지막 캠퍼스 페이드인 완료 시간 계산 (춘천: 0ms, 삼석: 300ms, 강릉: 600ms, 원주: 900ms + 600ms 페이드인)
+        const lastCampusFadeInEnd = Math.max(...CAMPUS_FADE_DELAYS) + DURATIONS.fadeIn;
+        totalDuration = lastCampusFadeInEnd + DURATIONS.textDelay + DURATIONS.textTitle + DURATIONS.textSubtitle + 
                        DURATIONS.textCompleteWait + DURATIONS.cardMerge + DURATIONS.textHide + 
                        DURATIONS.whiteTransition + DURATIONS.mergeToCircle + DURATIONS.whiteFadeOut + DURATIONS.backgroundTransition;
     }
@@ -266,16 +273,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const sec3Top = sec3.offsetTop;
         const scrollY = window.scrollY;
         const windowHeight = window.innerHeight;
+        const headerHeight = header ? header.offsetHeight : 0;
         
-        // 섹션 3이 화면 세로 중앙에 도달했는지 확인
-        // 섹션의 상단이 화면 중앙(뷰포트 하단에서 windowHeight * 0.5 지점)에 도달했을 때
-        const sec3Center = sec3Top + (sec3.offsetHeight * 0.5);
-        const viewportCenter = scrollY + windowHeight * 0.5;
-        
-        // 섹션 3의 중앙이 뷰포트 중앙 근처에 있을 때 활성화 (약간의 여유 공간)
-        const threshold = windowHeight * 0.2; // 20% 여유
-        return Math.abs(sec3Center - viewportCenter) < threshold && 
-               scrollY < sec3Top + sec3.offsetHeight;
+        // 모바일에서는 섹션 상단이 헤더에 닿을 때 활성화
+        if (isMobile) {
+            // 섹션 상단이 헤더 높이에 도달했을 때 활성화
+            return scrollY >= sec3Top - headerHeight && scrollY < sec3Top + sec3.offsetHeight;
+        } else {
+            // PC: 섹션 3이 화면 세로 중앙에 도달했는지 확인
+            // 섹션의 상단이 화면 중앙(뷰포트 하단에서 windowHeight * 0.5 지점)에 도달했을 때
+            const sec3Center = sec3Top + (sec3.offsetHeight * 0.5);
+            const viewportCenter = scrollY + windowHeight * 0.5;
+            
+            // 섹션 3의 중앙이 뷰포트 중앙 근처에 있을 때 활성화 (약간의 여유 공간)
+            const threshold = windowHeight * 0.2; // 20% 여유
+            return Math.abs(sec3Center - viewportCenter) < threshold && 
+                   scrollY < sec3Top + sec3.offsetHeight;
+        }
     }
     
     // 스크롤 잠금/해제 함수
@@ -333,12 +347,13 @@ document.addEventListener('DOMContentLoaded', function() {
             mergeStartTime = campusGridWaitEndTime;
             mergeEndTime = mergeStartTime + MOBILE_DURATIONS.cardMerge;
         } else {
-            // PC: 기존 순서 유지 (캠퍼스 먼저 → 텍스트 → 합쳐지는 효과)
-            // 1. 페이드 인 + 둥둥 떠오름 (0 ~ fadeIn)
-            fadeInProgress = Math.min(1, elapsed / DURATIONS.fadeIn);
+            // PC: 순차적 페이드인 (춘천 → 삼석 → 강릉 → 원주)
+            // 마지막 캠퍼스 페이드인 완료 시간
+            const lastCampusFadeInEnd = Math.max(...CAMPUS_FADE_DELAYS) + DURATIONS.fadeIn;
+            fadeInProgress = 1; // 개별 페이드인은 각 캠퍼스마다 별도로 처리
             
-            // 2. 텍스트 나타남 (fadeIn + textDelay ~ fadeIn + textDelay + textTitle + textSubtitle)
-            textStartTime = DURATIONS.fadeIn + DURATIONS.textDelay;
+            // 2. 텍스트 나타남 (마지막 캠퍼스 페이드인 완료 후 + textDelay)
+            textStartTime = lastCampusFadeInEnd + DURATIONS.textDelay;
             textEndTime = textStartTime + DURATIONS.textTitle + DURATIONS.textSubtitle;
             textProgress = elapsed < textStartTime ? 0 : 
                           elapsed >= textEndTime ? 1 : 
@@ -378,17 +393,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // 70% 도달 시 캠퍼스 이름 텍스트 숨기기
         const shouldHideCampusInfo = overlayOpacity >= 0.7;
         
-        // 4. 화이트로 변하기 시작 (원이 겹치기 시작하는 중간 지점부터, 더 빠르게 시작)
-        const whiteStartProgress = 0.3; // mergeProgress 30% 지점부터 화이트로 변하기 시작 (더 일찍 시작)
+        // 4. 화이트로 변하기 시작 (원이 겹치기 시작하는 중간 지점부터, 서서히 강렬해지게)
+        const whiteStartProgress = 0.2; // mergeProgress 20% 지점부터 화이트로 변하기 시작 (더 일찍 시작)
         const cardMergeDuration = isMobile ? MOBILE_DURATIONS.cardMerge : DURATIONS.cardMerge;
         const whiteStartTime = mergeStartTime + (cardMergeDuration * whiteStartProgress);
         const whiteEndTime = mergeEndTime; // 합쳐지기가 완료될 때까지
-        // 초반에는 은은하게, 후반으로 갈수록 빠르게 강해지도록 비선형 보간 적용 (pow 함수)
+        // 서서히 강렬해지도록 부드러운 easing 적용
         const rawWhiteProgress = mergeProgress < whiteStartProgress ? 0 : 
                                  mergeProgress >= 1 ? 1 : 
                                  (mergeProgress - whiteStartProgress) / (1 - whiteStartProgress);
-        // pow 함수를 사용하여 더 빠르게 증가 (지수 1.8로 낮춰서 더 빠르게)
-        const whiteProgress = Math.pow(rawWhiteProgress, 1.8);
+        // easeInOutCubic을 사용하여 서서히 강렬해지게 (초반은 천천히, 중반부터 빠르게, 후반은 다시 천천히)
+        // 이미 위에서 정의된 easeInOutCubic 함수 사용
+        const whiteProgress = easeInOutCubic(rawWhiteProgress);
         
         // 5. 텍스트 사라짐 (mergeProgress 1.0에 도달한 후)
         const textHideDuration = isMobile ? MOBILE_DURATIONS.textHide : DURATIONS.textHide;
@@ -447,109 +463,137 @@ document.addEventListener('DOMContentLoaded', function() {
             const initialTops = [131, 131, 586.10, 586.10];
             const contentHeight = sec3Content.offsetHeight;
             const centerTopPx = contentHeight * 0.5;
-            // 모바일에서는 initialTop을 0으로 설정 (텍스트 아래 위치 기준)
+            // 모바일에서는 춘천 캠퍼스의 top을 0으로 설정
             const initialTop = isMobile ? 0 : initialTops[index];
             
             let campusOpacity = 0;
             let translateXValue, translateY, rotation = 0;
             
             if (isMobile) {
-                // 모바일: 2x2 그리드로 먼저 나타남 (텍스트 아래)
-                const campusGridProgress = elapsed < campusGridStartTime ? 0 : 
-                                         elapsed >= campusGridEndTime ? 1 : 
-                                         (elapsed - campusGridStartTime) / (campusGridEndTime - campusGridStartTime);
+                // 모바일: 순차적 페이드인 (춘천 → 삼석 → 강릉 → 원주)
+                // 캠퍼스 순서: 춘천(0), 삼석(2), 강릉(1), 원주(3)
+                const campusOrderIndex = CAMPUS_FADE_ORDER.indexOf(index);
+                const campusFadeDelay = CAMPUS_FADE_DELAYS[campusOrderIndex] || 0;
+                
+                // 텍스트 완료 후 캠퍼스가 나타나기 시작
+                const textEndTime = MOBILE_DURATIONS.textTitle + MOBILE_DURATIONS.textSubtitle;
+                const textWaitEndTime = textEndTime + MOBILE_DURATIONS.textCompleteWait;
+                const campusFadeStartTime = textWaitEndTime + campusFadeDelay;
+                const campusFadeEndTime = campusFadeStartTime + DURATIONS.fadeIn;
+                
+                // 각 캠퍼스의 개별 페이드인 진행도 계산
+                let individualFadeProgress = 0;
+                if (elapsed < campusFadeStartTime) {
+                    individualFadeProgress = 0;
+                } else if (elapsed >= campusFadeEndTime) {
+                    individualFadeProgress = 1;
+                } else {
+                    individualFadeProgress = (elapsed - campusFadeStartTime) / DURATIONS.fadeIn;
+                }
                 
                 // 텍스트 위치 계산 (모바일에서 텍스트는 top: 120px에 위치)
                 // CSS 기준: top: 120px, badge(40px) + gap(17px) + title(42px) + gap(17px) + subtitle(28px) = 144px
-                // 텍스트 하단: 120 + 144 = 264px, 그리드 시작: 264 + 40(여백) = 304px
+                // 텍스트 하단: 120 + 144 = 264px
                 const textTop = 120;
                 const textHeight = 144; // badge + gaps + title + subtitle
-                const textBottomY = textTop + textHeight + 40; // 텍스트 하단 + 40px 여백
+                const textBottomY = textTop + textHeight; // 텍스트 하단
+                const textToCampusGap = 20; // 텍스트와 캠퍼스 사이 간격
                 
-                // 2x2 그리드 위치 계산 (텍스트 아래 중앙 기준)
-                // index 0: 왼쪽 위 (chuncheon), index 1: 오른쪽 위 (gangneung)
-                // index 2: 왼쪽 아래 (samcheok), index 3: 오른쪽 아래 (wonju)
-                const campusSize = 75; // 모바일에서 150px / 2 = 75px
-                const gridGap = 20; // 그리드 간격
+                // 모바일 캠퍼스 시작 위치 (텍스트 바로 밑)
+                // 춘천과 강릉: 텍스트 바로 밑
+                // 삼척과 원주: 춘천 강릉 바로 아래 (거의 붙여서)
+                const chuncheonStartPercent = -60; // -60%
+                const chuncheonStartPx = -85; // -85px
+                const gridGap = 20; // 캠퍼스 간 간격 (가로)
+                const verticalGap = 0; // 캠퍼스 간 간격 (세로, 바로 아래)
                 
-                const gridPositions = [
-                    { x: -campusSize - gridGap/2, y: -campusSize - gridGap/2 },  // chuncheon: 왼쪽 위
-                    { x: campusSize + gridGap/2, y: -campusSize - gridGap/2 },  // gangneung: 오른쪽 위
-                    { x: -campusSize - gridGap/2, y: campusSize + gridGap/2 },   // samcheok: 왼쪽 아래
-                    { x: campusSize + gridGap/2, y: campusSize + gridGap/2 }     // wonju: 오른쪽 아래
+                const campusWidth = 130; // 이미지 너비
+                const campusHeight = 130; // 이미지 높이
+                
+                // 텍스트 하단 기준으로 캠퍼스 위치 계산
+                const firstRowTop = textBottomY + textToCampusGap; // 춘천, 강릉 위치
+                const secondRowTop = firstRowTop + campusHeight + verticalGap; // 삼척, 원주 위치 (바로 아래)
+                
+                // 각 캠퍼스의 초기 위치 (텍스트 기준)
+                const mobileStartPositions = [
+                    { percent: chuncheonStartPercent, px: chuncheonStartPx, y: firstRowTop },  // chuncheon(0): 첫 번째 줄 왼쪽
+                    { percent: chuncheonStartPercent, px: chuncheonStartPx + campusWidth + gridGap, y: firstRowTop },  // gangneung(1): 첫 번째 줄 오른쪽
+                    { percent: chuncheonStartPercent, px: chuncheonStartPx, y: secondRowTop },  // samcheok(2): 두 번째 줄 왼쪽
+                    { percent: chuncheonStartPercent, px: chuncheonStartPx + campusWidth + gridGap, y: secondRowTop }  // wonju(3): 두 번째 줄 오른쪽
                 ];
                 
-                const gridPos = gridPositions[index];
+                const startPos = mobileStartPositions[index];
                 
                 if (elapsed < mergeStartTime) {
-                    // 2x2 그리드 상태 유지 (텍스트 아래)
-                    const gridCenterY = textBottomY; // 텍스트 아래에 그리드 중심 위치
-                    
-                    translateXValue = `calc(50% + ${gridPos.x}px)`;
-                    translateY = gridCenterY + gridPos.y - initialTop;
-                    campusOpacity = campusGridProgress;
+                    // 초기 위치 유지 (텍스트 바로 밑)
+                    translateXValue = `calc(${startPos.percent}% + ${startPos.px}px)`;
+                    translateY = startPos.y;
+                    campusOpacity = individualFadeProgress;
                 } else {
                     // 합쳐지는 애니메이션 시작
-                    // 2x2 그리드에서 화면 중앙으로 합쳐지는 애니메이션
+                    // 초기 위치에서 화면 중앙으로 합쳐지는 애니메이션
                     const adjustedProgress = Math.min(1, mergeProgress);
-                    const currentX = gridPos.x * (1 - adjustedProgress);
-                    const currentY = gridPos.y * (1 - adjustedProgress);
                     
-                    // 합쳐질 때는 화면 중앙으로 이동
-                    const gridCenterY = textBottomY;
+                    // X축: 초기 위치에서 중앙(-50%)으로 이동
+                    const finalPercent = -50; // 최종 중앙 위치
+                    const finalPx = 0; // 최종 중앙 위치 (px)
+                    const currentPercent = startPos.percent + ((finalPercent - startPos.percent) * adjustedProgress);
+                    const currentPx = startPos.px + ((finalPx - startPos.px) * adjustedProgress);
+                    
+                    // Y축: 초기 위치에서 중앙으로 이동
+                    const initialY = startPos.y;
                     const finalCenterY = contentHeight * 0.5;
-                    const centerY = gridCenterY + (finalCenterY - gridCenterY) * adjustedProgress;
+                    const centerY = initialY + (finalCenterY - initialY) * adjustedProgress;
                     
-                    translateXValue = `calc(50% + ${currentX}px)`;
-                    translateY = centerY + currentY - initialTop;
-                    campusOpacity = 1;
+                    translateXValue = `calc(${currentPercent}% + ${currentPx}px)`;
+                    translateY = centerY;
+                    campusOpacity = individualFadeProgress;
                 }
             } else {
-                // PC: 기존 로직
-                // 초기 페이드 인 시 둥둥 떠오름
-                const initialFloatUpY = 30 * (1 - fadeInProgress);
-                
-                // 텍스트 애니메이션이 진행되는 동안 둥둥 떠다니는 효과
-                // 텍스트 완료 후 대기 시간까지 계속 떠다님
-                const textCompleteTime = textEndTime + DURATIONS.textCompleteWait;
-                let floatingY = 0;
-                if (elapsed < textCompleteTime && fadeInProgress >= 1) {
-                    // sin 함수를 사용하여 부드러운 떠다니는 효과 (각 카드마다 다른 주기)
-                    // 시간 기반으로 유지하되 현재 시간 사용
-                    const floatPeriods = [2000, 2200, 2400, 2600]; // 각 카드마다 다른 주기 (밀리초)
-                    const floatAmplitude = 15; // 떠다니는 범위 (픽셀)
-                    const currentTime = Date.now(); // 현재 시간 사용
-                    const floatCycle = (currentTime / floatPeriods[index]) * Math.PI * 2;
-                    floatingY = Math.sin(floatCycle) * floatAmplitude;
-                }
-                
-                // translateX 계산 (자연스러운 곡선 경로를 위해 각 카드마다 약간씩 다른 easing 적용)
-                const easingOffsets = [0, 0.05, 0.03, 0.08]; // 각 카드마다 약간씩 다른 타이밍
-                const adjustedProgress = Math.min(1, mergeProgress + easingOffsets[index]);
-                
-                if (index === 0 || index === 3) {
-                    // 왼쪽 카드들 (chuncheon, wonju): -150% - 200px → -50%
-                    const currentPercent = -150 + (100 * adjustedProgress);
-                    const currentPx = 200 * (1 - adjustedProgress);
-                    translateXValue = `calc(${currentPercent}% - ${currentPx}px)`;
-                } else {
-                    // 오른쪽 카드들 (gangneung, samcheok): 50% + 200px → -50%
-                    const currentPercent = 50 - (100 * adjustedProgress);
-                    const currentPx = 200 * (1 - adjustedProgress);
-                    translateXValue = `calc(${currentPercent}% + ${currentPx}px)`;
-                }
-                
-                // translateY 계산 (자연스러운 곡선을 위해 약간의 부드러운 움직임 추가)
-                // 각 카드마다 약간씩 다른 Y offset을 줘서 더 자연스럽게
-                const yEasingOffsets = [0, 0.02, -0.02, 0.04];
-                const yAdjustedProgress = Math.min(1, mergeProgress + yEasingOffsets[index]);
-                const mergeY = (centerTopPx - initialTop) * yAdjustedProgress;
-                
-                // 합쳐질 때 약간의 곡선 효과를 위한 추가 Y offset (시작과 끝에서는 작고 중간에 크게)
-                const curveOffset = Math.sin(mergeProgress * Math.PI) * 10; // sin 곡선으로 약간의 상하 움직임
-                translateY = initialFloatUpY + floatingY + mergeY + curveOffset;
-                
-                campusOpacity = Math.min(1, fadeInProgress);
+            // PC: 순차적 페이드인 (둥둥 효과 제거)
+            // 캠퍼스 순서: 춘천(0), 삼석(2), 강릉(1), 원주(3)
+            const campusOrderIndex = CAMPUS_FADE_ORDER.indexOf(index);
+            const campusFadeDelay = CAMPUS_FADE_DELAYS[campusOrderIndex] || 0;
+            const campusFadeStartTime = campusFadeDelay;
+            const campusFadeEndTime = campusFadeStartTime + DURATIONS.fadeIn;
+            
+            // 각 캠퍼스의 개별 페이드인 진행도 계산
+            let individualFadeProgress = 0;
+            if (elapsed < campusFadeStartTime) {
+                individualFadeProgress = 0;
+            } else if (elapsed >= campusFadeEndTime) {
+                individualFadeProgress = 1;
+            } else {
+                individualFadeProgress = (elapsed - campusFadeStartTime) / DURATIONS.fadeIn;
+            }
+            
+            // translateX 계산 (자연스러운 곡선 경로를 위해 각 카드마다 약간씩 다른 easing 적용)
+            const easingOffsets = [0, 0.05, 0.03, 0.08]; // 각 카드마다 약간씩 다른 타이밍
+            const adjustedProgress = Math.min(1, mergeProgress + easingOffsets[index]);
+            
+            if (index === 0 || index === 3) {
+                // 왼쪽 카드들 (chuncheon, wonju): -150% - 200px → -50%
+                const currentPercent = -150 + (100 * adjustedProgress);
+                const currentPx = 200 * (1 - adjustedProgress);
+                translateXValue = `calc(${currentPercent}% - ${currentPx}px)`;
+            } else {
+                // 오른쪽 카드들 (gangneung, samcheok): 50% + 200px → -50%
+                const currentPercent = 50 - (100 * adjustedProgress);
+                const currentPx = 200 * (1 - adjustedProgress);
+                translateXValue = `calc(${currentPercent}% + ${currentPx}px)`;
+            }
+            
+            // translateY 계산 (자연스러운 곡선을 위해 약간의 부드러운 움직임 추가)
+            // 각 카드마다 약간씩 다른 Y offset을 줘서 더 자연스럽게
+            const yEasingOffsets = [0, 0.02, -0.02, 0.04];
+            const yAdjustedProgress = Math.min(1, mergeProgress + yEasingOffsets[index]);
+            const mergeY = (centerTopPx - initialTop) * yAdjustedProgress;
+            
+            // 합쳐질 때 약간의 곡선 효과를 위한 추가 Y offset (시작과 끝에서는 작고 중간에 크게)
+            const curveOffset = Math.sin(mergeProgress * Math.PI) * 10; // sin 곡선으로 약간의 상하 움직임
+            translateY = mergeY + curveOffset;
+            
+            campusOpacity = individualFadeProgress;
             }
             
             // mergeCircleProgress가 있을 때는 transform을 나중에 설정하므로 여기서는 설정하지 않음
@@ -576,41 +620,34 @@ document.addEventListener('DOMContentLoaded', function() {
                     const [baseR, baseG, baseB] = campusColors[index];
                     
                     // whiteProgress를 가장 먼저 체크하여 4개 원이 합쳐지기 전에 하얀색 효과 시작
-                    // mergeProgress 0.4부터 하얀색 효과 시작 (원이 겹치기 시작하는 중간 지점)
+                    // mergeProgress 20%부터 하얀색 효과 시작 (원이 겹치기 시작하는 중간 지점)
                     if (whiteProgress > 0) {
-                        // whiteProgress에 따라 각 색상에서 하얀색으로 점진적 변환
-                        // 초반(whiteProgress 0~0.3): 매우 은은하게
-                        // 중반(whiteProgress 0.3~0.7): 점점 강해짐
-                        // 후반(whiteProgress 0.7~1.0): 빠르게 강해짐
+                        // whiteProgress에 따라 각 색상에서 하얀색으로 점진적 변환 (서서히 강렬해지게)
+                        // whiteProgress를 사용하여 부드럽게 하얀색으로 변환
                         const glowR = Math.round(baseR + (255 - baseR) * whiteProgress);
                         const glowG = Math.round(baseG + (255 - baseG) * whiteProgress);
                         const glowB = Math.round(baseB + (255 - baseB) * whiteProgress);
                         
-                        // overlay에 하얀빛 효과 (whiteProgress에 따라 더 빠르게 증가)
-                        // 초반에는 약하게, 후반으로 갈수록 빠르게 강하게
-                        const glowOpacityMultiplier = whiteProgress < 0.2 ? whiteProgress * 0.5 : // 초반: 더 빠르게 시작
-                                                      whiteProgress < 0.5 ? 0.1 + (whiteProgress - 0.2) * 0.6 : // 중반: 빠르게 강해짐
-                                                      0.28 + (whiteProgress - 0.5) * 0.72; // 후반: 매우 빠르게 강해짐
-                        const glowOpacity = overlayOpacity + (0.4 * glowOpacityMultiplier); // 0.3 → 0.4로 증가하여 더 강하게
-                        overlay.style.transition = 'background 0.15s ease-out'; // 0.2s → 0.15s로 더 빠르게
-                        overlay.style.background = `rgba(${glowR}, ${glowG}, ${glowB}, ${Math.min(1, glowOpacity)})`;
+                        // overlay에 하얀빛 효과 (서서히 강렬해지게)
+                        // overlayOpacity는 이미 30% → 90%로 증가하고 있으므로, whiteProgress에 따라 추가로 증가
+                        // 거의 색 다 덮을 정도로 (0.9 → 0.98 정도)
+                        const additionalOpacity = whiteProgress * 0.08; // 추가로 8% 증가하여 거의 덮을 정도로
+                        const glowOpacity = Math.min(0.98, overlayOpacity + additionalOpacity);
+                        overlay.style.transition = 'background 0.3s ease-out'; // 부드럽게
+                        overlay.style.background = `rgba(${glowR}, ${glowG}, ${glowB}, ${glowOpacity})`;
                         
-                        // blur와 box-shadow로 하얀빛 효과 (더 빠르게 증가)
+                        // blur와 box-shadow로 하얀빛 효과 (서서히 강렬해지게)
                         if (imageWrapper) {
-                            // blur: 더 빠르게 증가
-                            const glowBlur = whiteProgress < 0.2 ? whiteProgress * 8 : // 초반: 0~1.6px (더 빠르게)
-                                           whiteProgress < 0.5 ? 1.6 + (whiteProgress - 0.2) * 20 : // 중반: 1.6~7.6px (더 빠르게)
-                                           7.6 + (whiteProgress - 0.5) * 42.4; // 후반: 7.6~50px (더 빠르게)
+                            // blur: 0 → 50px로 서서히 증가 (부드럽게)
+                            const glowBlur = whiteProgress * 50; // 0 → 50px로 선형 증가
                             imageWrapper.style.filter = `blur(${glowBlur}px)`;
+                            imageWrapper.style.transition = 'filter 0.3s ease-out'; // 부드럽게
                             
-                            // 하얀빛 box-shadow 효과 (더 빠르게 강해짐)
-                            const glowShadowIntensity = whiteProgress < 0.2 ? 0.8 + (whiteProgress * 0.2) : // 초반: 0.8~0.84 (더 빠르게)
-                                                       whiteProgress < 0.5 ? 0.84 + (whiteProgress - 0.2) * 0.4 : // 중반: 0.84~0.96 (더 빠르게)
-                                                       0.96 + (whiteProgress - 0.5) * 0.24; // 후반: 0.96~1.2 (더 빠르게)
-                            const glowShadowBlur = whiteProgress < 0.2 ? 100 + (whiteProgress * 20) : // 초반: 100~104px (더 빠르게)
-                                                  whiteProgress < 0.5 ? 104 + (whiteProgress - 0.2) * 40 : // 중반: 104~116px (더 빠르게)
-                                                  116 + (whiteProgress - 0.5) * 34; // 후반: 116~150px (더 빠르게)
+                            // 하얀빛 box-shadow 효과 (서서히 강해짐)
+                            const glowShadowIntensity = 0.8 + (whiteProgress * 0.4); // 0.8 → 1.2로 서서히 증가
+                            const glowShadowBlur = 100 + (whiteProgress * 50); // 100 → 150px로 서서히 증가
                             imageWrapper.style.boxShadow = `0px 0px ${glowShadowBlur}px rgba(${glowR}, ${glowG}, ${glowB}, ${glowShadowIntensity})`;
+                            imageWrapper.style.transition = 'box-shadow 0.3s ease-out'; // 부드럽게
                         }
                     } else if (mergeCircleProgress > 0) {
                         // mergeCircleProgress가 있으면 적용 (4개 원이 하나로 합쳐진 후)
@@ -678,8 +715,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     const campusCircle = campus.querySelector('.sec3-campus-circle');
                     const campusDot = campus.querySelector('.sec3-campus-dot');
                     
-                    if (campusCircle) campusCircle.style.display = 'none';
-                    if (campusDot) campusDot.style.display = 'none';
+                    // 합쳐지기 시작하면 캠퍼스명과 점(dot) 완전히 숨기기
+                    if (mergeProgress > 0) {
+                        if (campusCircle) {
+                            campusCircle.style.display = 'none';
+                            campusCircle.style.opacity = '0';
+                        }
+                        if (campusDot) {
+                            campusDot.style.display = 'none';
+                            campusDot.style.opacity = '0';
+                        }
+                        if (campusName) {
+                            campusName.style.opacity = '0';
+                            campusName.style.visibility = 'hidden';
+                            campusName.style.display = 'none';
+                        }
+                    } else {
+                        // mergeProgress가 0이면 정상 표시
+                        if (campusCircle) campusCircle.style.display = '';
+                        if (campusDot) campusDot.style.display = '';
+                    }
                     
                     // overlayOpacity가 70% 이상일 때 우측 원과 하단 캠퍼스명이 동시에 페이드아웃
                     // 우측 원: index 1, 2 (gangneung, samcheok)
@@ -705,57 +760,34 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // whiteProgress가 시작되면 하단 캠퍼스명 페이드아웃하고 중앙에 표시
                     if (whiteProgress > 0) {
-                    // 하단 campusInfo 페이드아웃 (whiteProgress에 따라)
+                    // 하단 campusInfo 페이드아웃 (whiteProgress에 따라 서서히)
                     // 하지만 campusName은 campusInfo 밖으로 이동시켜 독립적으로 제어
                     if (campusInfo) {
-                        const bottomInfoOpacity = Math.max(0, 1 - (whiteProgress * 1.5)); // 빠르게 사라짐
-                        // campusInfo 내의 circle과 dot만 opacity 조정
-                        if (campusCircle) campusCircle.style.opacity = bottomInfoOpacity;
-                        if (campusDot) campusDot.style.opacity = bottomInfoOpacity;
-                        // campusInfo 자체는 opacity 유지 (campusName이 밖으로 나가므로)
+                        // 점(circle, dot)을 먼저 사라지게 (whiteProgress 0.3부터 시작)
+                        const dotFadeStart = 0.3;
+                        const dotFadeProgress = whiteProgress < dotFadeStart ? 0 : 
+                                               (whiteProgress - dotFadeStart) / (1 - dotFadeStart);
+                        const dotOpacity = Math.max(0, 1 - dotFadeProgress);
+                        
+                        if (campusCircle) {
+                            campusCircle.style.opacity = dotOpacity;
+                            campusCircle.style.transition = 'opacity 0.4s ease-out';
+                        }
+                        if (campusDot) {
+                            campusDot.style.opacity = dotOpacity;
+                            campusDot.style.transition = 'opacity 0.4s ease-out';
+                        }
+                        
+                        // campusInfo 자체는 whiteProgress에 따라 서서히 사라짐
+                        const bottomInfoOpacity = Math.max(0, 1 - whiteProgress);
                         campusInfo.style.opacity = bottomInfoOpacity;
-                        campusInfo.style.transition = 'opacity 0.3s ease-out';
+                        campusInfo.style.transition = 'opacity 0.4s ease-out';
                     }
                     
-                    // 동그라미 중앙에 하얀색 캠퍼스명 표시
+                    // 캠퍼스명 글자 숨기기
                 if (campusName) {
-                        // 중앙 텍스트는 whiteProgress에 따라 나타남
-                        const centerTextOpacity = Math.min(1, whiteProgress * 1.5); // 빠르게 나타남
-                        
-                        // campusName을 campusInfo 밖으로 이동 (campus의 직접 자식으로)
-                        // campusName을 이미지 위에 배치 (campus 기준으로 absolute)
-                    campusName.style.position = 'absolute';
-                        campusName.style.left = '50%';
-                        // imageWrapper의 중앙 위치 계산 (초기 top + translateY + imageWrapper 높이/2)
-                        const initialTops = [131, 131, 586.10, 586.10];
-                        const initialTop = initialTops[index];
-                        const imageWrapperCenter = initialTop + translateY + 90; // 180px / 2 = 90px
-                        campusName.style.top = `${imageWrapperCenter}px`;
-                        campusName.style.transform = 'translate(-50%, -50%)';
-                        campusName.style.fontSize = '16px';
-                        campusName.style.lineHeight = '1.2';
-                        campusName.style.color = 'white';
-                        campusName.style.textShadow = '0px 0px 4px rgba(0, 0, 0, 0.5)';
-                    campusName.style.justifyContent = 'center';
-                        campusName.style.alignItems = 'center';
-                    campusName.style.display = 'flex';
-                    campusName.style.flexDirection = 'column';
-                    campusName.style.margin = '0';
-                        // campusInfo의 opacity와 독립적으로 제어하기 위해 opacity를 직접 설정
-                        // 하지만 campusInfo가 opacity 0이면 자식도 보이지 않으므로, 
-                        // campusName을 campusInfo 밖으로 이동시켜야 함
-                        campusName.style.opacity = centerTextOpacity;
-                        campusName.style.transition = 'opacity 0.3s ease-out';
-                        campusName.style.textAlign = 'center';
-                        campusName.style.whiteSpace = 'nowrap';
-                        campusName.style.zIndex = '10';
-                        campusName.style.pointerEvents = 'none';
-                        
-                        // campusName을 campusInfo 밖으로 이동 (DOM에서)
-                        if (campusName.parentElement === campusInfo && !campusName.dataset.moved) {
-                            campus.appendChild(campusName);
-                            campusName.dataset.moved = 'true';
-                        }
+                        campusName.style.opacity = '0';
+                        campusName.style.visibility = 'hidden';
                     }
                 } else {
                     // whiteProgress가 0이면 하단 정보 유지
@@ -797,7 +829,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // campusName을 원래 위치로 되돌림
                     if (campusName && campusName.dataset.moved === 'true') {
                         // campusName을 campusInfo 안으로 다시 이동
-                        if (campusInfo && campusName.parentElement === campus) {
+                        if (campusInfo && (campusName.parentElement === imageWrapper || campusName.parentElement === campus)) {
                             campusInfo.appendChild(campusName);
                             campusName.dataset.moved = '';
                         }
@@ -863,8 +895,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const campusCircle = campus.querySelector('.sec3-campus-circle');
                 const campusDot = campus.querySelector('.sec3-campus-dot');
-                if (campusCircle) campusCircle.style.display = '';
-                if (campusDot) campusDot.style.display = '';
+                if (campusCircle) {
+                    campusCircle.style.display = '';
+                    campusCircle.style.opacity = '';
+                }
+                if (campusDot) {
+                    campusDot.style.display = '';
+                    campusDot.style.opacity = '';
+                }
+                
+                // mergeProgress가 시작되면 캠퍼스명 숨기기
+                if (mergeProgress > 0 && campusName) {
+                    campusName.style.opacity = '0';
+                    campusName.style.visibility = 'hidden';
+                    campusName.style.display = 'none';
+                }
                 
                 if (campusName) {
                     campusName.style.position = '';
@@ -963,32 +1008,44 @@ document.addEventListener('DOMContentLoaded', function() {
             sec3Badge.style.opacity = 1 - badgeFadeOutProgress;
         }
         
-        // 배경 전환 효과 (오버레이로 새 배경 이미지 페이드인)
+        // 이미지 페이드인 효과 (배경 전환 대신 이미지가 페이드인)
         if (sec3 && backgroundTransitionProgress > 0) {
-            // 새 배경 이미지를 오버레이로 추가 (기존 배경은 유지)
+            // 새 이미지를 추가 (기존 배경은 유지)
             if (!sec3.querySelector('.sec3-background-image-overlay')) {
-                const bgImageOverlay = document.createElement('div');
+                const bgImageOverlay = document.createElement('img');
                 bgImageOverlay.className = 'sec3-background-image-overlay';
+                bgImageOverlay.src = 'images/sec3/sec_vison_bg.png';
+                bgImageOverlay.alt = '비전 배경';
                 bgImageOverlay.style.position = 'absolute';
                 bgImageOverlay.style.top = '0';
                 bgImageOverlay.style.left = '0';
                 bgImageOverlay.style.width = '100%';
                 bgImageOverlay.style.height = '100%';
-                bgImageOverlay.style.backgroundImage = 'url(images/sec3/sec_vison_bg.png)';
-                bgImageOverlay.style.backgroundSize = 'cover';
-                bgImageOverlay.style.backgroundPosition = 'center';
-                bgImageOverlay.style.backgroundRepeat = 'no-repeat';
+                bgImageOverlay.style.objectFit = 'cover';
+                bgImageOverlay.style.objectPosition = 'center';
                 bgImageOverlay.style.zIndex = '5';
                 bgImageOverlay.style.pointerEvents = 'none';
                 bgImageOverlay.style.willChange = 'opacity';
                 bgImageOverlay.style.opacity = '0';
+                bgImageOverlay.style.transition = 'opacity 0.8s ease-out';
                 sec3.appendChild(bgImageOverlay);
             }
             
             const bgImageOverlay = sec3.querySelector('.sec3-background-image-overlay');
             if (bgImageOverlay) {
-                // 새 배경 이미지가 페이드인되면서 나타남
+                // 이미지가 페이드인되면서 나타남
                 bgImageOverlay.style.opacity = backgroundTransitionProgress;
+                
+                // animation-complete 상태에서 섹션 크기에 맞춰 이미지 크기 조정
+                if (sec3.classList.contains('animation-complete')) {
+                    const sec3Rect = sec3.getBoundingClientRect();
+                    bgImageOverlay.style.width = sec3Rect.width + 'px';
+                    bgImageOverlay.style.height = sec3Rect.height + 'px';
+                } else {
+                    // 일반 상태에서는 100% 유지
+                    bgImageOverlay.style.width = '100%';
+                    bgImageOverlay.style.height = '100%';
+                }
             }
             
             // 하얀색 오버레이 페이드아웃 (기존 로직 유지)
@@ -1001,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 bgOverlay.style.width = '100%';
                 bgOverlay.style.height = '100%';
                 bgOverlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
-                bgOverlay.style.zIndex = '15';
+                bgOverlay.style.zIndex = '10';
                 bgOverlay.style.pointerEvents = 'none';
                 bgOverlay.style.willChange = 'opacity';
                 bgOverlay.style.transition = 'opacity 0.8s ease-out';
@@ -1010,39 +1067,39 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const bgOverlay = sec3.querySelector('.sec3-background-overlay');
             if (bgOverlay) {
-                // 하얀색 오버레이가 페이드아웃되면서 새 배경이 나타남
+                // 하얀색 오버레이가 페이드아웃되면서 이미지가 나타남
                 bgOverlay.style.opacity = 1 - backgroundTransitionProgress;
             }
         }
         
         // 배경 전환이 완료되면 오버레이 유지 (배경을 완전히 바꾸지 않음)
         if (sec3 && backgroundTransitionProgress >= 1) {
-            if (!sec3.dataset.backgroundFinalized) {
-                // 하얀색 오버레이 완전히 제거
-                const bgOverlay = sec3.querySelector('.sec3-background-overlay');
-                if (bgOverlay) {
-                    bgOverlay.style.opacity = '0';
-                    bgOverlay.style.display = 'none';
-                }
-                
-                // 배지 완전히 숨기기
-                if (sec3Badge) {
-                    sec3Badge.style.opacity = '0';
-                    sec3Badge.style.display = 'none';
-                }
-                
-                sec3.dataset.backgroundFinalized = 'true';
+            // 하얀색 오버레이 완전히 제거
+            const bgOverlay = sec3.querySelector('.sec3-background-overlay');
+            if (bgOverlay && bgOverlay.style.opacity !== '0') {
+                bgOverlay.style.opacity = '0';
+                bgOverlay.style.display = 'none';
+            }
+            
+            // 배지 완전히 숨기기
+            if (sec3Badge && sec3Badge.style.opacity !== '0') {
+                sec3Badge.style.opacity = '0';
+                sec3Badge.style.display = 'none';
             }
         }
         
-        // 최종 텍스트 오버레이 (원으로 합쳐진 후 - 화면이 하얗게 덮일 때)
+        // 최종 텍스트 오버레이 (이미지 페이드인과 함께 나타남, 이미지보다 위에 표시)
         let textOverlayOpacity = 0;
         if (textOverlay) {
-            // mergeCircleProgress가 0.8 이상일 때부터 나타나기 시작
-            if (mergeCircleProgress >= 0.8) {
-                const textProgress = (mergeCircleProgress - 0.8) / 0.2; // 0.8~1.0 구간을 0~1로 변환
-                textOverlayOpacity = textProgress;
+            // 이미지 페이드인이 시작되면 텍스트도 함께 나타남
+            if (backgroundTransitionProgress > 0) {
+                // 이미지와 함께 페이드인 (약간의 딜레이를 주어 이미지가 먼저 나타나도록)
+                const textFadeStart = 0.2; // 이미지가 20% 나타난 후 텍스트 시작
+                const textFadeProgress = backgroundTransitionProgress < textFadeStart ? 0 : 
+                                       (backgroundTransitionProgress - textFadeStart) / (1 - textFadeStart);
+                textOverlayOpacity = Math.min(1, textFadeProgress);
                 textOverlay.style.opacity = textOverlayOpacity;
+                textOverlay.style.zIndex = '30'; // 이미지(z-index: 5)보다 위에 표시
                 
                 // 텍스트 색상을 하얀색으로 변경
                 const textLines = textOverlay.querySelectorAll('.sec3-text-overlay-line1, .sec3-text-overlay-line2');
@@ -1053,49 +1110,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 textOverlayOpacity = 0;
                 textOverlay.style.opacity = 0;
             }
-            
-            // 배경 전환이 진행될 때도 텍스트가 보이도록
-            if (backgroundTransitionProgress > 0) {
-                textOverlayOpacity = 1;
-                textOverlay.style.opacity = 1;
-                const textLines = textOverlay.querySelectorAll('.sec3-text-overlay-line1, .sec3-text-overlay-line2');
-                textLines.forEach(line => {
-                    line.style.color = 'white';
-                });
-            }
         }
         
         // 애니메이션 완전 완료 체크: 배경 전환 완료 + 텍스트 오버레이 완전히 나타남
         // 배경 전환이 완료되고 텍스트 오버레이가 완전히 나타났을 때만 완료로 간주
         isAnimationFullyComplete = backgroundTransitionProgress >= 1 && textOverlayOpacity >= 1;
         
-        // 애니메이션 완료 상태 업데이트
-        if (progress >= 1) {
+        // 애니메이션 완료 상태 업데이트 (CSS 스타일링용)
+        if (progress >= 1 && isAnimationFullyComplete) {
             if (sec3 && !sec3.classList.contains('animation-complete')) {
                 sec3.classList.add('animation-complete');
-                // 배경 전환 완료 후 최종 상태로 고정 (렉 방지)
-                if (!sec3.dataset.backgroundFinalized) {
-                    // 배경 이미지는 오버레이로 유지 (기존 배경은 그대로)
+                
+                // animation-complete 상태가 되면 오버레이 이미지 크기를 섹션 크기에 맞춤
+                const bgImageOverlay = sec3.querySelector('.sec3-background-image-overlay');
+                if (bgImageOverlay) {
+                    // 섹션 크기 측정 및 이미지 크기 조정
+                    const updateImageSize = () => {
+                        const sec3Rect = sec3.getBoundingClientRect();
+                        bgImageOverlay.style.width = sec3Rect.width + 'px';
+                        bgImageOverlay.style.height = sec3Rect.height + 'px';
+                    };
                     
-                    const bgOverlay = sec3.querySelector('.sec3-background-overlay');
-                    if (bgOverlay) {
-                        bgOverlay.style.opacity = '0';
-                        bgOverlay.style.display = 'none';
+                    // 즉시 업데이트 (다음 프레임에서 실행하여 레이아웃 완료 후 측정)
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(updateImageSize);
+                    });
+                    
+                    // 리사이즈 이벤트 리스너 추가 (반응형 대응)
+                    if (!bgImageOverlay.dataset.resizeListenerAdded) {
+                        window.addEventListener('resize', updateImageSize);
+                        bgImageOverlay.dataset.resizeListenerAdded = 'true';
                     }
-                    
-                    const sec3Badge = document.querySelector('.sec3-badge');
-                    if (sec3Badge) {
-                        sec3Badge.style.opacity = '0';
-                        sec3Badge.style.display = 'none';
-                    }
-                    
-                    sec3.dataset.backgroundFinalized = 'true';
                 }
             }
         } else {
             // 애니메이션이 완료되지 않았으면 완료 상태 제거
             if (sec3 && sec3.classList.contains('animation-complete')) {
                 sec3.classList.remove('animation-complete');
+                
+                // 오버레이 이미지 크기를 100%로 되돌림
+                const bgImageOverlay = sec3.querySelector('.sec3-background-image-overlay');
+                if (bgImageOverlay) {
+                    bgImageOverlay.style.width = '100%';
+                    bgImageOverlay.style.height = '100%';
+                }
             }
         }
     }
@@ -1213,9 +1271,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (virtualScrollProgress >= 1 && isAnimationFullyComplete) {
                 // 애니메이션 완전히 완료: 스크롤 잠금 해제 및 섹션 3 영구 비활성화
                 unlockScroll();
-                if (!sec3.classList.contains('animation-complete')) {
-                    sec3.classList.add('animation-complete');
-                }
                 // 섹션 3을 영구적으로 완료 상태로 표시 (다시 활성화되지 않음)
                 isSec3PermanentlyComplete = true;
                 isSec3Active = false;
@@ -1225,15 +1280,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (virtualScrollProgress >= 1 && !isAnimationFullyComplete) {
                 // progress는 1이지만 배경/텍스트가 아직 완전히 나타나지 않음: 잠금 유지
                 lockScroll();
-                if (sec3.classList.contains('animation-complete')) {
-                    sec3.classList.remove('animation-complete');
-                }
             } else if (virtualScrollProgress < 1 && virtualScrollProgress > 0) {
                 // 애니메이션 진행 중: 스크롤 잠금 유지 (역방향 스크롤 시 다시 잠금)
                 lockScroll();
-                if (sec3.classList.contains('animation-complete')) {
-                    sec3.classList.remove('animation-complete');
-                }
             }
         } else {
             // 섹션 3이 비활성화되었을 때
