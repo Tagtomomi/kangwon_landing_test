@@ -1303,6 +1303,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec1Subtitle2 = document.querySelector('.sec1-subtitle-2');
     const sec1Subtitle1Wrapper = document.querySelector('.sec1-subtitle-1-wrapper');
     
+    // 폰트 로드 확인 함수
+    function waitForFont(fontFamily, callback, timeout = 2000) {
+        if ('fonts' in document && document.fonts && document.fonts.ready) {
+            let fontLoaded = false;
+            const startTime = Date.now();
+            
+            function checkFont() {
+                const now = Date.now();
+                
+                // 타임아웃 체크
+                if ((now - startTime) > timeout) {
+                    callback();
+                    return;
+                }
+                
+                // 폰트가 로드되었는지 확인
+                try {
+                    if (document.fonts.check(`16px "${fontFamily}"`)) {
+                        fontLoaded = true;
+                        callback();
+                        return;
+                    }
+                } catch (e) {
+                    // 에러 발생 시 무시하고 계속 진행
+                }
+                
+                // 아직 로드되지 않았으면 재시도
+                requestAnimationFrame(checkFont);
+            }
+            
+            // document.fonts.ready가 완료된 후 확인 시작
+            document.fonts.ready.then(() => {
+                checkFont();
+            }).catch(() => {
+                // 에러 발생 시 즉시 실행
+                callback();
+            });
+            
+            // 타임아웃 설정
+            setTimeout(() => {
+                if (!fontLoaded) {
+                    callback();
+                }
+            }, timeout);
+        } else {
+            // Font Loading API 미지원 브라우저는 즉시 실행
+            callback();
+        }
+    }
+    
     function handleSec1TextAnimation() {
         // 페이지 로드 시 또는 스크롤 위치에 따라 트리거
         const sec1 = document.querySelector('.sec1');
@@ -1342,9 +1392,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 페이지 로드 시 즉시 실행
-    handleSec1TextAnimation();
-    window.addEventListener('scroll', handleSec1TextAnimation);
+    // 폰트 로드를 기다린 후 애니메이션 시작
+    waitForFont('강원교육튼튼체', () => {
+        handleSec1TextAnimation();
+        window.addEventListener('scroll', handleSec1TextAnimation);
+    });
     
     // Section 4 text scroll animation - 각 줄이 한 줄씩 순차적으로 나타남
     const sec4 = document.querySelector('.sec4');

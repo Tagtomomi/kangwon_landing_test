@@ -7,7 +7,7 @@
          url('../fonts/강원교육튼튼.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    font-display: optional; /* 폰트가 빠르게 로드되면 사용, 그렇지 않으면 fallback 유지 */
 }
 
 /* Reset & Base Styles */
