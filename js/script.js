@@ -2161,37 +2161,59 @@ document.addEventListener('DOMContentLoaded', function() {
     const campusDesc = document.querySelector('.sec6-campus-desc');
     const campusLink = document.getElementById('sec6-campus-link');
     
-    // 캠퍼스 데이터
-    const campusData = [
-        {
-            name: '춘천 캠퍼스',
-            image: 'images/sec6/campus_img_춘천.png',
-            url: 'https://wwwk.kangwon.ac.kr/www/index.do',
-            tags: ['종합 연구', '글로벌 교육', '혁신인재'],
-            desc: '국제 교류 통합 체계 구축<br/>학사구조 혁신 지원 온라인 교육 플랫폼'
-        },
-        {
-            name: '삼척 캠퍼스',
-            image: 'images/sec6/campus_detail_삼척.png',
-            url: 'https://wwwk.kangwon.ac.kr/www/index.do',
-            tags: ['해양과학', '에너지', '환경'],
-            desc: '해양과학 특성화 대학<br/>지속가능한 에너지 연구'
-        },
-        {
-            name: '강릉 캠퍼스',
-            image: 'images/sec6/campus_detail_강릉.png',
-            url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
-            tags: ['관광', '문화', '예술'],
-            desc: '관광문화 특성화 대학<br/>글로벌 문화예술 교육'
-        },
-        {
-            name: '원주 캠퍼스',
-            image: 'images/sec6/campus_detail_원주.png',
-            url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
-            tags: ['의료', '보건', '복지'],
-            desc: '의료보건 특성화 대학<br/>지역 건강증진 연구'
+    // 캠퍼스 데이터 (i18n에서 가져오거나 기본값 사용)
+    let campusData = [];
+    
+    // i18n에서 캠퍼스 데이터 업데이트 함수
+    function updateCampusDataFromI18n() {
+        if (typeof i18n !== 'undefined' && i18n.getCampusData) {
+            campusData = i18n.getCampusData();
+        } else {
+            // i18n이 아직 로드되지 않은 경우 기본값 사용
+            campusData = [
+                {
+                    name: '춘천 캠퍼스',
+                    image: 'images/sec6/campus_img_춘천.png',
+                    url: 'https://wwwk.kangwon.ac.kr/www/index.do',
+                    tags: ['종합 연구', '글로벌 교육', '혁신인재'],
+                    desc: '국제 교류 통합 체계 구축<br/>학사구조 혁신 지원 온라인 교육 플랫폼'
+                },
+                {
+                    name: '삼척 캠퍼스',
+                    image: 'images/sec6/campus_detail_삼척.png',
+                    url: 'https://wwwk.kangwon.ac.kr/www/index.do',
+                    tags: ['해양과학', '에너지', '환경'],
+                    desc: '해양과학 특성화 대학<br/>지속가능한 에너지 연구'
+                },
+                {
+                    name: '강릉 캠퍼스',
+                    image: 'images/sec6/campus_detail_강릉.png',
+                    url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
+                    tags: ['관광', '문화', '예술'],
+                    desc: '관광문화 특성화 대학<br/>글로벌 문화예술 교육'
+                },
+                {
+                    name: '원주 캠퍼스',
+                    image: 'images/sec6/campus_detail_원주.png',
+                    url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
+                    tags: ['의료', '보건', '복지'],
+                    desc: '의료보건 특성화 대학<br/>지역 건강증진 연구'
+                }
+            ];
         }
-    ];
+    }
+    
+    // 전역 함수로 노출 (i18n에서 호출 가능하도록)
+    window.updateCampusData = function(newData) {
+        campusData = newData;
+        // 현재 캠퍼스 인덱스로 다시 업데이트
+        if (typeof updateCampus === 'function') {
+            updateCampus(currentCampusIndex, false);
+        }
+    };
+    
+    // 초기 캠퍼스 데이터 로드
+    updateCampusDataFromI18n();
     
     let currentCampusIndex = 0;
     let isAnimating = false;
@@ -2234,7 +2256,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     campus.tags.forEach(tag => {
                         const tagElement = document.createElement('div');
                         tagElement.className = 'sec6-tag';
-                        tagElement.textContent = tag;
+                        // HTML 포함 여부 확인
+                        if (tag.includes('<br />') || tag.includes('<span')) {
+                            tagElement.innerHTML = tag;
+                        } else {
+                            tagElement.textContent = tag;
+                        }
                         campusTags.appendChild(tagElement);
                     });
                 }
@@ -2286,7 +2313,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 campus.tags.forEach(tag => {
                     const tagElement = document.createElement('div');
                     tagElement.className = 'sec6-tag';
-                    tagElement.textContent = tag;
+                    // HTML 포함 여부 확인
+                    if (tag.includes('<br />') || tag.includes('<span')) {
+                        tagElement.innerHTML = tag;
+                    } else {
+                        tagElement.textContent = tag;
+                    }
                     campusTags.appendChild(tagElement);
                 });
             }
