@@ -1070,6 +1070,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec1Text2 = document.querySelector('.sec1-text-2');
     const sec1Subtitle1 = document.querySelector('.sec1-subtitle-1');
     const sec1Subtitle2 = document.querySelector('.sec1-subtitle-2');
+    const sec1Subtitle1Wrapper = document.querySelector('.sec1-subtitle-1-wrapper');
     
     function handleSec1TextAnimation() {
         // 페이지 로드 시 또는 스크롤 위치에 따라 트리거
@@ -1095,6 +1096,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     if (sec1Subtitle1) {
                         sec1Subtitle1.classList.add('visible');
+                    }
+                    // wrapper에도 visible 추가하여 divider 애니메이션 트리거
+                    if (sec1Subtitle1Wrapper) {
+                        sec1Subtitle1Wrapper.classList.add('visible');
                     }
                 }, 800);
                 setTimeout(() => {
