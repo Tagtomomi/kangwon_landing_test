@@ -162,6 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let animationStartTime = null;
     let lockedScrollPosition = 0; // 스크롤 고정 위치
     
+    // 배경 이미지 프리로딩 (렉 방지)
+    const backgroundImage = new Image();
+    backgroundImage.src = 'images/sec3/sec_vison_bg.png';
+    
     // 모바일 감지
     const isMobile = window.innerWidth <= 769;
     
@@ -172,11 +176,11 @@ document.addEventListener('DOMContentLoaded', function() {
         textTitle: 800,        // 타이틀 나타남: 0.8초
         textSubtitle: 800,     // 서브타이틀 나타남: 0.8초
         textCompleteWait: 2000, // 텍스트 완료 후 대기: 2초
-        cardMerge: 4000,       // 카드 합치기: 4초 (2x2 배치를 더 오래 보여주기 위해 증가)
+        cardMerge: 3000,       // 카드 합치기: 4초 (2x2 배치를 더 오래 보여주기 위해 증가)
         textHide: 300,         // 텍스트 사라짐: 0.3초
-        whiteTransition: 600,  // 화이트로 변함: 0.6초 (합쳐지는 중간부터 시작)
-        mergeToCircle: 800,    // 하나의 화이트 원으로 합쳐짐: 0.8초
-        whiteFadeOut: 1000,    // 하얀색 페이드아웃: 1초
+        whiteTransition: 200,  // 화이트로 변함: 0.6초 (합쳐지는 중간부터 시작)
+        mergeToCircle: 500,    // 하나의 화이트 원으로 합쳐짐: 0.5초 (커지는 시간)
+        whiteFadeOut: 300,     // 하얀색 페이드아웃: 0.3초 (유지 시간 짧게)
         backgroundTransition: 800 // 배경 전환: 0.8초
     };
     
@@ -187,11 +191,11 @@ document.addEventListener('DOMContentLoaded', function() {
         textCompleteWait: 2000, // 텍스트 완료 후 대기: 2초 (캠퍼스가 나타나기 전)
         campusGridFadeIn: 800, // 캠퍼스 2x2 그리드로 나타남: 0.8초
         campusGridWait: 2000,  // 2x2 그리드 유지: 2초
-        cardMerge: 4000,       // 카드 합치기: 4초
+        cardMerge: 100,       // 카드 합치기: 4초
         textHide: 300,         // 텍스트 사라짐: 0.3초
         whiteTransition: 600,  // 화이트로 변함: 0.6초
-        mergeToCircle: 800,    // 하나의 화이트 원으로 합쳐짐: 0.8초
-        whiteFadeOut: 1000,    // 하얀색 페이드아웃: 1초
+        mergeToCircle: 500,    // 하나의 화이트 원으로 합쳐짐: 0.5초 (커지는 시간)
+        whiteFadeOut: 300,     // 하얀색 페이드아웃: 0.3초 (유지 시간 짧게)
         backgroundTransition: 800 // 배경 전환: 0.8초
     };
     
@@ -308,14 +312,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // 70% 도달 시 캠퍼스 이름 텍스트 숨기기
         const shouldHideCampusInfo = overlayOpacity >= 0.7;
         
-        // 4. 화이트로 변하기 시작 (합쳐지기 시작할 때, mergeProgress 0.7 정도부터)
-        const whiteStartProgress = 0.7; // mergeProgress 70% 지점부터 화이트로 변하기 시작
+        // 4. 화이트로 변하기 시작 (원이 겹치기 시작하는 중간 지점부터, 더 빠르게 시작)
+        const whiteStartProgress = 0.3; // mergeProgress 30% 지점부터 화이트로 변하기 시작 (더 일찍 시작)
         const cardMergeDuration = isMobile ? MOBILE_DURATIONS.cardMerge : DURATIONS.cardMerge;
         const whiteStartTime = mergeStartTime + (cardMergeDuration * whiteStartProgress);
         const whiteEndTime = mergeEndTime; // 합쳐지기가 완료될 때까지
-        const whiteProgress = mergeProgress < whiteStartProgress ? 0 : 
-                             mergeProgress >= 1 ? 1 : 
-                             (mergeProgress - whiteStartProgress) / (1 - whiteStartProgress);
+        // 초반에는 은은하게, 후반으로 갈수록 빠르게 강해지도록 비선형 보간 적용 (pow 함수)
+        const rawWhiteProgress = mergeProgress < whiteStartProgress ? 0 : 
+                                 mergeProgress >= 1 ? 1 : 
+                                 (mergeProgress - whiteStartProgress) / (1 - whiteStartProgress);
+        // pow 함수를 사용하여 더 빠르게 증가 (지수 1.8로 낮춰서 더 빠르게)
+        const whiteProgress = Math.pow(rawWhiteProgress, 1.8);
         
         // 5. 텍스트 사라짐 (mergeProgress 1.0에 도달한 후)
         const textHideDuration = isMobile ? MOBILE_DURATIONS.textHide : DURATIONS.textHide;
@@ -329,9 +336,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const mergeToCircleDuration = isMobile ? MOBILE_DURATIONS.mergeToCircle : DURATIONS.mergeToCircle;
         const mergeCircleStartTime = textHideEndTime;
         const mergeCircleEndTime = mergeCircleStartTime + mergeToCircleDuration;
-        const mergeCircleProgress = elapsed < mergeCircleStartTime ? 0 : 
-                                   elapsed >= mergeCircleEndTime ? 1 : 
-                                   (elapsed - mergeCircleStartTime) / (mergeCircleEndTime - mergeCircleStartTime);
+        const rawMergeCircleProgress = elapsed < mergeCircleStartTime ? 0 : 
+                                      elapsed >= mergeCircleEndTime ? 1 : 
+                                      (elapsed - mergeCircleStartTime) / (mergeCircleEndTime - mergeCircleStartTime);
+        // easing 함수를 사용하여 원이 나타나는 속도는 빠르게, 커지는 속도는 조금 느리게
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+        // 원이 나타나는 속도는 빠르게 (opacity용)
+        const mergeCircleProgress = easeOutCubic(rawMergeCircleProgress);
+        
+        // 크기가 커지는 속도는 조금 느리게 (easeInOutQuad 사용)
+        function easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+        const sizeProgress = easeInOutQuad(rawMergeCircleProgress);
         
         // 7. 하얀색 페이드아웃 (화이트 원이 완전히 커진 후)
         const whiteFadeOutDuration = isMobile ? MOBILE_DURATIONS.whiteFadeOut : DURATIONS.whiteFadeOut;
@@ -348,6 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const backgroundTransitionProgress = elapsed < backgroundTransitionStartTime ? 0 : 
                                            elapsed >= backgroundTransitionEndTime ? 1 : 
                                            (elapsed - backgroundTransitionStartTime) / (backgroundTransitionEndTime - backgroundTransitionStartTime);
+        
+        // 배지 페이드아웃 (mergeCircleProgress가 시작될 때부터 페이드아웃 시작)
+        const badgeFadeOutStartTime = mergeCircleStartTime;
+        const badgeFadeOutDuration = mergeToCircleDuration + whiteFadeOutDuration; // 원이 합쳐지는 동안 페이드아웃
+        const badgeFadeOutEndTime = badgeFadeOutStartTime + badgeFadeOutDuration;
+        const badgeFadeOutProgress = elapsed < badgeFadeOutStartTime ? 0 : 
+                                     elapsed >= badgeFadeOutEndTime ? 1 : 
+                                     (elapsed - badgeFadeOutStartTime) / (badgeFadeOutEndTime - badgeFadeOutStartTime);
         
         // 카드 페이드 인 + 둥둥 떠오름
         campuses.forEach((campus, index) => {
@@ -469,95 +496,96 @@ document.addEventListener('DOMContentLoaded', function() {
             const campusInfo = campus.querySelector('.sec3-campus-info');
             const campusName = campus.querySelector('.sec3-campus-name');
             
-            // mergeProgress가 0보다 크면 (이동 시작하면) 새 디자인 적용
-            if (mergeProgress > 0) {
-                // 각 학교의 고유 색상 정의
-                const campusColors = [
-                    [26, 88, 175],   // chuncheon - 파란색
-                    [23, 201, 255],  // gangneung - 하늘색
-                    [255, 106, 32],  // samcheok - 주황색
-                    [74, 214, 171]   // wonju - 청록색
-                ];
-                const [baseR, baseG, baseB] = campusColors[index];
-                
-                // mergeCircleProgress가 있으면 우선 적용 (합쳐지는 단계 - 빛처럼 보이게)
-                if (mergeCircleProgress > 0) {
-                    // mergeCircleProgress에 따라 색상을 하얀색으로 변환
-                    const whiteBlend = mergeCircleProgress;
-                    const finalR = Math.round(baseR + (255 - baseR) * whiteBlend);
-                    const finalG = Math.round(baseG + (255 - baseG) * whiteBlend);
-                    const finalB = Math.round(baseB + (255 - baseB) * whiteBlend);
+                // mergeProgress가 0보다 크면 (이동 시작하면) 새 디자인 적용
+                if (mergeProgress > 0) {
+                    // 각 학교의 고유 색상 정의
+                    const campusColors = [
+                        [26, 88, 175],   // chuncheon - 파란색
+                        [23, 201, 255],  // gangneung - 하늘색
+                        [255, 106, 32],  // samcheok - 주황색
+                        [74, 214, 171]   // wonju - 청록색
+                    ];
+                    const [baseR, baseG, baseB] = campusColors[index];
                     
-                    // blur와 box-shadow로 빛처럼 보이게
-                    if (imageWrapper) {
-                        // blur 강도: mergeCircleProgress에 따라 증가 (0 → 50px)
-                        const blurAmount = mergeCircleProgress * 50;
-                        imageWrapper.style.filter = `blur(${blurAmount}px)`;
+                    // whiteProgress를 가장 먼저 체크하여 4개 원이 합쳐지기 전에 하얀색 효과 시작
+                    // mergeProgress 0.4부터 하얀색 효과 시작 (원이 겹치기 시작하는 중간 지점)
+                    if (whiteProgress > 0) {
+                        // whiteProgress에 따라 각 색상에서 하얀색으로 점진적 변환
+                        // 초반(whiteProgress 0~0.3): 매우 은은하게
+                        // 중반(whiteProgress 0.3~0.7): 점점 강해짐
+                        // 후반(whiteProgress 0.7~1.0): 빠르게 강해짐
+                        const glowR = Math.round(baseR + (255 - baseR) * whiteProgress);
+                        const glowG = Math.round(baseG + (255 - baseG) * whiteProgress);
+                        const glowB = Math.round(baseB + (255 - baseB) * whiteProgress);
                         
-                        // box-shadow: 각 색깔의 빛 효과 (100px 100px 100px 스타일)
-                        const shadowOpacity = 0.8 - (mergeCircleProgress * 0.3);
-                        const shadowBlur = 100;
-                        imageWrapper.style.boxShadow = `100px 100px ${shadowBlur}px rgba(${finalR}, ${finalG}, ${finalB}, ${shadowOpacity})`;
-                    }
-                    
-                    // overlay 색상 변경 (하얀색으로 점진적 변환)
-                    if (overlay) {
-                        const overlayOpacity = 0.7 + (0.3 * (1 - mergeCircleProgress * 0.5));
-                        overlay.style.background = `rgba(${finalR}, ${finalG}, ${finalB}, ${overlayOpacity})`;
-                    }
-                    
-                    // 완전히 합쳐질 때는 하얀색으로 (mergeCircleProgress 0.7 이상)
-                    if (mergeCircleProgress >= 0.7) {
-                        const whiteProgress = (mergeCircleProgress - 0.7) / 0.3; // 0.7~1.0 구간을 0~1로 변환
+                        // overlay에 하얀빛 효과 (whiteProgress에 따라 더 빠르게 증가)
+                        // 초반에는 약하게, 후반으로 갈수록 빠르게 강하게
+                        const glowOpacityMultiplier = whiteProgress < 0.2 ? whiteProgress * 0.5 : // 초반: 더 빠르게 시작
+                                                      whiteProgress < 0.5 ? 0.1 + (whiteProgress - 0.2) * 0.6 : // 중반: 빠르게 강해짐
+                                                      0.28 + (whiteProgress - 0.5) * 0.72; // 후반: 매우 빠르게 강해짐
+                        const glowOpacity = overlayOpacity + (0.4 * glowOpacityMultiplier); // 0.3 → 0.4로 증가하여 더 강하게
+                        overlay.style.transition = 'background 0.15s ease-out'; // 0.2s → 0.15s로 더 빠르게
+                        overlay.style.background = `rgba(${glowR}, ${glowG}, ${glowB}, ${Math.min(1, glowOpacity)})`;
                         
-                        // 거의 하얀색으로
-                        if (overlay) {
-                            const whiteOpacity = 0.7 + (0.3 * whiteProgress);
-                            overlay.style.background = `rgba(255, 255, 255, ${whiteOpacity})`;
-                        }
+                        // blur와 box-shadow로 하얀빛 효과 (더 빠르게 증가)
                         if (imageWrapper) {
-                            const finalBlur = 50;
-                            imageWrapper.style.filter = `blur(${finalBlur}px)`;
-                            // 하얀색 빛 효과
-                            const whiteShadowOpacity = 0.5 + (0.5 * whiteProgress);
-                            imageWrapper.style.boxShadow = `100px 100px 100px rgba(255, 255, 255, ${whiteShadowOpacity})`;
-                        }
-                    }
-                } else if (whiteProgress > 0) {
-                    // 각 학교 색상에서 시작하여 동그라미로 변함 (색상 유지)
-                    const currentOpacity = 0.7 + (0.3 * whiteProgress);
-                    overlay.style.background = `rgba(${baseR}, ${baseG}, ${baseB}, ${currentOpacity})`;
-                    
-                    // box-shadow도 각 학교 색상으로
-                    if (imageWrapper) {
-                        const shadowIntensity = 0.8 * (1 - whiteProgress * 0.3); // 약간 감소
-                        imageWrapper.style.boxShadow = `0px 0px 100px rgba(${baseR}, ${baseG}, ${baseB}, ${shadowIntensity})`;
-                        imageWrapper.style.filter = 'none';
-                    }
-                } else {
-                    // mergeProgress가 0.8 이상일 때 하얀빛 효과 추가 (2x2로 모였을 때)
-                    if (mergeProgress >= 0.8) {
-                        const whiteGlowProgress = (mergeProgress - 0.8) / 0.2; // 0.8~1.0 구간을 0~1로 변환
-                        
-                        // 각 색상에서 하얀색으로 점진적 변환
-                        const glowR = Math.round(baseR + (255 - baseR) * whiteGlowProgress);
-                        const glowG = Math.round(baseG + (255 - baseG) * whiteGlowProgress);
-                        const glowB = Math.round(baseB + (255 - baseB) * whiteGlowProgress);
-                        
-                        // overlay에 하얀빛 효과
-                        const glowOpacity = overlayOpacity + (0.3 * whiteGlowProgress);
-                        overlay.style.transition = 'background 0.3s ease-out';
-                        overlay.style.background = `rgba(${glowR}, ${glowG}, ${glowB}, ${glowOpacity})`;
-                        
-                        // blur와 box-shadow로 하얀빛 효과
-                        if (imageWrapper) {
-                            const glowBlur = whiteGlowProgress * 30; // 0 → 30px
+                            // blur: 더 빠르게 증가
+                            const glowBlur = whiteProgress < 0.2 ? whiteProgress * 8 : // 초반: 0~1.6px (더 빠르게)
+                                           whiteProgress < 0.5 ? 1.6 + (whiteProgress - 0.2) * 20 : // 중반: 1.6~7.6px (더 빠르게)
+                                           7.6 + (whiteProgress - 0.5) * 42.4; // 후반: 7.6~50px (더 빠르게)
                             imageWrapper.style.filter = `blur(${glowBlur}px)`;
                             
-                            // 하얀빛 box-shadow 효과
-                            const glowShadowIntensity = 0.8 + (0.4 * whiteGlowProgress);
-                            const glowShadowBlur = 100 + (50 * whiteGlowProgress);
+                            // 하얀빛 box-shadow 효과 (더 빠르게 강해짐)
+                            const glowShadowIntensity = whiteProgress < 0.2 ? 0.8 + (whiteProgress * 0.2) : // 초반: 0.8~0.84 (더 빠르게)
+                                                       whiteProgress < 0.5 ? 0.84 + (whiteProgress - 0.2) * 0.4 : // 중반: 0.84~0.96 (더 빠르게)
+                                                       0.96 + (whiteProgress - 0.5) * 0.24; // 후반: 0.96~1.2 (더 빠르게)
+                            const glowShadowBlur = whiteProgress < 0.2 ? 100 + (whiteProgress * 20) : // 초반: 100~104px (더 빠르게)
+                                                  whiteProgress < 0.5 ? 104 + (whiteProgress - 0.2) * 40 : // 중반: 104~116px (더 빠르게)
+                                                  116 + (whiteProgress - 0.5) * 34; // 후반: 116~150px (더 빠르게)
                             imageWrapper.style.boxShadow = `0px 0px ${glowShadowBlur}px rgba(${glowR}, ${glowG}, ${glowB}, ${glowShadowIntensity})`;
+                        }
+                    } else if (mergeCircleProgress > 0) {
+                        // mergeCircleProgress가 있으면 적용 (4개 원이 하나로 합쳐진 후)
+                        // mergeCircleProgress에 따라 색상을 하얀색으로 변환
+                        const whiteBlend = mergeCircleProgress;
+                        const finalR = Math.round(baseR + (255 - baseR) * whiteBlend);
+                        const finalG = Math.round(baseG + (255 - baseG) * whiteBlend);
+                        const finalB = Math.round(baseB + (255 - baseB) * whiteBlend);
+                        
+                        // blur와 box-shadow로 빛처럼 보이게
+                        if (imageWrapper) {
+                            // blur 강도: mergeCircleProgress에 따라 증가 (0 → 50px)
+                            const blurAmount = mergeCircleProgress * 50;
+                            imageWrapper.style.filter = `blur(${blurAmount}px)`;
+                            
+                            // box-shadow: 각 색깔의 빛 효과 (100px 100px 100px 스타일)
+                            const shadowOpacity = 0.8 - (mergeCircleProgress * 0.3);
+                            const shadowBlur = 100;
+                            imageWrapper.style.boxShadow = `100px 100px ${shadowBlur}px rgba(${finalR}, ${finalG}, ${finalB}, ${shadowOpacity})`;
+                        }
+                        
+                        // overlay 색상 변경 (하얀색으로 점진적 변환)
+                        if (overlay) {
+                            const overlayOpacity = 0.7 + (0.3 * (1 - mergeCircleProgress * 0.5));
+                            overlay.style.background = `rgba(${finalR}, ${finalG}, ${finalB}, ${overlayOpacity})`;
+                        }
+                        
+                        // 완전히 합쳐질 때는 하얀색으로 (mergeCircleProgress 0.7 이상)
+                        if (mergeCircleProgress >= 0.7) {
+                            const circleWhiteProgress = (mergeCircleProgress - 0.7) / 0.3; // 0.7~1.0 구간을 0~1로 변환
+                            
+                            // 거의 하얀색으로
+                            if (overlay) {
+                                const whiteOpacity = 0.7 + (0.3 * circleWhiteProgress);
+                                overlay.style.background = `rgba(255, 255, 255, ${whiteOpacity})`;
+                            }
+                            if (imageWrapper) {
+                                const finalBlur = 50;
+                                imageWrapper.style.filter = `blur(${finalBlur}px)`;
+                                // 하얀색 빛 효과
+                                const whiteShadowOpacity = 0.5 + (0.5 * circleWhiteProgress);
+                                imageWrapper.style.boxShadow = `100px 100px 100px rgba(255, 255, 255, ${whiteShadowOpacity})`;
+                            }
                         }
                     } else {
                         // 초기 이동 단계에서는 기존 색상 유지
@@ -571,45 +599,44 @@ document.addEventListener('DOMContentLoaded', function() {
                             imageWrapper.style.filter = 'none';
                         }
                     }
-                }
-                
-                // 원래 동그라미 크기 유지 (180px)
-                if (imageWrapper) {
-                    imageWrapper.style.width = '180px';
-                    imageWrapper.style.height = '180px';
-                }
-                
-                // 하단 캠퍼스명 페이드아웃 처리
-                const campusCircle = campus.querySelector('.sec3-campus-circle');
-                const campusDot = campus.querySelector('.sec3-campus-dot');
-                
-                if (campusCircle) campusCircle.style.display = 'none';
-                if (campusDot) campusDot.style.display = 'none';
-                
-                // overlayOpacity가 70% 이상일 때 우측 원과 하단 캠퍼스명이 동시에 페이드아웃
-                // 우측 원: index 1, 2 (gangneung, samcheok)
-                const isRightCampus = (index === 1 || index === 2);
-                if (overlayOpacity >= 0.7) {
-                    const fadeOutProgress = (overlayOpacity - 0.7) / 0.2; // 0.7~0.9 구간을 0~1로 변환
-                    const fadeOutOpacity = 1 - fadeOutProgress;
                     
-                    // 우측 원 페이드아웃
-                    if (isRightCampus) {
-                        campus.style.opacity = Math.min(1, fadeInProgress) * fadeOutOpacity;
-                        campus.style.transition = 'opacity 0.3s ease-out';
+                    // 원래 동그라미 크기 유지 (180px)
+                    if (imageWrapper) {
+                        imageWrapper.style.width = '180px';
+                        imageWrapper.style.height = '180px';
                     }
                     
-                    // 하단 캠퍼스명 페이드아웃 (모든 원)
-                    if (campusInfo) {
-                        campusInfo.style.opacity = fadeOutOpacity;
-                        campusInfo.style.transition = 'opacity 0.3s ease-out';
-                        if (campusCircle) campusCircle.style.opacity = fadeOutOpacity;
-                        if (campusDot) campusDot.style.opacity = fadeOutOpacity;
+                    // 하단 캠퍼스명 페이드아웃 처리
+                    const campusCircle = campus.querySelector('.sec3-campus-circle');
+                    const campusDot = campus.querySelector('.sec3-campus-dot');
+                    
+                    if (campusCircle) campusCircle.style.display = 'none';
+                    if (campusDot) campusDot.style.display = 'none';
+                    
+                    // overlayOpacity가 70% 이상일 때 우측 원과 하단 캠퍼스명이 동시에 페이드아웃
+                    // 우측 원: index 1, 2 (gangneung, samcheok)
+                    const isRightCampus = (index === 1 || index === 2);
+                    if (overlayOpacity >= 0.7) {
+                        const fadeOutProgress = (overlayOpacity - 0.7) / 0.2; // 0.7~0.9 구간을 0~1로 변환
+                        const fadeOutOpacity = 1 - fadeOutProgress;
+                        
+                        // 우측 원 페이드아웃
+                        if (isRightCampus) {
+                            campus.style.opacity = Math.min(1, fadeInProgress) * fadeOutOpacity;
+                            campus.style.transition = 'opacity 0.3s ease-out';
+                        }
+                        
+                        // 하단 캠퍼스명 페이드아웃 (모든 원)
+                        if (campusInfo) {
+                            campusInfo.style.opacity = fadeOutOpacity;
+                            campusInfo.style.transition = 'opacity 0.3s ease-out';
+                            if (campusCircle) campusCircle.style.opacity = fadeOutOpacity;
+                            if (campusDot) campusDot.style.opacity = fadeOutOpacity;
+                        }
                     }
-                }
-                
-                // whiteProgress가 시작되면 하단 캠퍼스명 페이드아웃하고 중앙에 표시
-                if (whiteProgress > 0) {
+                    
+                    // whiteProgress가 시작되면 하단 캠퍼스명 페이드아웃하고 중앙에 표시
+                    if (whiteProgress > 0) {
                     // 하단 campusInfo 페이드아웃 (whiteProgress에 따라)
                     // 하지만 campusName은 campusInfo 밖으로 이동시켜 독립적으로 제어
                     if (campusInfo) {
@@ -819,10 +846,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // 새로운 하얀색 원 (flashOverlay) - 작게 시작해서 점점 커지면서 화면 전체를 덮음
         if (flashOverlay) {
             if (mergeCircleProgress > 0) {
-                // 작게 시작해서 점점 커지게
-                const startSize = 50; // 시작 크기 (작게)
+                // 작게 시작해서 점점 커지게 (크기는 sizeProgress 사용하여 조금 느리게)
+                const startSize = 200; // 시작 크기 (작게)
                 const maxSize = Math.max(window.innerWidth, window.innerHeight) * 2; // 화면 전체를 덮을 수 있는 크기
-                const currentSize = startSize + (maxSize - startSize) * mergeCircleProgress;
+                const currentSize = startSize + (maxSize - startSize) * sizeProgress;
                 
                 // 중앙에 위치
                 flashOverlay.style.position = 'absolute';
@@ -857,15 +884,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // 배경 전환 (sec_vison_bg.png로 변경)
+        // 배지 페이드아웃 (원이 합쳐지기 시작할 때부터)
+        const sec3Badge = document.querySelector('.sec3-badge');
+        if (sec3Badge) {
+            if (!sec3Badge.dataset.transitionSet) {
+                sec3Badge.style.transition = 'opacity 0.8s ease-out';
+                sec3Badge.style.willChange = 'opacity';
+                sec3Badge.dataset.transitionSet = 'true';
+            }
+            sec3Badge.style.opacity = 1 - badgeFadeOutProgress;
+        }
+        
+        // 배경 전환 효과 (오버레이로 새 배경 이미지 페이드인)
         if (sec3 && backgroundTransitionProgress > 0) {
-            // 배경 이미지를 sec_vison_bg.png로 변경
-            sec3.style.backgroundImage = 'url(images/sec3/sec_vison_bg.png)';
-            sec3.style.backgroundSize = 'cover';
-            sec3.style.backgroundPosition = 'center';
-            sec3.style.backgroundRepeat = 'no-repeat';
+            // 새 배경 이미지를 오버레이로 추가 (기존 배경은 유지)
+            if (!sec3.querySelector('.sec3-background-image-overlay')) {
+                const bgImageOverlay = document.createElement('div');
+                bgImageOverlay.className = 'sec3-background-image-overlay';
+                bgImageOverlay.style.position = 'absolute';
+                bgImageOverlay.style.top = '0';
+                bgImageOverlay.style.left = '0';
+                bgImageOverlay.style.width = '100%';
+                bgImageOverlay.style.height = '100%';
+                bgImageOverlay.style.backgroundImage = 'url(images/sec3/sec_vison_bg.png)';
+                bgImageOverlay.style.backgroundSize = 'cover';
+                bgImageOverlay.style.backgroundPosition = 'center';
+                bgImageOverlay.style.backgroundRepeat = 'no-repeat';
+                bgImageOverlay.style.zIndex = '5';
+                bgImageOverlay.style.pointerEvents = 'none';
+                bgImageOverlay.style.willChange = 'opacity';
+                bgImageOverlay.style.opacity = '0';
+                sec3.appendChild(bgImageOverlay);
+            }
             
-            // 배경 오버레이로 자연스러운 전환
+            const bgImageOverlay = sec3.querySelector('.sec3-background-image-overlay');
+            if (bgImageOverlay) {
+                // 새 배경 이미지가 페이드인되면서 나타남
+                bgImageOverlay.style.opacity = backgroundTransitionProgress;
+            }
+            
+            // 하얀색 오버레이 페이드아웃 (기존 로직 유지)
             if (!sec3.querySelector('.sec3-background-overlay')) {
                 const bgOverlay = document.createElement('div');
                 bgOverlay.className = 'sec3-background-overlay';
@@ -877,6 +935,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 bgOverlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
                 bgOverlay.style.zIndex = '15';
                 bgOverlay.style.pointerEvents = 'none';
+                bgOverlay.style.willChange = 'opacity';
+                bgOverlay.style.transition = 'opacity 0.8s ease-out';
                 sec3.appendChild(bgOverlay);
             }
             
@@ -884,14 +944,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (bgOverlay) {
                 // 하얀색 오버레이가 페이드아웃되면서 새 배경이 나타남
                 bgOverlay.style.opacity = 1 - backgroundTransitionProgress;
-                bgOverlay.style.transition = 'opacity 0.8s ease-out';
             }
-            
-            // "강원 1도 1국립대학" 배지 숨기기
-            const sec3Badge = document.querySelector('.sec3-badge');
-            if (sec3Badge) {
-                sec3Badge.style.opacity = 1 - backgroundTransitionProgress;
-                sec3Badge.style.transition = 'opacity 0.8s ease-out';
+        }
+        
+        // 배경 전환이 완료되면 오버레이 유지 (배경을 완전히 바꾸지 않음)
+        if (sec3 && backgroundTransitionProgress >= 1) {
+            if (!sec3.dataset.backgroundFinalized) {
+                // 하얀색 오버레이 완전히 제거
+                const bgOverlay = sec3.querySelector('.sec3-background-overlay');
+                if (bgOverlay) {
+                    bgOverlay.style.opacity = '0';
+                    bgOverlay.style.display = 'none';
+                }
+                
+                // 배지 완전히 숨기기
+                if (sec3Badge) {
+                    sec3Badge.style.opacity = '0';
+                    sec3Badge.style.display = 'none';
+                }
+                
+                sec3.dataset.backgroundFinalized = 'true';
             }
         }
         
@@ -928,6 +1000,24 @@ document.addEventListener('DOMContentLoaded', function() {
             // 애니메이션 완료
             if (sec3) {
                 sec3.classList.add('animation-complete');
+                // 배경 전환 완료 후 최종 상태로 고정 (렉 방지)
+                if (!sec3.dataset.backgroundFinalized) {
+                    // 배경 이미지는 오버레이로 유지 (기존 배경은 그대로)
+                    
+                    const bgOverlay = sec3.querySelector('.sec3-background-overlay');
+                    if (bgOverlay) {
+                        bgOverlay.style.opacity = '0';
+                        bgOverlay.style.display = 'none';
+                    }
+                    
+                    const sec3Badge = document.querySelector('.sec3-badge');
+                    if (sec3Badge) {
+                        sec3Badge.style.opacity = '0';
+                        sec3Badge.style.display = 'none';
+                    }
+                    
+                    sec3.dataset.backgroundFinalized = 'true';
+                }
             }
             // unlockScroll(); // 스크롤 막기 해제
         }
@@ -1020,11 +1110,13 @@ document.addEventListener('DOMContentLoaded', function() {
     handleSec1TextAnimation();
     window.addEventListener('scroll', handleSec1TextAnimation);
     
-    // Section 4 text scroll animation - 각 줄이 스크롤에 따라 60% -> 100%로 밝아짐
+    // Section 4 text scroll animation - 각 줄이 한 줄씩 순차적으로 나타남
     const sec4 = document.querySelector('.sec4');
     const sec4TextLine1 = document.querySelector('.sec4-text-line-1');
     const sec4TextLine2 = document.querySelector('.sec4-text-line-2');
     const sec4TextLine3 = document.querySelector('.sec4-text-line-3');
+    
+    let sec4AnimationTriggered = false;
     
     function handleSec4TextAnimation() {
         if (sec4 && sec4TextLine1 && sec4TextLine2 && sec4TextLine3) {
@@ -1033,39 +1125,34 @@ document.addEventListener('DOMContentLoaded', function() {
             const windowHeight = window.innerHeight;
             const scrollY = window.scrollY;
             
-            // sec4가 뷰포트에 들어오기 시작하는 지점
-            const startPoint = sec4Top - windowHeight;
-            // sec4가 완전히 지나가는 지점
-            const endPoint = sec4Top + sec4Height;
+            // sec4가 뷰포트에 들어왔는지 확인 (50% 지점)
+            const triggerPoint = sec4Top - windowHeight * 0.5;
             
-            // 스크롤 진행도 계산 (0 ~ 1)
-            const scrollProgress = Math.max(0, Math.min(1, (scrollY - startPoint) / (endPoint - startPoint)));
-            
-            // 각 줄이 순차적으로 밝아지도록
-            // 첫 번째 줄: 0% ~ 33% 구간에서 60% -> 100%
-            if (scrollProgress <= 0.33) {
-                const line1Progress = scrollProgress / 0.33;
-                sec4TextLine1.style.opacity = 0.6 + (0.4 * line1Progress);
-            } else {
-                sec4TextLine1.style.opacity = 1;
-            }
-            
-            // 두 번째 줄: 33% ~ 66% 구간에서 60% -> 100%
-            if (scrollProgress >= 0.33 && scrollProgress <= 0.66) {
-                const line2Progress = (scrollProgress - 0.33) / 0.33;
-                sec4TextLine2.style.opacity = 0.6 + (0.4 * line2Progress);
-            } else if (scrollProgress > 0.66) {
-                sec4TextLine2.style.opacity = 1;
-            } else {
-                sec4TextLine2.style.opacity = 0.6;
-            }
-            
-            // 세 번째 줄: 66% ~ 100% 구간에서 60% -> 100%
-            if (scrollProgress >= 0.66) {
-                const line3Progress = (scrollProgress - 0.66) / 0.34;
-                sec4TextLine3.style.opacity = 0.6 + (0.4 * Math.min(1, line3Progress));
-            } else {
-                sec4TextLine3.style.opacity = 0.6;
+            if (scrollY >= triggerPoint && scrollY < sec4Top + sec4Height) {
+                if (!sec4AnimationTriggered) {
+                    sec4AnimationTriggered = true;
+                    
+                    // 첫 번째 줄 먼저 나타남
+                    setTimeout(() => {
+                        sec4TextLine1.classList.add('visible');
+                    }, 200);
+                    
+                    // 두 번째 줄 약간의 딜레이 후 나타남
+                    setTimeout(() => {
+                        sec4TextLine2.classList.add('visible');
+                    }, 500);
+                    
+                    // 세 번째 줄 마지막으로 나타남
+                    setTimeout(() => {
+                        sec4TextLine3.classList.add('visible');
+                    }, 800);
+                }
+            } else if (scrollY < triggerPoint) {
+                // 스크롤이 위로 올라가면 애니메이션 리셋
+                sec4AnimationTriggered = false;
+                sec4TextLine1.classList.remove('visible');
+                sec4TextLine2.classList.remove('visible');
+                sec4TextLine3.classList.remove('visible');
             }
         }
     }
@@ -1076,41 +1163,95 @@ document.addEventListener('DOMContentLoaded', function() {
     // Section 4 infinite logo slider
     const logoTrack = document.querySelector('.sec4-logo-track');
     if (logoTrack) {
-        // 원본 로고 아이템들을 복제
+        // 원본 로고 아이템들 (처음 4개)
         const logoItems = logoTrack.querySelectorAll('.sec4-logo-item');
         const originalItems = Array.from(logoItems).slice(0, 4); // 원본 4개만
         
-        // 복제본을 추가 (이미 HTML에 있지만, JavaScript로도 추가하여 확실하게)
-        originalItems.forEach(item => {
-            const clone = item.cloneNode(true);
-            logoTrack.appendChild(clone);
+        // 기존 아이템 제거 후 원본만 남기기
+        logoItems.forEach((item, index) => {
+            if (index >= 4) {
+                item.remove();
+            }
         });
         
-        // 애니메이션 변수
-        let position = 0;
-        const speed = 0.5; // 이동 속도 (픽셀/프레임)
-        let animationId;
-        
-        function animateLogos() {
-            const firstItem = logoTrack.querySelector('.sec4-logo-item');
-            const firstItemWidth = firstItem.offsetWidth;
-            const gap = 100;
-            const itemWidth = firstItemWidth + gap;
-            const totalWidth = itemWidth * 4; // 원본 4개의 너비
-            
-            position -= speed;
-            
-            // 원본 4개가 지나가면 처음으로 리셋
-            if (Math.abs(position) >= totalWidth) {
-                position = 0;
-            }
-            
-            logoTrack.style.transform = `translateX(${position}px)`;
-            animationId = requestAnimationFrame(animateLogos);
+        // 복제본을 여러 번 추가하여 충분한 길이 확보 (원본 + 복제본 3세트 = 총 16개)
+        // 무한 루프를 위해 복제본을 충분히 추가
+        for (let i = 0; i < 3; i++) {
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                logoTrack.appendChild(clone);
+            });
         }
         
-        // 애니메이션 시작
-        animateLogos();
+        // 이미지 로드 후 CSS 애니메이션 변수 설정
+        function setupMarqueeAnimation() {
+            const allItems = logoTrack.querySelectorAll('.sec4-logo-item');
+            if (allItems.length >= 4) {
+                // 원본 4개의 실제 너비 측정 (정확한 계산을 위해)
+                let totalWidth = 0;
+                for (let i = 0; i < 4; i++) {
+                    const item = allItems[i];
+                    const itemWidth = item.offsetWidth;
+                    const gap = i < 3 ? 100 : 0; // 마지막 아이템은 gap 없음
+                    totalWidth += itemWidth + gap;
+                }
+                
+                // CSS 변수 설정 (애니메이션 거리와 지속 시간)
+                // 애니메이션이 정확히 원본 4개 너비만큼 이동하면, 복제본이 원본과 같은 위치에 옴
+                const duration = 20; // 초 단위 (20초에 한 사이클)
+                logoTrack.style.setProperty('--sec4-marquee-distance', `${totalWidth}px`);
+                logoTrack.style.setProperty('--sec4-marquee-duration', `${duration}s`);
+                
+                // 디버깅용 (필요시 주석 해제)
+                // console.log('Marquee distance:', totalWidth, 'px');
+            }
+        }
+        
+        // 모든 이미지가 로드될 때까지 대기
+        const logoImages = logoTrack.querySelectorAll('.sec4-logo img');
+        let loadedImages = 0;
+        const totalImages = logoImages.length;
+        
+        if (totalImages > 0) {
+            // 모든 이미지가 이미 로드되었는지 확인
+            let allLoaded = true;
+            logoImages.forEach(img => {
+                if (!img.complete) {
+                    allLoaded = false;
+                }
+            });
+            
+            if (allLoaded) {
+                // 모든 이미지가 이미 로드되었으면 즉시 설정
+                setTimeout(setupMarqueeAnimation, 100); // 약간의 지연으로 레이아웃 안정화
+            } else {
+                // 이미지 로드 대기
+                logoImages.forEach(img => {
+                    if (img.complete) {
+                        loadedImages++;
+                        if (loadedImages === totalImages) {
+                            setTimeout(setupMarqueeAnimation, 100);
+                        }
+                    } else {
+                        img.addEventListener('load', () => {
+                            loadedImages++;
+                            if (loadedImages === totalImages) {
+                                setTimeout(setupMarqueeAnimation, 100);
+                            }
+                        });
+                        img.addEventListener('error', () => {
+                            loadedImages++;
+                            if (loadedImages === totalImages) {
+                                setTimeout(setupMarqueeAnimation, 100);
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            // 이미지가 없으면 즉시 설정
+            setupMarqueeAnimation();
+        }
     }
     
     // Section 7 support heart click
