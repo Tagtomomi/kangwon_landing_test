@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>강원 랜딩 페이지 - sec3 테스트</title>
+    <!-- 폰트 프리로드 -->
+    <link rel="preload" href="fonts/강원교육튼튼.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="fonts/강원교육튼튼.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&family=Inter:wght@600;700&family=Pretendard:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- 메인 컨텐츠 -->
+    <main>
+        <!-- Section 3 - PC 버전 (모바일에서 숨김) -->
+        <section class="sec3 sec3-scrollfx sec3-desktop">
+            <div class="sec3-content">
+                <div class="sec3-main-text">
+                    <div class="sec3-badge">강원 1도 1국립대학</div>
+                    <div class="sec3-text-group">
+                        <div class="sec3-title">위대한 도약</div>
+                        <div class="sec3-subtitle">4개 캠퍼스의 시너지가 모여<br />글로컬 대학도시를 구현합니다</div>
+                    </div>
+                </div>
+
+                <div class="sec3-campuses">
+                    <div class="sec3-campus sec3-campus-chuncheon">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_춘천.png" alt="춘천 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">춘천 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-campus sec3-campus-gangneung">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_강릉.png" alt="강릉 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">강릉 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-campus sec3-campus-samcheok">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_삼척.png" alt="삼척 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">삼척 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-campus sec3-campus-wonju">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_원주.png" alt="원주 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">원주 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 플래시 오버레이 -->
+                <div class="sec3-flash-overlay"></div>
+
+                <!-- 텍스트 오버레이 -->
+                <div class="sec3-text-overlay">
+                    <div class="sec3-text-overlay-line1">통합 강원대학교의</div>
+                    <div class="sec3-text-overlay-line2">지역 혁신 생태계</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3 - 모바일 버전 (PC에서 숨김) -->
+        <section class="sec3-mobile">
+            <div class="sec3-mobile-content">
+                <!-- 위에 텍스트 -->
+                <div class="sec3-mobile-text">
+                    <div class="sec3-mobile-badge">강원 1도 1국립대학</div>
+                    <div class="sec3-mobile-title">위대한 도약</div>
+                    <div class="sec3-mobile-subtitle">4개 캠퍼스의 시너지가 모여<br />글로컬 대학도시를 구현합니다</div>
+                </div>
+
+                <!-- 아래 4개의 캠퍼스 -->
+                <div class="sec3-mobile-campuses">
+                    <div class="sec3-mobile-campus sec3-mobile-campus-chuncheon">
+                        <div class="sec3-mobile-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_춘천.png" alt="춘천 캠퍼스" class="sec3-mobile-campus-image">
+                            <div class="sec3-mobile-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-mobile-campus-info">
+                            <div class="sec3-mobile-campus-name">춘천 캠퍼스</div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-mobile-campus sec3-mobile-campus-gangneung">
+                        <div class="sec3-mobile-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_강릉.png" alt="강릉 캠퍼스" class="sec3-mobile-campus-image">
+                            <div class="sec3-mobile-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-mobile-campus-info">
+                            <div class="sec3-mobile-campus-circle"></div>
+                            <div class="sec3-mobile-campus-name">강릉 캠퍼스</div>
+                            <div class="sec3-mobile-campus-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-mobile-campus sec3-mobile-campus-samcheok">
+                        <div class="sec3-mobile-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_삼척.png" alt="삼척 캠퍼스" class="sec3-mobile-campus-image">
+                            <div class="sec3-mobile-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-mobile-campus-info">
+                            <div class="sec3-mobile-campus-circle"></div>
+                            <div class="sec3-mobile-campus-name">삼척 캠퍼스</div>
+                            <div class="sec3-mobile-campus-dot"></div>
+                        </div>
+                    </div>
+
+                    <div class="sec3-mobile-campus sec3-mobile-campus-wonju">
+                        <div class="sec3-mobile-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_원주.png" alt="원주 캠퍼스" class="sec3-mobile-campus-image">
+                            <div class="sec3-mobile-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-mobile-campus-info">
+                            <div class="sec3-mobile-campus-circle"></div>
+                            <div class="sec3-mobile-campus-name">원주 캠퍼스</div>
+                            <div class="sec3-mobile-campus-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 플래시 오버레이 -->
+                <div class="sec3-mobile-flash-overlay"></div>
+
+                <!-- 텍스트 오버레이 -->
+                <div class="sec3-mobile-text-overlay">
+                    <div class="sec3-mobile-text-overlay-line1">통합 강원대학교의</div>
+                    <div class="sec3-mobile-text-overlay-line2">지역 혁신 생태계</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
+

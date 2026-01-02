@@ -1260,7 +1260,8 @@ body {
     
     /* Section 4 모바일 최적화 */
     .sec4 {
-        height: 100%;
+        height: 100% !important;
+        padding: 100px 0px !important;
     }
     
     .sec4-content {
@@ -1291,7 +1292,7 @@ body {
     
     /* Section 5 모바일 최적화 */
     .sec5 {
-        height: 100%;
+        height: 100% !important;
     }
     
     .sec5-content {
@@ -3153,4 +3154,240 @@ body {
     font-weight: 400;
     line-height: 20px;
     word-wrap: break-word;
+}
+
+/* Section 3 - PC/모바일 분리 */
+/* PC 버전은 모바일에서 숨김 */
+@media (max-width: 769px) {
+    .sec3-desktop {
+        display: none !important;
+    }
+}
+
+/* 모바일 버전은 PC에서 숨김 */
+.sec3-mobile {
+    display: none;
+}
+
+@media (max-width: 769px) {
+    .sec3-mobile {
+        display: block;
+        width: 100%;
+        max-width: 100vw;
+        min-height: 100vh;
+        position: relative;
+        background-image: url(../images/sec3/sec3_bg.png);
+        background-color: #101010;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+        padding: 80px 20px 40px;
+    }
+
+    .sec3-mobile-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 60px;
+    }
+
+    /* 위에 텍스트 */
+    .sec3-mobile-text {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 17px;
+    }
+
+    .sec3-mobile-badge {
+        padding: 12px 20px;
+        overflow: hidden;
+        border-radius: 500px;
+        outline: 1px #EEEEEE solid;
+        outline-offset: -1px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+        color: white;
+        font-size: 12px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 500;
+        line-height: 16px;
+        word-wrap: break-word;
+    }
+
+    .sec3-mobile-title {
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 32px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        line-height: 42px;
+        word-wrap: break-word;
+    }
+
+    .sec3-mobile-subtitle {
+        width: 100%;
+        text-align: center;
+        color: #9A9A9A;
+        font-size: 18px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 500;
+        line-height: 28px;
+        word-wrap: break-word;
+    }
+
+    /* 아래 4개의 캠퍼스 */
+    .sec3-mobile-campuses {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+        max-width: 400px;
+        position: relative;
+    }
+
+    .sec3-mobile-campus {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        position: relative;
+    }
+    
+    /* 합쳐지는 애니메이션 시작 시 absolute로 변경 */
+    .sec3-mobile.is-active .sec3-mobile-campus {
+        position: absolute;
+    }
+
+    .sec3-mobile-campus-image-wrapper {
+        position: relative;
+        border-radius: 9999px;
+        width: 130px;
+        height: 130px;
+    }
+
+    .sec3-mobile-campus-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9999px;
+        display: block;
+    }
+
+    .sec3-mobile-campus-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px;
+    }
+
+    .sec3-mobile-campus-chuncheon .sec3-mobile-campus-image-wrapper {
+        box-shadow: 0px 0px 55px rgba(26, 88, 175, 0.81);
+    }
+
+    .sec3-mobile-campus-chuncheon .sec3-mobile-campus-overlay {
+        background: rgba(26, 88, 175, 0.30);
+    }
+
+    .sec3-mobile-campus-gangneung .sec3-mobile-campus-image-wrapper {
+        box-shadow: 0px 0px 55px rgba(23, 201, 255, 0.60);
+    }
+
+    .sec3-mobile-campus-gangneung .sec3-mobile-campus-overlay {
+        background: rgba(23, 201, 255, 0.30);
+    }
+
+    .sec3-mobile-campus-samcheok .sec3-mobile-campus-image-wrapper {
+        box-shadow: 0px 0px 55px rgba(255, 106, 32, 0.70);
+    }
+
+    .sec3-mobile-campus-samcheok .sec3-mobile-campus-overlay {
+        background: rgba(255, 106, 32, 0.30);
+    }
+
+    .sec3-mobile-campus-wonju .sec3-mobile-campus-image-wrapper {
+        box-shadow: 0px 0px 55px rgba(74, 214, 171, 0.40);
+    }
+
+    .sec3-mobile-campus-wonju .sec3-mobile-campus-overlay {
+        background: rgba(74, 214, 171, 0.30);
+    }
+
+    .sec3-mobile-campus-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+    }
+
+    .sec3-mobile-campus-name {
+        color: white;
+        font-size: 16px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 500;
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    /* 모바일 플래시 오버레이 */
+    .sec3-mobile-flash-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: white;
+        z-index: 20;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    /* 모바일 텍스트 오버레이 */
+    .sec3-mobile-text-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 30;
+        pointer-events: none;
+        opacity: 0;
+        text-align: center;
+    }
+
+    .sec3-mobile-text-overlay-line1,
+    .sec3-mobile-text-overlay-line2 {
+        color: white;
+        font-size: 24px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        line-height: 34px;
+        word-wrap: break-word;
+    }
+
+    .sec3-mobile-text-overlay-line2 {
+        margin-top: 10px;
+    }
+
+    /* 모바일 is-active 상태 */
+    .sec3-mobile.is-active {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
 }

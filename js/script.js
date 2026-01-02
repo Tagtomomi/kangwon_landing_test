@@ -188,6 +188,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec3Title = document.querySelector('.sec3-scrollfx .sec3-title');
     const sec3Subtitle = document.querySelector('.sec3-scrollfx .sec3-subtitle');
     
+    // 모바일 버전 Section 3
+    const sec3Mobile = document.querySelector('.sec3-mobile');
+    const sec3MobileContent = document.querySelector('.sec3-mobile-content');
+    const campusesMobile = document.querySelectorAll('.sec3-mobile-campus');
+    const flashOverlayMobile = document.querySelector('.sec3-mobile-flash-overlay');
+    const textOverlayMobile = document.querySelector('.sec3-mobile-text-overlay');
+    const sec3MobileTitle = document.querySelector('.sec3-mobile-title');
+    const sec3MobileSubtitle = document.querySelector('.sec3-mobile-subtitle');
+    
     // 스크롤 기반 애니메이션을 위한 설정
     const SCROLL_RANGE = 2000; // 애니메이션이 진행될 스크롤 범위 (픽셀)
     
@@ -263,6 +272,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 섹션 3 활성화 여부 확인
     function checkSec3Active() {
+        // 모바일 버전 체크
+        if (isMobile && sec3Mobile) {
+            if (isSec3PermanentlyComplete) {
+                return false;
+            }
+            const sec3MobileTop = sec3Mobile.offsetTop;
+            const scrollY = window.scrollY;
+            const headerHeight = header ? header.offsetHeight : 0;
+            return scrollY >= sec3MobileTop - headerHeight && scrollY < sec3MobileTop + sec3Mobile.offsetHeight;
+        }
+        
+        // PC 버전 체크
         if (!sec3) return false;
         
         // 이미 완전히 완료된 경우 다시 활성화하지 않음
@@ -275,21 +296,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const windowHeight = window.innerHeight;
         const headerHeight = header ? header.offsetHeight : 0;
         
-        // 모바일에서는 섹션 상단이 헤더에 닿을 때 활성화
-        if (isMobile) {
-            // 섹션 상단이 헤더 높이에 도달했을 때 활성화
-            return scrollY >= sec3Top - headerHeight && scrollY < sec3Top + sec3.offsetHeight;
-        } else {
-            // PC: 섹션 3이 화면 세로 중앙에 도달했는지 확인
-            // 섹션의 상단이 화면 중앙(뷰포트 하단에서 windowHeight * 0.5 지점)에 도달했을 때
-            const sec3Center = sec3Top + (sec3.offsetHeight * 0.5);
-            const viewportCenter = scrollY + windowHeight * 0.5;
-            
-            // 섹션 3의 중앙이 뷰포트 중앙 근처에 있을 때 활성화 (약간의 여유 공간)
-            const threshold = windowHeight * 0.2; // 20% 여유
-            return Math.abs(sec3Center - viewportCenter) < threshold && 
-                   scrollY < sec3Top + sec3.offsetHeight;
-        }
+        // PC: 섹션 3이 화면 세로 중앙에 도달했는지 확인
+        // 섹션의 상단이 화면 중앙(뷰포트 하단에서 windowHeight * 0.5 지점)에 도달했을 때
+        const sec3Center = sec3Top + (sec3.offsetHeight * 0.5);
+        const viewportCenter = scrollY + windowHeight * 0.5;
+        
+        // 섹션 3의 중앙이 뷰포트 중앙 근처에 있을 때 활성화 (약간의 여유 공간)
+        const threshold = windowHeight * 0.2; // 20% 여유
+        return Math.abs(sec3Center - viewportCenter) < threshold && 
+               scrollY < sec3Top + sec3.offsetHeight;
     }
     
     // 스크롤 잠금/해제 함수
@@ -312,6 +327,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function animateSec3() {
+        // 모바일 버전 처리
+        if (isMobile && sec3Mobile) {
+            if (!sec3MobileContent || campusesMobile.length !== 4) {
+                return;
+            }
+            return animateSec3Mobile();
+        }
+        
+        // PC 버전 처리
         if (!sec3 || !sec3Content || campuses.length !== 4) {
             return;
         }
@@ -1158,6 +1182,419 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 모바일 버전 애니메이션 함수
+    function animateSec3Mobile() {
+        if (!sec3Mobile || !sec3MobileContent || campusesMobile.length !== 4) {
+            return;
+        }
+        
+        const progress = getSec3ScrollProgress();
+        const elapsed = progress * totalDuration;
+        
+        // 모바일: 텍스트 먼저 → 캠퍼스 2x2 그리드 → 합쳐지는 효과
+        const textStartTime = 0;
+        const textEndTime = MOBILE_DURATIONS.textTitle + MOBILE_DURATIONS.textSubtitle;
+        const textProgress = elapsed < textStartTime ? 0 : 
+                          elapsed >= textEndTime ? 1 : 
+                          (elapsed - textStartTime) / (textEndTime - textStartTime);
+        
+        const textWaitEndTime = textEndTime + MOBILE_DURATIONS.textCompleteWait;
+        const campusGridStartTime = textWaitEndTime;
+        const campusGridEndTime = campusGridStartTime + MOBILE_DURATIONS.campusGridFadeIn;
+        const campusGridWaitEndTime = campusGridEndTime + MOBILE_DURATIONS.campusGridWait;
+        const mergeStartTime = campusGridWaitEndTime;
+        const mergeEndTime = mergeStartTime + MOBILE_DURATIONS.cardMerge;
+        
+        const rawMergeProgress = elapsed < mergeStartTime ? 0 : 
+                                 elapsed >= mergeEndTime ? 1 : 
+                                 (elapsed - mergeStartTime) / (mergeEndTime - mergeStartTime);
+        
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        const mergeProgress = easeInOutCubic(rawMergeProgress);
+        
+        const overlayOpacity = Math.min(0.9, 0.3 + (mergeProgress * 0.6));
+        const whiteStartProgress = 0.2;
+        const rawWhiteProgress = mergeProgress < whiteStartProgress ? 0 : 
+                                 mergeProgress >= 1 ? 1 : 
+                                 (mergeProgress - whiteStartProgress) / (1 - whiteStartProgress);
+        const whiteProgress = easeInOutCubic(rawWhiteProgress);
+        
+        const textHideDuration = MOBILE_DURATIONS.textHide;
+        const textHideStartTime = mergeEndTime;
+        const textHideEndTime = textHideStartTime + textHideDuration;
+        const textHideProgress = elapsed < textHideStartTime ? 0 : 
+                                 elapsed >= textHideEndTime ? 1 : 
+                                 (elapsed - textHideStartTime) / (textHideEndTime - textHideStartTime);
+        
+        const mergeToCircleDuration = MOBILE_DURATIONS.mergeToCircle;
+        const mergeCircleStartTime = textHideEndTime;
+        const mergeCircleEndTime = mergeCircleStartTime + mergeToCircleDuration;
+        const rawMergeCircleProgress = elapsed < mergeCircleStartTime ? 0 : 
+                                      elapsed >= mergeCircleEndTime ? 1 : 
+                                      (elapsed - mergeCircleStartTime) / (mergeCircleEndTime - mergeCircleStartTime);
+        
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+        const mergeCircleProgress = easeOutCubic(rawMergeCircleProgress);
+        
+        function easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        }
+        const sizeProgress = easeInOutQuad(rawMergeCircleProgress);
+        
+        const whiteFadeOutDuration = MOBILE_DURATIONS.whiteFadeOut;
+        const whiteFadeOutStartTime = mergeCircleEndTime;
+        const whiteFadeOutEndTime = whiteFadeOutStartTime + whiteFadeOutDuration;
+        const whiteFadeOutProgress = elapsed < whiteFadeOutStartTime ? 0 : 
+                                    elapsed >= whiteFadeOutEndTime ? 1 : 
+                                    (elapsed - whiteFadeOutStartTime) / (whiteFadeOutEndTime - whiteFadeOutStartTime);
+        
+        const backgroundTransitionDuration = MOBILE_DURATIONS.backgroundTransition;
+        const backgroundTransitionStartTime = whiteFadeOutStartTime;
+        const backgroundTransitionEndTime = backgroundTransitionStartTime + backgroundTransitionDuration;
+        const backgroundTransitionProgress = elapsed < backgroundTransitionStartTime ? 0 : 
+                                           elapsed >= backgroundTransitionEndTime ? 1 : 
+                                           (elapsed - backgroundTransitionStartTime) / (backgroundTransitionEndTime - backgroundTransitionStartTime);
+        
+        const badgeFadeOutStartTime = mergeCircleStartTime;
+        const badgeFadeOutDuration = mergeToCircleDuration + whiteFadeOutDuration;
+        const badgeFadeOutEndTime = badgeFadeOutStartTime + badgeFadeOutDuration;
+        const badgeFadeOutProgress = elapsed < badgeFadeOutStartTime ? 0 : 
+                                     elapsed >= badgeFadeOutEndTime ? 1 : 
+                                     (elapsed - badgeFadeOutStartTime) / (badgeFadeOutEndTime - badgeFadeOutStartTime);
+        
+        // 캠퍼스 애니메이션
+        const contentHeight = sec3MobileContent.offsetHeight;
+        const centerTopPx = contentHeight * 0.5;
+        
+        // 그리드 컨테이너 위치 계산 (한 번만 계산하고 캐싱)
+        const campusesContainer = document.querySelector('.sec3-mobile-campuses');
+        if (!campusesContainer) return;
+        
+        // 초기 위치를 캐싱 (mergeStartTime이 되기 전에 한 번만 계산)
+        if (!campusesContainer.dataset.initialPositionsCalculated || elapsed >= mergeStartTime) {
+            const containerRect = campusesContainer.getBoundingClientRect();
+            const contentRect = sec3MobileContent.getBoundingClientRect();
+            const containerLeft = containerRect.left - contentRect.left;
+            const containerTop = containerRect.top - contentRect.top;
+            const containerWidth = containerRect.width;
+            const gridGap = 30;
+            const campusWidth = 130;
+            const campusHeight = 130;
+            
+            // 그리드 내 각 셀의 위치 계산
+            const cellWidth = (containerWidth - gridGap) / 2;
+            const leftColX = containerLeft + cellWidth / 2;
+            const rightColX = containerLeft + cellWidth + gridGap + cellWidth / 2;
+            const firstRowY = containerTop + campusHeight / 2;
+            const secondRowY = containerTop + campusHeight + gridGap + campusHeight / 2;
+            
+            // 각 캠퍼스의 초기 위치 저장
+            campusesContainer.dataset.chuncheonX = leftColX;
+            campusesContainer.dataset.chuncheonY = firstRowY;
+            campusesContainer.dataset.gangneungX = rightColX;
+            campusesContainer.dataset.gangneungY = firstRowY;
+            campusesContainer.dataset.samcheokX = leftColX;
+            campusesContainer.dataset.samcheokY = secondRowY;
+            campusesContainer.dataset.wonjuX = rightColX;
+            campusesContainer.dataset.wonjuY = secondRowY;
+            campusesContainer.dataset.initialPositionsCalculated = 'true';
+        }
+        
+        // 저장된 초기 위치 사용
+        const mobileStartPositions = [
+            // 춘천: 왼쪽 위
+            { x: parseFloat(campusesContainer.dataset.chuncheonX), y: parseFloat(campusesContainer.dataset.chuncheonY) },
+            // 강릉: 오른쪽 위
+            { x: parseFloat(campusesContainer.dataset.gangneungX), y: parseFloat(campusesContainer.dataset.gangneungY) },
+            // 삼척: 왼쪽 아래
+            { x: parseFloat(campusesContainer.dataset.samcheokX), y: parseFloat(campusesContainer.dataset.samcheokY) },
+            // 원주: 오른쪽 아래
+            { x: parseFloat(campusesContainer.dataset.wonjuX), y: parseFloat(campusesContainer.dataset.wonjuY) }
+        ];
+        
+        const campusWidth = 130;
+        const campusHeight = 130;
+        
+        campusesMobile.forEach((campus, index) => {
+            const campusOrderIndex = CAMPUS_FADE_ORDER.indexOf(index);
+            const campusFadeDelay = CAMPUS_FADE_DELAYS[campusOrderIndex] || 0;
+            const textEndTime = MOBILE_DURATIONS.textTitle + MOBILE_DURATIONS.textSubtitle;
+            const textWaitEndTime = textEndTime + MOBILE_DURATIONS.textCompleteWait;
+            const campusFadeStartTime = textWaitEndTime + campusFadeDelay;
+            const campusFadeEndTime = campusFadeStartTime + DURATIONS.fadeIn;
+            
+            let individualFadeProgress = 0;
+            if (elapsed < campusFadeStartTime) {
+                individualFadeProgress = 0;
+            } else if (elapsed >= campusFadeEndTime) {
+                individualFadeProgress = 1;
+            } else {
+                individualFadeProgress = (elapsed - campusFadeStartTime) / DURATIONS.fadeIn;
+            }
+            
+            const startPos = mobileStartPositions[index];
+            let translateX, translateY, campusOpacity;
+            
+            // 중앙 위치 (화면 중앙)
+            const centerX = sec3MobileContent.offsetWidth / 2;
+            const centerY = contentHeight * 0.5;
+            
+            if (elapsed < mergeStartTime) {
+                // 그리드 위치 유지 (transform 없음, grid가 자연스럽게 배치)
+                campus.style.position = 'relative';
+                campus.style.transform = '';
+                campus.style.left = '';
+                campus.style.top = '';
+                campusOpacity = individualFadeProgress;
+            } else {
+                // 합쳐지는 애니메이션 시작
+                campus.style.position = 'absolute';
+                const adjustedProgress = Math.min(1, mergeProgress);
+                
+                // 초기 위치에서 중앙으로 이동
+                const currentX = startPos.x + (centerX - startPos.x) * adjustedProgress;
+                const currentY = startPos.y + (centerY - startPos.y) * adjustedProgress;
+                
+                // 캠퍼스 이미지의 중심점 기준으로 위치 조정
+                translateX = currentX - campusWidth / 2;
+                translateY = currentY - campusHeight / 2;
+                
+                campus.style.left = translateX + 'px';
+                campus.style.top = translateY + 'px';
+                campus.style.transform = '';
+                campusOpacity = individualFadeProgress;
+            }
+            
+            campus.style.opacity = campusOpacity;
+            
+            const overlay = campus.querySelector('.sec3-mobile-campus-overlay');
+            const imageWrapper = campus.querySelector('.sec3-mobile-campus-image-wrapper');
+            const campusName = campus.querySelector('.sec3-mobile-campus-name');
+            
+            const campusColors = [
+                [26, 88, 175],
+                [23, 201, 255],
+                [255, 106, 32],
+                [74, 214, 171]
+            ];
+            const [baseR, baseG, baseB] = campusColors[index];
+            
+            if (whiteProgress > 0) {
+                const glowR = Math.round(baseR + (255 - baseR) * whiteProgress);
+                const glowG = Math.round(baseG + (255 - baseG) * whiteProgress);
+                const glowB = Math.round(baseB + (255 - baseB) * whiteProgress);
+                const additionalOpacity = whiteProgress * 0.08;
+                const glowOpacity = Math.min(0.98, overlayOpacity + additionalOpacity);
+                if (overlay) {
+                    overlay.style.transition = 'background 0.3s ease-out';
+                    overlay.style.background = `rgba(${glowR}, ${glowG}, ${glowB}, ${glowOpacity})`;
+                }
+                if (imageWrapper) {
+                    const glowBlur = whiteProgress * 50;
+                    imageWrapper.style.filter = `blur(${glowBlur}px)`;
+                    imageWrapper.style.transition = 'filter 0.3s ease-out';
+                    const glowShadowIntensity = 0.8 + (whiteProgress * 0.4);
+                    const glowShadowBlur = 100 + (whiteProgress * 50);
+                    imageWrapper.style.boxShadow = `0px 0px ${glowShadowBlur}px rgba(${glowR}, ${glowG}, ${glowB}, ${glowShadowIntensity})`;
+                    imageWrapper.style.transition = 'box-shadow 0.3s ease-out';
+                }
+            } else if (mergeCircleProgress > 0) {
+                const whiteBlend = mergeCircleProgress;
+                const finalR = Math.round(baseR + (255 - baseR) * whiteBlend);
+                const finalG = Math.round(baseG + (255 - baseG) * whiteBlend);
+                const finalB = Math.round(baseB + (255 - baseB) * whiteBlend);
+                
+                if (imageWrapper) {
+                    const blurAmount = mergeCircleProgress * 50;
+                    imageWrapper.style.filter = `blur(${blurAmount}px)`;
+                    const shadowOpacity = 0.8 - (mergeCircleProgress * 0.3);
+                    imageWrapper.style.boxShadow = `100px 100px 100px rgba(${finalR}, ${finalG}, ${finalB}, ${shadowOpacity})`;
+                }
+                if (overlay) {
+                    const overlayOpacity = 0.7 + (0.3 * (1 - mergeCircleProgress * 0.5));
+                    overlay.style.background = `rgba(${finalR}, ${finalG}, ${finalB}, ${overlayOpacity})`;
+                }
+                
+                if (mergeCircleProgress >= 0.7) {
+                    const circleWhiteProgress = (mergeCircleProgress - 0.7) / 0.3;
+                    if (overlay) {
+                        const whiteOpacity = 0.7 + (0.3 * circleWhiteProgress);
+                        overlay.style.background = `rgba(255, 255, 255, ${whiteOpacity})`;
+                    }
+                    if (imageWrapper) {
+                        imageWrapper.style.filter = `blur(50px)`;
+                        const whiteShadowOpacity = 0.5 + (0.5 * circleWhiteProgress);
+                        imageWrapper.style.boxShadow = `100px 100px 100px rgba(255, 255, 255, ${whiteShadowOpacity})`;
+                    }
+                }
+            } else {
+                if (overlay) {
+                    overlay.style.transition = 'background 0.3s ease-out';
+                    overlay.style.background = `rgba(${baseR}, ${baseG}, ${baseB}, ${overlayOpacity})`;
+                }
+            }
+            
+            if (mergeProgress > 0 && campusName) {
+                campusName.style.opacity = '0';
+                campusName.style.visibility = 'hidden';
+                campusName.style.display = 'none';
+            }
+            
+            if (mergeCircleProgress > 0) {
+                const shrinkScale = 1 - (mergeCircleProgress * 0.8);
+                const fadeOut = 1 - mergeCircleProgress;
+                campus.style.transform = `scale(${shrinkScale})`;
+                campus.style.opacity = Math.min(1, individualFadeProgress) * fadeOut;
+            }
+        });
+        
+        // 텍스트 표시
+        if (sec3MobileTitle && sec3MobileSubtitle) {
+            const titleProgress = Math.min(1, Math.max(0, (textProgress - 0) / 0.5));
+            const subtitleProgress = Math.min(1, Math.max(0, (textProgress - 0.5) / 0.5));
+            
+            if (textHideProgress > 0) {
+                sec3MobileTitle.style.opacity = 1 - textHideProgress;
+                sec3MobileSubtitle.style.opacity = 1 - textHideProgress;
+            } else {
+                sec3MobileTitle.style.opacity = titleProgress;
+                sec3MobileSubtitle.style.opacity = subtitleProgress;
+            }
+        }
+        
+        // 플래시 오버레이
+        if (flashOverlayMobile) {
+            if (mergeCircleProgress > 0) {
+                const startSize = 200;
+                const maxSize = Math.max(window.innerWidth, window.innerHeight) * 2;
+                const currentSize = startSize + (maxSize - startSize) * sizeProgress;
+                
+                flashOverlayMobile.style.position = 'absolute';
+                flashOverlayMobile.style.top = '50%';
+                flashOverlayMobile.style.left = '50%';
+                flashOverlayMobile.style.transform = 'translate(-50%, -50%)';
+                flashOverlayMobile.style.width = currentSize + 'px';
+                flashOverlayMobile.style.height = currentSize + 'px';
+                flashOverlayMobile.style.borderRadius = '50%';
+                
+                const blurAmount = 50 + (mergeCircleProgress * 100);
+                const shadowBlur = 100 + (mergeCircleProgress * 200);
+                flashOverlayMobile.style.filter = `blur(${blurAmount}px)`;
+                flashOverlayMobile.style.boxShadow = `0 0 ${shadowBlur}px rgba(255, 255, 255, ${0.8 + mergeCircleProgress * 0.2})`;
+                
+                const whiteOpacity = 0.3 + (mergeCircleProgress * 0.7);
+                flashOverlayMobile.style.background = `rgba(255, 255, 255, ${whiteOpacity})`;
+                
+                if (mergeCircleProgress >= 1 && whiteFadeOutProgress > 0) {
+                    flashOverlayMobile.style.opacity = 1 - whiteFadeOutProgress;
+                } else {
+                    flashOverlayMobile.style.opacity = mergeCircleProgress;
+                }
+                flashOverlayMobile.style.zIndex = '20';
+                flashOverlayMobile.style.pointerEvents = 'none';
+            } else {
+                flashOverlayMobile.style.opacity = 0;
+            }
+        }
+        
+        // 배지 페이드아웃
+        const sec3MobileBadge = document.querySelector('.sec3-mobile-badge');
+        if (sec3MobileBadge) {
+            if (!sec3MobileBadge.dataset.transitionSet) {
+                sec3MobileBadge.style.transition = 'opacity 0.8s ease-out';
+                sec3MobileBadge.style.willChange = 'opacity';
+                sec3MobileBadge.dataset.transitionSet = 'true';
+            }
+            sec3MobileBadge.style.opacity = 1 - badgeFadeOutProgress;
+        }
+        
+        // 배경 전환
+        if (sec3Mobile && backgroundTransitionProgress > 0) {
+            if (!sec3Mobile.querySelector('.sec3-mobile-background-image-overlay')) {
+                const bgImageOverlay = document.createElement('img');
+                bgImageOverlay.className = 'sec3-mobile-background-image-overlay';
+                bgImageOverlay.src = 'images/sec3/sec_vison_bg.png';
+                bgImageOverlay.alt = '비전 배경';
+                bgImageOverlay.style.position = 'absolute';
+                bgImageOverlay.style.top = '0';
+                bgImageOverlay.style.left = '0';
+                bgImageOverlay.style.width = '100%';
+                bgImageOverlay.style.height = '100%';
+                bgImageOverlay.style.objectFit = 'cover';
+                bgImageOverlay.style.objectPosition = 'center';
+                bgImageOverlay.style.zIndex = '5';
+                bgImageOverlay.style.pointerEvents = 'none';
+                bgImageOverlay.style.willChange = 'opacity';
+                bgImageOverlay.style.opacity = '0';
+                bgImageOverlay.style.transition = 'opacity 0.8s ease-out';
+                sec3Mobile.appendChild(bgImageOverlay);
+            }
+            
+            const bgImageOverlay = sec3Mobile.querySelector('.sec3-mobile-background-image-overlay');
+            if (bgImageOverlay) {
+                bgImageOverlay.style.opacity = backgroundTransitionProgress;
+            }
+            
+            if (!sec3Mobile.querySelector('.sec3-mobile-background-overlay')) {
+                const bgOverlay = document.createElement('div');
+                bgOverlay.className = 'sec3-mobile-background-overlay';
+                bgOverlay.style.position = 'absolute';
+                bgOverlay.style.top = '0';
+                bgOverlay.style.left = '0';
+                bgOverlay.style.width = '100%';
+                bgOverlay.style.height = '100%';
+                bgOverlay.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+                bgOverlay.style.zIndex = '10';
+                bgOverlay.style.pointerEvents = 'none';
+                bgOverlay.style.willChange = 'opacity';
+                bgOverlay.style.transition = 'opacity 0.8s ease-out';
+                sec3Mobile.appendChild(bgOverlay);
+            }
+            
+            const bgOverlay = sec3Mobile.querySelector('.sec3-mobile-background-overlay');
+            if (bgOverlay) {
+                bgOverlay.style.opacity = 1 - backgroundTransitionProgress;
+            }
+        }
+        
+        // 텍스트 오버레이
+        let textOverlayOpacity = 0;
+        if (textOverlayMobile) {
+            if (backgroundTransitionProgress > 0) {
+                const textFadeStart = 0.2;
+                const textFadeProgress = backgroundTransitionProgress < textFadeStart ? 0 : 
+                                       (backgroundTransitionProgress - textFadeStart) / (1 - textFadeStart);
+                textOverlayOpacity = Math.min(1, textFadeProgress);
+                textOverlayMobile.style.opacity = textOverlayOpacity;
+                textOverlayMobile.style.zIndex = '30';
+                
+                const textLines = textOverlayMobile.querySelectorAll('.sec3-mobile-text-overlay-line1, .sec3-mobile-text-overlay-line2');
+                textLines.forEach(line => {
+                    line.style.color = 'white';
+                });
+            } else {
+                textOverlayOpacity = 0;
+                textOverlayMobile.style.opacity = 0;
+            }
+        }
+        
+        isAnimationFullyComplete = backgroundTransitionProgress >= 1 && textOverlayOpacity >= 1;
+        
+        if (progress >= 1 && isAnimationFullyComplete) {
+            if (sec3Mobile && !sec3Mobile.classList.contains('animation-complete')) {
+                sec3Mobile.classList.add('animation-complete');
+            }
+        } else {
+            if (sec3Mobile && sec3Mobile.classList.contains('animation-complete')) {
+                sec3Mobile.classList.remove('animation-complete');
+            }
+        }
+    }
+    
     // 스크롤 이벤트 처리
     function handleSec3Scroll(e) {
         if (!sec3) return;
@@ -1183,7 +1620,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 다시 활성화
                 isSec3PermanentlyComplete = false;
                 isSec3Active = true;
-                sec3.classList.add('is-active');
+                if (isMobile && sec3Mobile) {
+                    sec3Mobile.classList.add('is-active');
+                } else if (sec3) {
+                    sec3.classList.add('is-active');
+                }
                 lockedScrollPosition = window.scrollY;
                 lockScroll();
                 
@@ -1220,7 +1661,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 lockedScrollPosition = window.scrollY;
                 virtualScrollProgress = 0;
                 lockScroll();
-                sec3.classList.add('is-active');
+                if (isMobile && sec3Mobile) {
+                    sec3Mobile.classList.add('is-active');
+                } else if (sec3) {
+                    sec3.classList.add('is-active');
+                }
             }
             
             // 스크롤 입력을 가상 progress로 변환
@@ -1250,7 +1695,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // progress가 0 이하로 내려가면 섹션 비활성화
                 if (virtualScrollProgress <= 0) {
-                    sec3.classList.remove('is-active');
+                    if (isMobile && sec3Mobile) {
+                        sec3Mobile.classList.remove('is-active');
+                    } else if (sec3) {
+                        sec3.classList.remove('is-active');
+                    }
                     isSec3Active = false;
                     virtualScrollProgress = 0;
                     unlockScroll();
@@ -1274,7 +1723,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 섹션 3을 영구적으로 완료 상태로 표시 (다시 활성화되지 않음)
                 isSec3PermanentlyComplete = true;
                 isSec3Active = false;
-                sec3.classList.remove('is-active');
+                if (isMobile && sec3Mobile) {
+                    sec3Mobile.classList.remove('is-active');
+                } else if (sec3) {
+                    sec3.classList.remove('is-active');
+                }
                 // 더 이상 스크롤 입력을 받지 않도록 virtualScrollProgress를 1로 고정
                 virtualScrollProgress = 1;
             } else if (virtualScrollProgress >= 1 && !isAnimationFullyComplete) {
@@ -1288,7 +1741,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // 섹션 3이 비활성화되었을 때
             if (wasActive) {
                 unlockScroll();
-                sec3.classList.remove('is-active');
+                if (isMobile && sec3Mobile) {
+                    sec3Mobile.classList.remove('is-active');
+                } else if (sec3) {
+                    sec3.classList.remove('is-active');
+                }
                 // progress가 0이 아니면 유지 (다시 들어왔을 때 이어서 진행)
                 // progress가 0이면 초기화
                 if (virtualScrollProgress <= 0) {
