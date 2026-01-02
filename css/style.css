@@ -24,10 +24,22 @@
     box-sizing: border-box;
 }
 
+html {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+
 body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #000;
     line-height: 1.6;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: none;
 }
 
 /* Header Styles */
@@ -41,6 +53,7 @@ body {
     z-index: 1000;
     border-bottom: 1px solid #DDDDDD;
     transition: background 0.3s, border-color 0.3s;
+    overflow-x: hidden;
 }
 
 /* Header Scrolled State - when past sec1 */
@@ -59,6 +72,7 @@ body {
     justify-content: space-between;
     padding: 0 40px;
     position: relative;
+    overflow-x: hidden;
 }
 
 /* Logo */
@@ -343,6 +357,7 @@ body {
     position: relative;
     background: #151A21;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* Section 2 */
@@ -355,6 +370,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    overflow-x: hidden;
     margin-top: 0;
 }
 
@@ -389,6 +405,7 @@ body {
     opacity: 0;
     transform: translateY(50px);
     transition: opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s;
+    overflow-x: hidden;
 }
 
 .sec2-content.visible {
@@ -478,6 +495,7 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     overflow: hidden;
+    overflow-x: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -491,6 +509,7 @@ body {
     min-height: 1080px;
     margin: 0 auto;
     padding: 0 40px;
+    overflow-x: hidden;
 }
 
 .sec3-main-text {
@@ -909,12 +928,14 @@ body {
     /* Section 3 모바일 최적화 */
     .sec3-scrollfx {
         height: 150vh;
+        overflow-x: hidden;
     }
     
     .sec3-scrollfx .sec3-content {
         min-height: 100vh;
         height: 100vh;
         padding: 0 20px;
+        overflow-x: hidden;
     }
     
     .sec3-main-text {
@@ -1334,6 +1355,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 .sec4-background {
@@ -1390,6 +1412,7 @@ body {
 .sec4-logo-slider {
     width: 100%;
     overflow: hidden;
+    overflow-x: hidden;
     position: relative;
   }
   
@@ -1438,6 +1461,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 .sec5-background {
@@ -1527,6 +1551,7 @@ body {
     justify-content: center;
     padding: 0;
     overflow: hidden;
+    overflow-x: hidden;
 }
 
 .sec6-background {
@@ -1917,14 +1942,14 @@ body {
 }
 
 .sec1-bg-image {
-    width: 1920px;
+    width: 100%;
+    max-width: 1920px;
     height: 526px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     top: 400px;
     object-fit: cover;
-    max-width: 100%;
     opacity: 0.4;
 }
 
@@ -1939,6 +1964,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .sec1-main-container {
@@ -2308,6 +2334,7 @@ body {
     align-items: center;
     justify-content: center;
     padding-top: 0;
+    overflow-x: hidden;
 }
 
 .sec7-content {
