@@ -931,7 +931,13 @@ body {
 .sec3-scrollfx {
     position: relative;
     min-height: 100vh;
-    height: 100vh; /* 애니메이션이 진행되는 동안 고정 */
+    height: 100vh; /* 화면을 고정하기 위해 100vh로 설정 */
+}
+
+.sec3-scrollfx.is-active {
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .sec3-scrollfx.animation-complete {
@@ -1150,7 +1156,13 @@ body {
     
     /* Section 3 모바일 최적화 */
     .sec3-scrollfx {
-        height: 150vh;
+        height: 100vh; /* 화면을 고정하기 위해 100vh로 설정 */
+    }
+    
+    .sec3-scrollfx.is-active {
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
     
     .sec3-scrollfx .sec3-content {

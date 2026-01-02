@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', handleSec5Animation);
     handleSec5Animation(); // Check initial state
     
-    // Section 3 auto animation (time-based instead of scroll-based)
+    // Section 3 scroll-based animation
     const sec3 = document.querySelector('.sec3-scrollfx');
     const sec3Content = document.querySelector('.sec3-scrollfx .sec3-content');
     const campuses = document.querySelectorAll('.sec3-scrollfx .sec3-campus');
@@ -188,9 +188,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const sec3Title = document.querySelector('.sec3-scrollfx .sec3-title');
     const sec3Subtitle = document.querySelector('.sec3-scrollfx .sec3-subtitle');
     
-    let animationStarted = false;
-    let animationStartTime = null;
-    let lockedScrollPosition = 0; // 스크롤 고정 위치
+    // 스크롤 기반 애니메이션을 위한 설정
+    const SCROLL_RANGE = 2000; // 애니메이션이 진행될 스크롤 범위 (픽셀)
+    
+    // 가상 스크롤 progress (실제 스크롤은 막고 이 값으로 애니메이션 제어)
+    let virtualScrollProgress = 0;
+    let isSec3Active = false;
+    let lockedScrollPosition = 0;
+    let touchStartY = 0;
+    let lastTouchY = 0;
+    
+    // 애니메이션 완료 상태 추적 (배경 전환 + 텍스트 오버레이 완료 여부)
+    let isAnimationFullyComplete = false;
+    let isSec3PermanentlyComplete = false; // 섹션 3이 완전히 완료되어 더 이상 활성화되지 않도록
     
     // 배경 이미지 프리로딩 (렉 방지)
     const backgroundImage = new Image();
@@ -244,23 +254,47 @@ document.addEventListener('DOMContentLoaded', function() {
                        DURATIONS.whiteTransition + DURATIONS.mergeToCircle + DURATIONS.whiteFadeOut + DURATIONS.backgroundTransition;
     }
     
-    function startSec3Animation() {
-        if (animationStarted || !sec3 || !sec3Content || campuses.length !== 4) {
-            return;
+    // 섹션 3 활성화 여부 확인
+    function checkSec3Active() {
+        if (!sec3) return false;
+        
+        // 이미 완전히 완료된 경우 다시 활성화하지 않음
+        if (isSec3PermanentlyComplete) {
+            return false;
         }
         
-            const sec3Top = sec3.offsetTop;
-            const windowHeight = window.innerHeight;
-            const scrollY = window.scrollY;
+        const sec3Top = sec3.offsetTop;
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
         
-        // sec3가 화면에 들어왔는지 확인
-        if (scrollY + windowHeight >= sec3Top + 100) {
-            animationStarted = true;
-            animationStartTime = Date.now();
-            lockedScrollPosition = window.scrollY; // 현재 스크롤 위치 저장
-            // lockScroll(); // 스크롤 막기 해제
-            animateSec3();
+        // 섹션 3이 화면 세로 중앙에 도달했는지 확인
+        // 섹션의 상단이 화면 중앙(뷰포트 하단에서 windowHeight * 0.5 지점)에 도달했을 때
+        const sec3Center = sec3Top + (sec3.offsetHeight * 0.5);
+        const viewportCenter = scrollY + windowHeight * 0.5;
+        
+        // 섹션 3의 중앙이 뷰포트 중앙 근처에 있을 때 활성화 (약간의 여유 공간)
+        const threshold = windowHeight * 0.2; // 20% 여유
+        return Math.abs(sec3Center - viewportCenter) < threshold && 
+               scrollY < sec3Top + sec3.offsetHeight;
+    }
+    
+    // 스크롤 잠금/해제 함수
+    function lockScroll() {
+        if (isSec3Active && lockedScrollPosition !== undefined) {
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            window.scrollTo(0, lockedScrollPosition);
         }
+    }
+    
+    function unlockScroll() {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+    }
+    
+    // 가상 스크롤 progress 계산
+    function getSec3ScrollProgress() {
+        return Math.max(0, Math.min(1, virtualScrollProgress));
     }
     
     function animateSec3() {
@@ -268,9 +302,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const currentTime = Date.now();
-        const elapsed = currentTime - animationStartTime;
-        const progress = Math.min(1, elapsed / totalDuration);
+        // 스크롤 위치에서 progress 계산 (0 ~ 1)
+        const progress = getSec3ScrollProgress();
+        
+        // progress를 시간 단위로 변환 (기존 로직과 호환성을 위해)
+        const elapsed = progress * totalDuration;
         
         let fadeInProgress, textStartTime, textEndTime, textProgress, mergeStartTime, mergeEndTime, campusGridStartTime, campusGridEndTime;
         
@@ -479,9 +515,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 let floatingY = 0;
                 if (elapsed < textCompleteTime && fadeInProgress >= 1) {
                     // sin 함수를 사용하여 부드러운 떠다니는 효과 (각 카드마다 다른 주기)
+                    // 시간 기반으로 유지하되 현재 시간 사용
                     const floatPeriods = [2000, 2200, 2400, 2600]; // 각 카드마다 다른 주기 (밀리초)
                     const floatAmplitude = 15; // 떠다니는 범위 (픽셀)
-                    const floatCycle = (elapsed / floatPeriods[index]) * Math.PI * 2;
+                    const currentTime = Date.now(); // 현재 시간 사용
+                    const floatCycle = (currentTime / floatPeriods[index]) * Math.PI * 2;
                     floatingY = Math.sin(floatCycle) * floatAmplitude;
                 }
                 
@@ -998,11 +1036,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 최종 텍스트 오버레이 (원으로 합쳐진 후 - 화면이 하얗게 덮일 때)
+        let textOverlayOpacity = 0;
         if (textOverlay) {
             // mergeCircleProgress가 0.8 이상일 때부터 나타나기 시작
             if (mergeCircleProgress >= 0.8) {
                 const textProgress = (mergeCircleProgress - 0.8) / 0.2; // 0.8~1.0 구간을 0~1로 변환
-                textOverlay.style.opacity = textProgress;
+                textOverlayOpacity = textProgress;
+                textOverlay.style.opacity = textOverlayOpacity;
                 
                 // 텍스트 색상을 하얀색으로 변경
                 const textLines = textOverlay.querySelectorAll('.sec3-text-overlay-line1, .sec3-text-overlay-line2');
@@ -1010,12 +1050,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     line.style.color = 'white';
                 });
             } else {
+                textOverlayOpacity = 0;
                 textOverlay.style.opacity = 0;
             }
             
             // 배경 전환이 진행될 때도 텍스트가 보이도록
             if (backgroundTransitionProgress > 0) {
-            textOverlay.style.opacity = 1;
+                textOverlayOpacity = 1;
+                textOverlay.style.opacity = 1;
                 const textLines = textOverlay.querySelectorAll('.sec3-text-overlay-line1, .sec3-text-overlay-line2');
                 textLines.forEach(line => {
                     line.style.color = 'white';
@@ -1023,12 +1065,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // 애니메이션 진행 중
-        if (progress < 1) {
-            requestAnimationFrame(animateSec3);
-        } else {
-            // 애니메이션 완료
-            if (sec3) {
+        // 애니메이션 완전 완료 체크: 배경 전환 완료 + 텍스트 오버레이 완전히 나타남
+        // 배경 전환이 완료되고 텍스트 오버레이가 완전히 나타났을 때만 완료로 간주
+        isAnimationFullyComplete = backgroundTransitionProgress >= 1 && textOverlayOpacity >= 1;
+        
+        // 애니메이션 완료 상태 업데이트
+        if (progress >= 1) {
+            if (sec3 && !sec3.classList.contains('animation-complete')) {
                 sec3.classList.add('animation-complete');
                 // 배경 전환 완료 후 최종 상태로 고정 (렉 방지)
                 if (!sec3.dataset.backgroundFinalized) {
@@ -1049,51 +1092,209 @@ document.addEventListener('DOMContentLoaded', function() {
                     sec3.dataset.backgroundFinalized = 'true';
                 }
             }
-            // unlockScroll(); // 스크롤 막기 해제
+        } else {
+            // 애니메이션이 완료되지 않았으면 완료 상태 제거
+            if (sec3 && sec3.classList.contains('animation-complete')) {
+                sec3.classList.remove('animation-complete');
+            }
         }
     }
     
-    // 스크롤 감지하여 애니메이션 시작
-    function checkSec3Visibility() {
-        if (!animationStarted) {
-            startSec3Animation();
-        }
-    }
-    
-    // 스크롤 완전 차단 함수
-    function lockScroll() {
-        // body에 overflow: hidden 추가
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
+    // 스크롤 이벤트 처리
+    function handleSec3Scroll(e) {
+        if (!sec3) return;
         
-        // 현재 스크롤 위치 고정
-        window.scrollTo(0, lockedScrollPosition);
+        // 완료된 상태에서 역방향 스크롤 처리
+        if (isSec3PermanentlyComplete && e && (e.type === 'wheel' || e.type === 'touchmove')) {
+            let delta = 0;
+            if (e.type === 'wheel') {
+                delta = e.deltaY;
+            } else if (e.type === 'touchmove' && e.touches && e.touches.length > 0) {
+                const currentTouchY = e.touches[0].clientY;
+                if (lastTouchY !== 0) {
+                    delta = lastTouchY - currentTouchY;
+                }
+                lastTouchY = currentTouchY;
+            }
+            
+            // 역방향(위로) 스크롤만 처리
+            if (delta < 0) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 다시 활성화
+                isSec3PermanentlyComplete = false;
+                isSec3Active = true;
+                sec3.classList.add('is-active');
+                lockedScrollPosition = window.scrollY;
+                lockScroll();
+                
+                // progress 감소 (완료 상태에서는 1에서 시작)
+                if (virtualScrollProgress >= 1) {
+                    const scrollSpeed = 0.0008;
+                    virtualScrollProgress += delta * scrollSpeed;
+                    virtualScrollProgress = Math.max(0, Math.min(1, virtualScrollProgress));
+                }
+                
+                window.scrollTo(0, lockedScrollPosition);
+                
+                // 애니메이션 업데이트
+                animateSec3();
+                
+                // progress가 1 미만이 되면 완료 상태 해제
+                if (virtualScrollProgress < 1) {
+                    // 완료 상태는 유지하되, progress를 감소시킴
+                }
+                return;
+            } else {
+                // 아래로 스크롤은 무시 (다음 섹션으로 이동 가능)
+                return;
+            }
+        }
+        
+        const wasActive = isSec3Active;
+        isSec3Active = checkSec3Active();
+        
+        if (isSec3Active) {
+            // 섹션 3이 활성화되었을 때
+            if (!wasActive) {
+                // 처음 활성화될 때 현재 스크롤 위치 저장 및 잠금
+                lockedScrollPosition = window.scrollY;
+                virtualScrollProgress = 0;
+                lockScroll();
+                sec3.classList.add('is-active');
+            }
+            
+            // 스크롤 입력을 가상 progress로 변환
+            if (e && (e.type === 'wheel' || e.type === 'touchmove')) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 스크롤 delta 계산 (마우스 휠 또는 터치)
+                let delta = 0;
+                if (e.type === 'wheel') {
+                    delta = e.deltaY;
+                } else if (e.type === 'touchmove' && e.touches && e.touches.length > 0) {
+                    // 터치 스크롤 처리
+                    const currentTouchY = e.touches[0].clientY;
+                    if (lastTouchY !== 0) {
+                        delta = lastTouchY - currentTouchY; // 위로 스와이프 = 양수
+                    }
+                    lastTouchY = currentTouchY;
+                }
+                
+                // delta를 progress로 변환 (스크롤 속도 조절 가능)
+                // 양수 delta = 아래로 스크롤 = progress 증가
+                // 음수 delta = 위로 스크롤 = progress 감소 (역방향)
+                const scrollSpeed = 0.0008; // 스크롤 민감도 조절 (낮을수록 느림)
+                virtualScrollProgress += delta * scrollSpeed;
+                virtualScrollProgress = Math.max(0, Math.min(1, virtualScrollProgress));
+                
+                // progress가 0 이하로 내려가면 섹션 비활성화
+                if (virtualScrollProgress <= 0) {
+                    sec3.classList.remove('is-active');
+                    isSec3Active = false;
+                    virtualScrollProgress = 0;
+                    unlockScroll();
+                } else {
+                    // progress가 0과 1 사이면 스크롤 잠금 유지 (애니메이션 진행 중)
+                    lockScroll();
+                }
+                
+                // 실제 스크롤은 막기
+                window.scrollTo(0, lockedScrollPosition);
+            }
+            
+            // 애니메이션 업데이트
+            animateSec3();
+            
+            // progress 상태 및 완료 상태에 따른 처리
+            // 배경 전환과 텍스트 오버레이가 완전히 나타난 후에만 스크롤 잠금 해제
+            if (virtualScrollProgress >= 1 && isAnimationFullyComplete) {
+                // 애니메이션 완전히 완료: 스크롤 잠금 해제 및 섹션 3 영구 비활성화
+                unlockScroll();
+                if (!sec3.classList.contains('animation-complete')) {
+                    sec3.classList.add('animation-complete');
+                }
+                // 섹션 3을 영구적으로 완료 상태로 표시 (다시 활성화되지 않음)
+                isSec3PermanentlyComplete = true;
+                isSec3Active = false;
+                sec3.classList.remove('is-active');
+                // 더 이상 스크롤 입력을 받지 않도록 virtualScrollProgress를 1로 고정
+                virtualScrollProgress = 1;
+            } else if (virtualScrollProgress >= 1 && !isAnimationFullyComplete) {
+                // progress는 1이지만 배경/텍스트가 아직 완전히 나타나지 않음: 잠금 유지
+                lockScroll();
+                if (sec3.classList.contains('animation-complete')) {
+                    sec3.classList.remove('animation-complete');
+                }
+            } else if (virtualScrollProgress < 1 && virtualScrollProgress > 0) {
+                // 애니메이션 진행 중: 스크롤 잠금 유지 (역방향 스크롤 시 다시 잠금)
+                lockScroll();
+                if (sec3.classList.contains('animation-complete')) {
+                    sec3.classList.remove('animation-complete');
+                }
+            }
+        } else {
+            // 섹션 3이 비활성화되었을 때
+            if (wasActive) {
+                unlockScroll();
+                sec3.classList.remove('is-active');
+                // progress가 0이 아니면 유지 (다시 들어왔을 때 이어서 진행)
+                // progress가 0이면 초기화
+                if (virtualScrollProgress <= 0) {
+                    virtualScrollProgress = 0;
+                }
+            }
+            
+            // 섹션 3이 비활성화된 상태에서는 wheel/touchmove 이벤트를 막지 않음
+            if (e && (e.type === 'wheel' || e.type === 'touchmove')) {
+                // 이벤트를 막지 않고 통과시킴
+                return;
+            }
+        }
     }
     
-    // 스크롤 해제 함수
-    function unlockScroll() {
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
+    // 섹션 3 진입/이탈 감지
+    function handleSec3Visibility() {
+        handleSec3Scroll();
     }
     
-    // 스크롤 막기 해제 (일시적으로 주석 처리)
-    // function preventScroll(e) {
-    //     // sec3 애니메이션 중 스크롤 막기 (wheel과 touchmove만)
-    //     if (animationStarted && sec3 && !sec3.classList.contains('animation-complete') && (e.type === 'wheel' || e.type === 'touchmove')) {
-    //         e.preventDefault();
-    //         e.stopPropagation();
-    //         window.scrollTo(0, lockedScrollPosition);
-    //         return false;
-    //     }
-    // }
+    // 터치 시작 처리
+    function handleTouchStart(e) {
+        if (isSec3Active && e.touches && e.touches.length > 0) {
+            touchStartY = e.touches[0].clientY;
+            lastTouchY = touchStartY;
+        }
+    }
     
-    // // wheel과 touchmove만 차단 (scroll 이벤트는 다른 애니메이션들이 사용해야 함)
-    // window.addEventListener('wheel', preventScroll, { passive: false });
-    // window.addEventListener('touchmove', preventScroll, { passive: false });
+    // 터치 종료 처리
+    function handleTouchEnd(e) {
+        if (isSec3Active) {
+            lastTouchY = 0;
+        }
+    }
     
-    // 스크롤 감지하여 애니메이션 시작
-    window.addEventListener('scroll', checkSec3Visibility, { passive: true });
-    checkSec3Visibility(); // 초기 실행
+    // 스크롤 및 휠 이벤트 리스너 등록
+    window.addEventListener('scroll', handleSec3Visibility, { passive: true });
+    
+    // wheel과 touchmove 이벤트는 섹션 3이 활성화되었거나 완료된 상태에서 역방향 스크롤 처리
+    window.addEventListener('wheel', function(e) {
+        if (isSec3Active || isSec3PermanentlyComplete) {
+            handleSec3Scroll(e);
+        }
+    }, { passive: false });
+    
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    
+    window.addEventListener('touchmove', function(e) {
+        if (isSec3Active || isSec3PermanentlyComplete) {
+            handleSec3Scroll(e);
+        }
+    }, { passive: false });
+    
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    handleSec3Visibility(); // 초기 실행
     
     // Section 1 text animations - appear on page load
     const sec1Text1 = document.querySelector('.sec1-text-1');
