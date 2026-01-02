@@ -262,10 +262,27 @@ const i18n = {
             }
         });
         
-        // 언어 표시 업데이트
-        const langDisplays = document.querySelectorAll('.header-lang, .mobile-lang-kr');
-        langDisplays.forEach(display => {
-            display.textContent = lang === 'ko' ? 'KR' : 'EN';
+        // 언어 표시 업데이트 및 활성화 상태 관리
+        // KR 버튼
+        const krButtons = document.querySelectorAll('.header-lang, .mobile-lang-kr');
+        krButtons.forEach(button => {
+            button.textContent = 'KR';
+            if (lang === 'ko') {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        });
+        
+        // EN 버튼
+        const enButtons = document.querySelectorAll('.lang-btn-en, .mobile-lang-en');
+        enButtons.forEach(button => {
+            button.textContent = 'EN';
+            if (lang === 'en') {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
         });
         
         // Section 6 캠퍼스 데이터 업데이트 (동적 업데이트)
@@ -279,25 +296,28 @@ const i18n = {
     
     // 초기화 함수
     init: function() {
-        // 저장된 언어 설정 불러오기
+        // 저장된 언어 설정 불러오기, 없으면 기본값 'ko' 사용
         const savedLang = localStorage.getItem('preferredLanguage');
         if (savedLang && this.translations[savedLang]) {
             this.setLanguage(savedLang);
+        } else {
+            // 저장된 언어가 없으면 기본값 'ko'로 설정
+            this.setLanguage('ko');
         }
         
-        // EN 버튼 이벤트 리스너
-        const enButtons = document.querySelectorAll('.lang-btn, .mobile-lang-en');
-        enButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                this.setLanguage('en');
-            });
-        });
-        
-        // KR 버튼 이벤트 리스너 (필요한 경우)
-        const krButtons = document.querySelectorAll('.mobile-lang-kr');
+        // KR 버튼 이벤트 리스너
+        const krButtons = document.querySelectorAll('.header-lang, .mobile-lang-kr');
         krButtons.forEach(button => {
             button.addEventListener('click', () => {
                 this.setLanguage('ko');
+            });
+        });
+        
+        // EN 버튼 이벤트 리스너
+        const enButtons = document.querySelectorAll('.lang-btn-en, .mobile-lang-en');
+        enButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                this.setLanguage('en');
             });
         });
     }

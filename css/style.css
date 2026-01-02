@@ -54,6 +54,7 @@ body {
 }
 
 .header-container {
+    overflow-y: hidden;
     max-width: 1920px;
     width: 100%;
     height: 100%;
@@ -65,6 +66,11 @@ body {
     position: relative;
 }
 
+a.header-univ-btn {
+    white-space: nowrap;
+    }
+
+    
 /* Logo */
 .logo-container {
     width: 196px;
@@ -195,6 +201,8 @@ body {
 .header-lang {
     width: 20.47px;
     height: 21.50px;
+    background: transparent;
+    border: none;
     color: black;
     font-size: 15.60px;
     font-family: 'Inter', sans-serif;
@@ -202,11 +210,44 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     transition: color 0.3s;
+}
+
+.header-lang:hover {
+    color: #000;
 }
 
 .header-scrolled .header-lang {
     color: white;
+}
+
+.header-scrolled .header-lang:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 활성화된 언어 버튼 스타일 */
+.header-lang.active,
+.lang-btn.active {
+    color: black;
+    font-weight: 600;
+}
+
+.header-scrolled .header-lang.active,
+.header-scrolled .lang-btn.active {
+    color: white;
+    font-weight: 600;
+}
+
+/* 비활성화된 언어 버튼 스타일 */
+.header-lang:not(.active),
+.lang-btn:not(.active) {
+    color: #BBBBBB;
+}
+
+.header-scrolled .header-lang:not(.active),
+.header-scrolled .lang-btn:not(.active) {
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Language Selector */
@@ -232,7 +273,6 @@ body {
     height: 21.50px;
     background: transparent;
     border: none;
-    color: #BBBBBB;
     font-size: 15.50px;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -240,15 +280,11 @@ body {
     transition: color 0.3s;
 }
 
-.lang-btn:hover {
+.lang-btn:hover:not(.active) {
     color: #000;
 }
 
-.header-scrolled .lang-btn {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.header-scrolled .lang-btn:hover {
+.header-scrolled .lang-btn:hover:not(.active) {
     color: rgba(255, 255, 255, 0.8);
 }
 
@@ -443,15 +479,45 @@ body {
     }
     
     .mobile-lang-kr {
+        background: transparent;
+        border: none;
         color: #000;
         font-size: 15.60px;
         font-family: 'Inter', sans-serif;
         font-weight: 600;
+        cursor: pointer;
+        padding: 0;
         transition: color 0.3s ease-out;
+    }
+    
+    .mobile-lang-kr:hover:not(.active) {
+        color: #000;
     }
     
     .header-scrolled .mobile-lang-kr {
         color: white;
+    }
+    
+    .header-scrolled .mobile-lang-kr:hover:not(.active) {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .mobile-lang-kr.active {
+        color: #000;
+        font-weight: 600;
+    }
+    
+    .header-scrolled .mobile-lang-kr.active {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .mobile-lang-kr:not(.active) {
+        color: #BBBBBB;
+    }
+    
+    .header-scrolled .mobile-lang-kr:not(.active) {
+        color: rgba(255, 255, 255, 0.6);
     }
     
     .mobile-lang-divider {
@@ -477,7 +543,33 @@ body {
         transition: color 0.3s ease-out;
     }
     
+    .mobile-lang-en:hover:not(.active) {
+        color: #000;
+    }
+    
     .header-scrolled .mobile-lang-en {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .header-scrolled .mobile-lang-en:hover:not(.active) {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .mobile-lang-en.active {
+        color: #000;
+        font-weight: 600;
+    }
+    
+    .header-scrolled .mobile-lang-en.active {
+        color: white;
+        font-weight: 600;
+    }
+    
+    .mobile-lang-en:not(.active) {
+        color: #BBBBBB;
+    }
+    
+    .header-scrolled .mobile-lang-en:not(.active) {
         color: rgba(255, 255, 255, 0.6);
     }
 }
