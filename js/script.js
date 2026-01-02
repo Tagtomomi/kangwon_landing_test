@@ -1561,6 +1561,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Section 7 scroll animations
+    const sec7 = document.getElementById('sec7');
+    const sec7Text = document.querySelector('.sec7-text');
+    const sec7SupportCard = document.querySelector('.sec7-support-card');
+    const sec7SocialButtons = document.querySelector('.sec7-social-buttons');
+    
+    let sec7AnimationTriggered = false;
+    
+    function handleSec7Animation() {
+        if (!sec7 || sec7AnimationTriggered) return;
+        
+        const sec7Top = sec7.offsetTop;
+        const sec7Height = sec7.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollY = window.scrollY;
+        
+        // 섹션 7이 뷰포트에 들어왔는지 확인 (50% 지점)
+        const triggerPoint = sec7Top - windowHeight * 0.5;
+        
+        if (scrollY >= triggerPoint && scrollY < sec7Top + sec7Height) {
+            sec7AnimationTriggered = true;
+            
+            // 1. 타이틀 텍스트 밑에서 위로 올라오는 효과
+            setTimeout(() => {
+                if (sec7Text) {
+                    sec7Text.classList.add('visible');
+                }
+            }, 200);
+            
+            // 2. 응원하기 컨테이너 확대되면서 나타나는 효과
+            setTimeout(() => {
+                if (sec7SupportCard) {
+                    sec7SupportCard.classList.add('visible');
+                }
+            }, 600);
+            
+            // 3. 소셜 버튼들 밑에서 올라오는 효과
+            setTimeout(() => {
+                if (sec7SocialButtons) {
+                    sec7SocialButtons.classList.add('visible');
+                }
+            }, 1000);
+        } else if (scrollY < triggerPoint) {
+            // 스크롤이 위로 올라가면 애니메이션 리셋
+            sec7AnimationTriggered = false;
+            if (sec7Text) sec7Text.classList.remove('visible');
+            if (sec7SupportCard) sec7SupportCard.classList.remove('visible');
+            if (sec7SocialButtons) sec7SocialButtons.classList.remove('visible');
+        }
+    }
+    
+    window.addEventListener('scroll', handleSec7Animation, { passive: true });
+    handleSec7Animation(); // 초기 실행
+    
     // Section 6 campus navigation
     const campusCard = document.querySelector('.sec6-campus-card');
     const navItem = document.querySelector('.sec6-nav-item');
