@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>강원 랜딩 페이지</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&family=Inter:wght@600;700&family=Pretendard:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="header-container">
+            <!-- 로고 -->
+            <div class="logo-container">
+                <img src="images/common/gangwon_univ_logo.png" alt="강원대학교 로고" class="logo">
+                <img src="images/common/gangwon_univ_logo_white.png" alt="강원대학교 로고" class="logo-white">
+            </div>
+
+            <!-- 네비게이션 메뉴 -->
+            <nav class="nav-menu">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#sec1" class="nav-link" data-section="sec1">소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">비전</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#sec5" class="nav-link" data-section="sec5">홍보영상</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#sec6" class="nav-link" data-section="sec6">캠퍼스 소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#sec7" class="nav-link" data-section="sec7">함께하기</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- 우측 버튼 및 언어 -->
+            <div class="header-right">
+                <a href="https://wwwk.kangwon.ac.kr/www/index.do" target="_blank" class="header-univ-btn">강원대학교 바로가기</a>
+                <div class="header-lang">KR</div>
+                <div class="language-selector">
+                    <div class="divider-vertical"></div>
+                    <button class="lang-btn">EN</button>
+                </div>
+            </div>
+
+            <!-- 모바일 메뉴 버튼 -->
+            <button class="mobile-menu-btn" aria-label="메뉴">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <main>
+        <!-- Section 1: Hero Section -->
+        <section id="sec1" class="sec1">
+            <div class="sec1-background">
+                <img src="images/sec1/sec1_bg.jpg" alt="배경 이미지" class="sec1-bg-image">
+            </div>
+            
+            <!-- 세로 라인 -->
+            <svg class="sec1-vertical-lines" width="100%" height="100%">
+                <defs>
+                    <pattern id="verticalLines" x="0" y="0" width="380" height="100%" patternUnits="userSpaceOnUse">
+                        <line x1="0" y1="0" x2="0" y2="100%" stroke="rgba(255, 255, 255, 0.05)" stroke-width="3"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#verticalLines)"/>
+            </svg>
+            
+            <div class="sec1-content">
+                <div class="sec1-main-container">
+                    <div class="sec1-text-group">
+                        <h1 class="sec1-text-large sec1-text-1">위대한</h1>
+                        <div class="sec1-sub-text">
+                            <div class="sec1-subtitle-1-wrapper">
+                                <p class="sec1-subtitle sec1-subtitle-1">One knu</p>
+                                <div class="sec1-divider"></div>
+                            </div>
+                            <p class="sec1-subtitle sec1-subtitle-2">Multi Campus excellence!</p>
+                        </div>
+                    </div>
+                    <h1 class="sec1-text-large sec1-text-2">도약</h1>
+                </div>
+            </div>
+            
+            <div class="sec1-scroll-btn">
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+        
+        <!-- Section 2 -->
+        <section class="sec2">
+            <div class="sec2-background">
+                <img src="images/sec1/sec1_bg.jpg" alt="배경 이미지" class="sec2-bg-image">
+            </div>
+            <div class="sec2-content">
+                <div class="sec2-main-text">
+                    <div class="sec2-text-line sec2-text-line-1">2026년 3월,</div>
+                    <div class="sec2-text-line sec2-text-line-2">통합 강원대학교 공식 출범합니다</div>
+                </div>
+                <div class="sec2-sub-text">
+                    <span class="sec2-sub-gray">춘천 삼척 강릉 원주 </span><span class="sec2-sub-white">4개의 캠퍼스</span><span class="sec2-sub-gray">가<br/>
+                        하나의 비전으로 융합되어 </span><span class="sec2-sub-white">글로컬 대학도시</span><span class="sec2-sub-gray">로 힘차게 도약합니다.</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 3 -->
+        <section class="sec3 sec3-scrollfx">
+            <div class="sec3-content">
+                <div class="sec3-main-text">
+                    <div class="sec3-badge">강원 1도 1국립대학</div>
+                    <div class="sec3-text-group">
+                        <div class="sec3-title">위대한 도약</div>
+                        <div class="sec3-subtitle">4개 캠퍼스의 시너지가 모여<br/>글로컬 대학도시를 구현합니다</div>
+                    </div>
+                </div>
+                
+                <div class="sec3-campuses">
+                    <div class="sec3-campus sec3-campus-chuncheon">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_춘천.png" alt="춘천 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">춘천 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sec3-campus sec3-campus-gangneung">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_강릉.png" alt="강릉 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">강릉 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sec3-campus sec3-campus-samcheok">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_삼척.png" alt="삼척 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">삼척 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="sec3-campus sec3-campus-wonju">
+                        <div class="sec3-campus-image-wrapper">
+                            <img src="images/sec3/cumpus_원주.png" alt="원주 캠퍼스" class="sec3-campus-image">
+                            <div class="sec3-campus-overlay"></div>
+                        </div>
+                        <div class="sec3-campus-info">
+                            <div class="sec3-campus-circle"></div>
+                            <div class="sec3-campus-name">원주 캠퍼스</div>
+                            <div class="sec3-campus-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 플래시 오버레이 -->
+                <div class="sec3-flash-overlay"></div>
+                
+                <!-- 텍스트 오버레이 -->
+                <div class="sec3-text-overlay">
+                    <div class="sec3-text-overlay-line1">통합 강원대학교의</div>
+                    <div class="sec3-text-overlay-line2">지역 혁신 생태계</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 4 -->
+        <section class="sec4">
+            <div class="sec4-background">
+                <img src="images/sec4/sec14_bg.png" alt="배경 이미지" class="sec4-bg-image">
+            </div>
+            <div class="sec4-content">
+                <div class="sec4-text">
+                    <div class="sec4-text-line sec4-text-line-1">흩어져 있던 캠퍼스의<span class="sec4-mobile-br"><br></span>힘을 하나로 모아,</div>
+                    <div class="sec4-text-line sec4-text-line-2">지역을 넘어 세계로 나아가는</div>
+                    <div class="sec4-text-line sec4-text-line-3">글로컬(Global + Local)<span class="sec4-mobile-br"><br></span> 혁신대학을 구현합니다.</div>
+                </div>
+                <div class="sec4-logo-slider">
+                    <div class="sec4-logo-track">
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/knu_logo_white.png" alt="KNU 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/kw_white_logo.png" alt="KW 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/knu_logo_white.png" alt="KNU 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/kw_white_logo.png" alt="KW 로고" class="sec4-logo">
+                        </div>
+                        <!-- 복제본 (무한 슬라이더용 - 원본과 동일하게) -->
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/knu_logo_white.png" alt="KNU 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/kw_white_logo.png" alt="KW 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/knu_logo_white.png" alt="KNU 로고" class="sec4-logo">
+                        </div>
+                        <div class="sec4-logo-item">
+                            <img src="images/sec4/kw_white_logo.png" alt="KW 로고" class="sec4-logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 5 -->
+        <section id="sec5" class="sec5">
+            <div class="sec5-background">
+                <img src="images/sec5/sec15_bg.png" alt="배경 이미지" class="sec5-bg-image">
+            </div>
+            <div class="sec5-content">
+                <div class="sec5-text">4개의 캠퍼스<br/>하나의 미래</div>
+                <div class="sec5-video">
+                    <iframe
+                      class="sec5-youtube"
+                      data-video-id="NR-AxDjO56E"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+            </div>
+        </section>
+        
+        <!-- Section 6 -->
+        <section id="sec6" class="sec6">
+            <div class="sec6-background">
+                <img src="images/sec6/sec_campus_bg.jpg" alt="배경 이미지" class="sec6-bg-image">
+            </div>
+            <div class="sec6-content">
+                <h2 class="sec6-title">캠퍼스를 소개합니다</h2>
+                <div class="sec6-campuses">
+                    <div class="sec6-campus-card sec6-campus-chuncheon">
+                        <div class="sec6-campus-header">
+                            <a href="#" class="sec6-campus-link" id="sec6-campus-link" target="_blank">
+                                <span class="sec6-link-text">바로가기</span>
+                                <img src="images/common/link_icon_white.png" alt="링크 아이콘" class="sec6-link-icon">
+                            </a>
+                        </div>
+                        <div class="sec6-campus-body">
+                            <div class="sec6-campus-name">춘천 캠퍼스</div>
+                            <div class="sec6-campus-tags">
+                                <div class="sec6-tag">종합 연구</div>
+                                <div class="sec6-tag">글로벌 교육</div>
+                                <div class="sec6-tag">혁신인재</div>
+                            </div>
+                            <div class="sec6-campus-desc">국제 교류 통합 체계 구축<br/>학사구조 혁신 지원 온라인 교육 플랫폼</div>
+                        </div>
+                    </div>
+                    <div class="sec6-campus-navigation">
+                        <div class="sec6-nav-item sec6-nav-active" data-campus="0"></div>
+                        <div class="sec6-nav-dash" data-campus="1"></div>
+                        <div class="sec6-nav-dash" data-campus="2"></div>
+                        <div class="sec6-nav-dash" data-campus="3"></div>
+                        <div class="sec6-nav-pause"></div>
+                    </div>
+                    <div class="sec6-campus-intro-images">
+                        <img src="images/sec6/campus_intro_춘천.png" alt="춘천 캠퍼스" class="sec6-campus-intro-img">
+                        <img src="images/sec6/campus_intro_삼척.png" alt="삼척 캠퍼스" class="sec6-campus-intro-img">
+                        <img src="images/sec6/campus_intro_강릉.png" alt="강릉 캠퍼스" class="sec6-campus-intro-img">
+                        <img src="images/sec6/campus_intro_원주.png" alt="원주 캠퍼스" class="sec6-campus-intro-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Section 7 -->
+        <section id="sec7" class="sec7">
+            <div class="sec7-content">
+                <div class="sec7-text">
+                    <span class="sec7-gray">통합 강원대학교의</span><br/>
+                    <span class="sec7-white">새로운 도약을</span> <span class="sec7-gray">응원해 주세요</span>
+                </div>
+                <div class="sec7-support-card">
+                    <div class="sec7-support-title">응원 하트 보내기</div>
+                    <div class="sec7-support-content">
+                        <div class="sec7-support-left">
+                            <img src="images/sec7/heart_img.png" alt="하트" class="sec7-heart-icon" id="sec7-heart-icon">
+                            <div class="sec7-support-count-wrapper">
+                                <div class="sec7-support-count" id="sec7-support-count">567</div>
+                                <div class="sec7-support-text">명이 응원했습니다</div>
+                            </div>
+                        </div>
+                        <div class="sec7-support-right">
+                            <a href="https://www.instagram.com/open_campus_knu/" target="_blank" class="sec7-support-button">
+                                <img src="images/sec7/send_img.png" alt="아이콘" class="sec7-button-icon">
+                                <div class="sec7-button-text">응원 메시지 보내기</div>
+                            </a>
+                            <div class="sec7-support-note">클릭 시 인스타그램 페이지로 이동됩니다.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sec7-social-buttons">
+                    <a href="https://www.youtube.com/channel/UC57HdexJ2QtIl-QoVLrYfvg" target="_blank" class="sec7-social-btn sec7-youtube-btn">
+                        <span class="sec7-social-text">강원대학교 유튜브 바로가기</span>
+                        <img src="images/common/link_icon_white.png" alt="아이콘" class="sec7-social-icon">
+                    </a>
+                    <a href="https://www.instagram.com/open_campus_knu/" target="_blank" class="sec7-social-btn sec7-instagram-btn">
+                        <span class="sec7-social-text">강원대학교 인스타그램 바로가기</span>
+                        <img src="images/common/link_icon_black.png" alt="아이콘" class="sec7-social-icon">
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-left">
+                    <img src="images/footer/footer_logo.png" alt="강원대학교 로고" class="footer-logo">
+                    <div class="footer-description">
+                        <div class="footer-desc-line">4개 캠퍼스가 하나로 통합되어</div>
+                        <div class="footer-desc-line">새로운 미래를 향해 도약하는 강원대학교입니다.</div>
+                    </div>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-section-title">캠퍼스 안내</div>
+                    <div class="footer-campuses">
+                        <div class="footer-campus-item">
+                            <div class="footer-campus-header">
+                                <div class="footer-campus-name">춘천캠퍼스</div>
+                                <div class="footer-campus-badge">본부</div>
+                            </div>
+                            <div class="footer-campus-info">
+                                <div class="footer-campus-address">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>강원도 춘천시 강원대학길 1(효자동) 강원대학교 춘천캠퍼스</span>
+                                </div>
+                                <div class="footer-campus-phone">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.33 2L6.66 2.67L8.33 5.33C7.33 6.33 7.33 8 8.33 9C9.33 10 11 10 12 9L14.66 10.67L15.33 14C15.33 14.67 14.67 15.33 14 15.33C6.33 15.33 0 9 0 1.33C0 0.66 0.66 0 1.33 0L3.33 2Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>033–250–6114</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-campus-item">
+                            <div class="footer-campus-header">
+                                <div class="footer-campus-name">강릉캠퍼스</div>
+                            </div>
+                            <div class="footer-campus-info">
+                                <div class="footer-campus-address">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>강원특별자치도 강릉시 죽헌길 7 국립 강릉원주대학교 강릉캠퍼스</span>
+                                </div>
+                                <div class="footer-campus-phone">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.33 2L6.66 2.67L8.33 5.33C7.33 6.33 7.33 8 8.33 9C9.33 10 11 10 12 9L14.66 10.67L15.33 14C15.33 14.67 14.67 15.33 14 15.33C6.33 15.33 0 9 0 1.33C0 0.66 0.66 0 1.33 0L3.33 2Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>033-642-7001</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-campus-item">
+                            <div class="footer-campus-header">
+                                <div class="footer-campus-name">삼척캠퍼스</div>
+                            </div>
+                            <div class="footer-campus-info">
+                                <div class="footer-campus-address">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>강원도 삼척시 중앙로 346 강원대학교 삼척캠퍼스</span>
+                                </div>
+                                <div class="footer-campus-phone">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.33 2L6.66 2.67L8.33 5.33C7.33 6.33 7.33 8 8.33 9C9.33 10 11 10 12 9L14.66 10.67L15.33 14C15.33 14.67 14.67 15.33 14 15.33C6.33 15.33 0 9 0 1.33C0 0.66 0.66 0 1.33 0L3.33 2Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>033–570–6114</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-campus-item">
+                            <div class="footer-campus-header">
+                                <div class="footer-campus-name">원주캠퍼스</div>
+                            </div>
+                            <div class="footer-campus-info">
+                                <div class="footer-campus-address">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>강원특별자치도 원주시 흥업면 남원로 150 강릉원주대학교 원주캠퍼스</span>
+                                </div>
+                                <div class="footer-campus-phone">
+                                    <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M3.33 2L6.66 2.67L8.33 5.33C7.33 6.33 7.33 8 8.33 9C9.33 10 11 10 12 9L14.66 10.67L15.33 14C15.33 14.67 14.67 15.33 14 15.33C6.33 15.33 0 9 0 1.33C0 0.66 0.66 0 1.33 0L3.33 2Z" stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33"/>
+                                    </svg>
+                                    <span>033-760-8114</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-links">
+                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=334&" target="_blank" class="footer-link">개인정보 처리방침</a>
+                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=343&" target="_blank" class="footer-link">이메일주소수집거부</a>
+                    <a href="https://wwwk.kangwon.ac.kr/www/selectPfEmpList.do?key=55&" target="_blank" class="footer-link">전화번호검색</a>
+                    <a href="https://www.academyinfo.go.kr/popup/pubinfo1690/list.do?schlId=0000003" target="_blank" class="footer-link">대학정보공시</a>
+                </div>
+                <div class="footer-copyright">
+                    COPYRIGHT (C) 2026 BY KANGWON NATIONAL UNIVERSITY. ALL RIGHTS RESERVED.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+      // Ensure YouTube embed gets a proper origin when served over http(s).
+      // If the page is opened via file://, origin will be "null" and YouTube can fail.
+      document.addEventListener('DOMContentLoaded', function () {
+        var iframe = document.querySelector('.sec5-youtube');
+        if (!iframe) return;
+
+        var vid = iframe.getAttribute('data-video-id');
+        if (!vid) return;
+
+        // When opened via file://, location.origin becomes "null" in some browsers.
+        // In that case, keep src minimal and recommend running a local server.
+        var origin = (location.origin && location.origin !== 'null') ? location.origin : '';
+
+        var base = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(vid);
+        var qs = [];
+        qs.push('rel=0');
+        qs.push('modestbranding=1');
+        qs.push('playsinline=1');
+        if (origin) qs.push('origin=' + encodeURIComponent(origin));
+
+        iframe.setAttribute('src', base + '?' + qs.join('&'));
+      });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>
