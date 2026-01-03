@@ -35,6 +35,8 @@ const i18n = {
             'sec3.campus.wonju': '원주 캠퍼스',
             'sec3.overlay.line1': '통합 강원대학교의',
             'sec3.overlay.line2': '지역 혁신 생태계',
+            'sec3.final.title': '통합 강원대학교',
+            'sec3.final.desc': '지역 혁신 생태계의 시작',
             
             // Section 4
             'sec4.line1': '흩어져 있던 캠퍼스의<span class="sec4-mobile-br"><br></span>힘을 하나로 모아,',
@@ -125,6 +127,8 @@ const i18n = {
             'sec3.campus.wonju': 'Wonju Campus',
             'sec3.overlay.line1': 'Regional Innovation Ecosystem',
             'sec3.overlay.line2': 'of Integrated Kangwon University',
+            'sec3.final.title': 'Integrated Kangwon University',
+            'sec3.final.desc': 'The Beginning of Regional Innovation Ecosystem',
             
             // Section 4
             'sec4.line1': 'Gathering the scattered power<span class="sec4-mobile-br"><br></span>of campuses into one,',
@@ -191,7 +195,7 @@ const i18n = {
         return [
             {
                 name: this.translations[lang]['sec6.campus.chuncheon'],
-                image: 'images/sec6/campus_img_춘천.png',
+                image: 'images/sec6/campus_detail_춘천.png',
                 url: 'https://wwwk.kangwon.ac.kr/www/index.do',
                 tags: [
                     this.translations[lang]['sec6.tag.research'],

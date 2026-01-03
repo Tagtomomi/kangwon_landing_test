@@ -1363,7 +1363,8 @@ a.header-univ-btn {
     }
     
     .sec4-content {
-        padding: 0 20px;
+        padding: 0px !important;
+        gap : 50px !important;
     }
     
     .sec4-text {
@@ -1416,60 +1417,63 @@ a.header-univ-btn {
     
     /* Section 6 모바일 최적화 */
     .sec6-content {
-        padding: 0 20px;
-        gap: 40px;
+        padding: 0 20px !important;
+        gap: 30px !important;
     }
     
     .sec6-title {
-        font-size: 28px !important;
-        line-height: 38px !important;
+        font-size: 24px !important;
+        line-height: 32px !important;
+        margin-bottom: 20px !important;
     }
     
     .sec6-campus-card {
         width: 100% !important;
-        max-width: 100% !important;
+        max-height: 400px !important;
         height: auto !important;
         aspect-ratio: 1 / 1 !important;
-        padding: 20px !important;
+        padding: 16px !important;
     }
     
     .sec6-campus-header {
-        margin-bottom: 20px;
+        margin-bottom: 16px !important;
     }
     
     .sec6-link-text {
-        font-size: 14px;
-        line-height: 20px;
+        font-size: 12px !important;
+        line-height: 18px !important;
     }
     
     .sec6-link-icon {
-        width: 12px;
-        height: 12px;
+        width: 10px !important;
+        height: 10px !important;
     }
     
     .sec6-campus-body {
-        width: 100%;
+        width: 100% !important;
+        gap: 2px !important;
     }
     
     .sec6-campus-name {
-        font-size: 24px;
-        line-height: 32px;
-        margin-bottom: 12px;
+        font-size: 20px !important;
+        line-height: 28px !important;
+        margin-bottom: 10px !important;
     }
     
     .sec6-campus-tags {
-        margin-bottom: 16px;
+        margin-bottom: 12px !important;
+        gap: 4px !important;
     }
     
     .sec6-tag {
-        font-size: 12px;
-        padding: 6px 12px;
-        line-height: 16px;
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+        line-height: 14px !important;
     }
     
     .sec6-campus-desc {
-        font-size: 14px;
-        line-height: 22px;
+        font-size: 13px !important;
+        line-height: 20px !important;
     }
     
     .sec6-campus-intro-images {
@@ -1488,12 +1492,28 @@ a.header-univ-btn {
     .sec6-campus-intro-img {
         width: 200px !important;
         height: auto !important;
+        opacity: 0.6 !important;
+    }
+    
+    .sec6-campus-intro-img.show {
+        opacity: 0.6 !important;
+    }
+    
+    .sec6-bg-image {
+        opacity: 0.5 !important;
     }
     
     /* Section 7 모바일 최적화 */
+    .sec7 {
+        height: auto !important;
+        min-height: 100vh !important;
+        padding: 60px 0 !important;
+        overflow: visible !important;
+    }
+    
     .sec7-content {
-        padding: 0 20px;
-        gap: 40px;
+        padding: 0 20px !important;
+        gap: 20px !important;
     }
     
     .sec7-text {
@@ -1502,14 +1522,14 @@ a.header-univ-btn {
     
     .sec7-gray,
     .sec7-white {
-        font-size: 28px !important;
-        line-height: 38px !important;
+        font-size: 26px !important;
+        line-height: 34px !important;
     }
     
     .sec7-support-card {
-        padding: 30px 20px;
-        gap: 24px;
-        width: 100%;
+        padding: 30px 20px !important;
+        gap: 24px !important;
+        width: 100% !important;
     }
     
     .sec7-support-title {
@@ -1563,13 +1583,27 @@ a.header-univ-btn {
     }
     
     .sec7-social-buttons {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 16px;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px !important;
+        max-width: 100%;
+        padding: 0 20px;
+    }
+    
+    .sec7-social-btn {
+        width: 100% !important;
+        height: auto !important;
+        padding: 12px 20px !important;
     }
     
     .sec7-social-text {
         font-size: 14px;
+        line-height: 20px;
+    }
+    
+    .sec7-social-icon {
+        width: 14px;
+        height: 14px;
     }
     
     /* Footer 모바일 최적화 */
@@ -1749,7 +1783,7 @@ a.header-univ-btn {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap : 200px;
+    gap : 100px;
 }
 
 .sec4-text {
@@ -1771,25 +1805,25 @@ a.header-univ-btn {
     line-height: 60px;
     opacity: 0;
     transform: translateY(50px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .sec4-text-line-1.visible {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0.2s;
+    transition-delay: 0.1s;
 }
 
 .sec4-text-line-2.visible {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0.5s;
+    transition-delay: 0.25s;
 }
 
 .sec4-text-line-3.visible {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0.8s;
+    transition-delay: 0.4s;
 }
 
 .sec4-mobile-br {
@@ -1901,7 +1935,7 @@ a.header-univ-btn {
 }
 
 .sec5-video{
-    width: min(980px, 92vw);
+    width: min(780px, 92vw);
     margin: 28px auto 0;
     position: relative;
   
@@ -2025,7 +2059,7 @@ a.header-univ-btn {
 
 .sec6-campus-card {
     width: 450px;
-    height: 600px !important;
+    height: 500px !important;
     padding: 30px;
     border-radius: 10px;
     background-size: cover;
@@ -2446,8 +2480,8 @@ a.header-univ-btn {
     text-align: left;
     opacity: 0;
     transform: translateX(-30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    transition-delay: 0.8s;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition-delay: 0.4s;
 }
 
 .sec1-subtitle-1.visible {
@@ -2476,8 +2510,8 @@ a.header-univ-btn {
     margin: 0;
     opacity: 0;
     transform: translateX(-30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    transition-delay: 1s;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition-delay: 0.5s;
 }
 
 .sec1-subtitle-2.visible {
@@ -2492,8 +2526,8 @@ a.header-univ-btn {
     flex-shrink: 0;
     opacity: 0;
     transform: translateX(-30px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    transition-delay: 0.8s;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition-delay: 0.4s;
 }
 
 .sec1-subtitle-1-wrapper.visible .sec1-divider {
@@ -2998,7 +3032,7 @@ a.header-univ-btn {
 }
 
 .sec7-social-btn {
-    width: 280px;
+    width: auto;
     height: 60px;
     padding: 12px 24px;
     box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.10);
@@ -3020,7 +3054,7 @@ a.header-univ-btn {
 }
 
 .sec7-instagram-btn {
-    background: #87C8EA;
+    background: #FF6A20;
 }
 
 .sec7-social-text {
@@ -3036,7 +3070,7 @@ a.header-univ-btn {
 }
 
 .sec7-instagram-btn .sec7-social-text {
-    color: black;
+    color: white;
 }
 
 .sec7-social-icon {
@@ -3647,22 +3681,22 @@ a.header-univ-btn {
 
 /* 초기 위치 (PC) - 중앙 정렬 계산을 위해 calc 사용 */
 .sec3-new .c1 {
-    top: 15%;
+    top: 25%;
     left: 15%;
 }
 
 .sec3-new .c2 {
-    top: 15%;
+    top: 25%;
     left: calc(85% - 150px);
 }
 
 .sec3-new .c3 {
-    top: 75%;
+    top: 65%;
     left: 15%;
 }
 
 .sec3-new .c4 {
-    top: 75%;
+    top: 65%;
     left: calc(85% - 150px);
 }
 

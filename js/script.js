@@ -1919,12 +1919,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (sec1Subtitle1Wrapper) {
                         sec1Subtitle1Wrapper.classList.add('visible');
                     }
-                }, 800);
+                }, 400);
                 setTimeout(() => {
                     if (sec1Subtitle2) {
                         sec1Subtitle2.classList.add('visible');
                     }
-                }, 1000);
+                }, 500);
             }
         }
     }
@@ -1960,17 +1960,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 첫 번째 줄 먼저 나타남
                     setTimeout(() => {
                         sec4TextLine1.classList.add('visible');
-                    }, 200);
+                    }, 100);
                     
                     // 두 번째 줄 약간의 딜레이 후 나타남
                     setTimeout(() => {
                         sec4TextLine2.classList.add('visible');
-                    }, 500);
+                    }, 250);
                     
                     // 세 번째 줄 마지막으로 나타남
                     setTimeout(() => {
                         sec4TextLine3.classList.add('visible');
-                    }, 800);
+                    }, 400);
                 }
             } else if (scrollY < triggerPoint) {
                 // 스크롤이 위로 올라가면 애니메이션 리셋
@@ -2173,7 +2173,7 @@ document.addEventListener('DOMContentLoaded', function() {
             campusData = [
                 {
                     name: '춘천 캠퍼스',
-                    image: 'images/sec6/campus_img_춘천.png',
+                    image: 'images/sec6/campus_detail_춘천.png',
                     url: 'https://wwwk.kangwon.ac.kr/www/index.do',
                     tags: ['종합 연구', '글로벌 교육', '혁신인재'],
                     desc: '국제 교류 통합 체계 구축<br/>학사구조 혁신 지원 온라인 교육 플랫폼'
@@ -2235,15 +2235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 // 콘텐츠 업데이트
                 campusCard.className = 'sec6-campus-card';
-                if (index === 0) {
-                    campusCard.classList.add('sec6-campus-chuncheon');
-                } else if (index === 1) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                } else if (index === 2) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                } else if (index === 3) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                }
+                campusCard.style.backgroundImage = `url(${campus.image})`;
                 
                 // 캠퍼스 이름 변경
                 if (campusName) {
@@ -2291,15 +2283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 애니메이션 없이 즉시 업데이트
             if (campusCard) {
                 campusCard.className = 'sec6-campus-card';
-                if (index === 0) {
-                    campusCard.classList.add('sec6-campus-chuncheon');
-                } else if (index === 1) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                } else if (index === 2) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                } else if (index === 3) {
-                    campusCard.style.backgroundImage = `url(${campus.image})`;
-                }
+                campusCard.style.backgroundImage = `url(${campus.image})`;
             }
             
             // 캠퍼스 이름 변경
@@ -2423,25 +2407,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (scrollY >= triggerPoint && scrollY < sec6Top + sec6Height) {
             sec6AnimationStarted = true;
             
-            // 타이틀 먼저 나타나기
-            if (sec6Title) {
-                setTimeout(() => {
-                    sec6Title.classList.add('show');
-                }, 200);
-            }
-            
-            // 배경 이미지 4개를 차례대로 빠르게 보여주기 (각각 0.8초씩)
-            sec6IntroImages.forEach((img, index) => {
-                setTimeout(() => {
-                    img.classList.add('show');
-                }, 300 + (index * 800)); // 첫 번째는 0.3초 후, 이후 각각 0.8초 간격
-            });
-            
-            // 마지막 배경 이미지가 보여진 후 카드와 네비게이션 함께 나타나기
-            const cardDelay = 300 + (sec6IntroImages.length * 800) + 300; // 마지막 이미지 후 0.3초 추가 대기
-            
+            // 모든 요소를 한번에 나타나게 하기
             setTimeout(() => {
-                // 카드와 네비게이션 함께 나타나기
+                // 타이틀
+                if (sec6Title) {
+                    sec6Title.classList.add('show');
+                }
+                
+                // 배경 이미지 4개 모두 동시에
+                sec6IntroImages.forEach((img) => {
+                    img.classList.add('show');
+                });
+                
+                // 카드와 네비게이션 함께
                 if (sec6Card) {
                     sec6Card.classList.add('show');
                 }
@@ -2453,7 +2431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!autoSlideInterval) {
                     autoSlideInterval = setInterval(nextCampus, 2500);
                 }
-            }, cardDelay);
+            }, 200);
         }
     }
     
