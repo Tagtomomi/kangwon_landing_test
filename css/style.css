@@ -162,7 +162,7 @@ a.header-univ-btn {
 }
 
 .header-univ-btn {
-    width: 182px;
+    width: 100%;
     height: 46px;
     border-radius: 40px;
     outline: 1px black solid;
@@ -1759,6 +1759,17 @@ a.header-univ-btn {
     overflow: hidden;
 }
 
+.sec4-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
+}
+
 .sec4-background {
     position: absolute;
     width: 100%;
@@ -1961,6 +1972,18 @@ a.header-univ-btn {
     display: block;
   }
 
+/* Section 5 Gradient Overlay - 섹션 5와 6 사이 연결 */
+.sec5-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 1) 100%);
+    z-index: 3;
+    pointer-events: none;
+}
+
 /* Section 6 */
 .sec6 {
     width: 100%;
@@ -1973,6 +1996,17 @@ a.header-univ-btn {
     justify-content: center;
     padding: 0;
     overflow: hidden;
+}
+
+.sec6-gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+    pointer-events: none;
 }
 
 .sec6-background {
@@ -3338,11 +3372,11 @@ a.header-univ-btn {
     /* 위에 텍스트 */
     .sec3-mobile-text {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        gap: 17px;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
     }
 
     .sec3-mobile-badge {
@@ -3351,39 +3385,42 @@ a.header-univ-btn {
         border-radius: 500px;
         outline: 1px #EEEEEE solid;
         outline-offset: -1px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
         gap: 10px;
-        text-align: center;
+        text-align: center !important;
         color: white;
-        font-size: 12px;
+        font-size: 11px !important;
         font-family: 'Outfit', sans-serif;
         font-weight: 500;
-        line-height: 16px;
+        line-height: 14px !important;
         word-wrap: break-word;
+        margin: 0 auto !important;
     }
 
     .sec3-mobile-title {
         width: 100%;
-        text-align: center;
+        text-align: center !important;
         color: white;
-        font-size: 32px;
+        font-size: 28px !important;
         font-family: 'Outfit', sans-serif;
         font-weight: 700;
-        line-height: 42px;
+        line-height: 36px !important;
         word-wrap: break-word;
+        margin: 0 auto !important;
     }
 
     .sec3-mobile-subtitle {
         width: 100%;
-        text-align: center;
+        text-align: center !important;
         color: #9A9A9A;
-        font-size: 18px;
+        font-size: 16px !important;
         font-family: 'Outfit', sans-serif;
         font-weight: 500;
-        line-height: 28px;
+        line-height: 24px !important;
         word-wrap: break-word;
+        margin: 0 auto !important;
     }
 
     /* 아래 4개의 캠퍼스 */
@@ -3820,19 +3857,46 @@ a.header-univ-btn {
     color: #ddd;
 }
 
+/* Section 3-new Gradient Overlay - 섹션 3-new와 4 사이 연결 */
+.sec3-new-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 1) 100%);
+    z-index: 100;
+    pointer-events: none;
+}
+
 /* [모바일 반응형] 768px 이하 */
 @media (max-width: 768px) {
+    .sec3-new .intro-container {
+        gap: 10px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
     .sec3-new .intro-title {
-        font-size: 3rem;
+        font-size: 2.5rem !important;
+        line-height: 1.2 !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
 
     .sec3-new .intro-desc {
-        font-size: 1.2rem;
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        text-align: center !important;
+        margin: 0 auto !important;
     }
 
     .sec3-new .intro-badge {
-        padding: 10px 25px;
-        font-size: 1rem;
+        padding: 10px 25px !important;
+        font-size: 0.9rem !important;
+        text-align: center !important;
+        margin: 0 auto !important;
+        display: inline-block !important;
     }
 
     /* 구슬 크기 90px로 축소 */
