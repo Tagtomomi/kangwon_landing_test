@@ -2228,9 +2228,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (withAnimation && campusCard) {
             isAnimating = true;
             
-            // 부드러운 크로스페이드 효과
-            campusCard.style.opacity = '0';
-            campusCard.style.transition = 'opacity 0.4s ease-in-out';
+            // 부드러운 크로스페이드 효과 - 오버레이와 함께 페이드 아웃
+            campusCard.classList.add('fade-out');
+            campusCard.style.transition = 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
             
             setTimeout(() => {
                 // 콘텐츠 업데이트
@@ -2239,11 +2239,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 캠퍼스 이름 변경
                 if (campusName) {
+                    campusName.style.opacity = '0';
                     campusName.textContent = campus.name;
                 }
                 
                 // 태그 변경
                 if (campusTags) {
+                    campusTags.style.opacity = '0';
                     campusTags.innerHTML = '';
                     campus.tags.forEach(tag => {
                         const tagElement = document.createElement('div');
@@ -2260,6 +2262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 설명 변경
                 if (campusDesc) {
+                    campusDesc.style.opacity = '0';
                     campusDesc.innerHTML = campus.desc;
                 }
                 
@@ -2268,17 +2271,35 @@ document.addEventListener('DOMContentLoaded', function() {
                     campusLink.href = campus.url;
                 }
                 
-                // 페이드 인
+                // 페이드 인 - 오버레이 제거와 함께
                 setTimeout(() => {
+                    campusCard.classList.remove('fade-out');
                     campusCard.style.opacity = '1';
+                    
+                    // 텍스트 콘텐츠도 페이드 인
+                    if (campusName) {
+                        campusName.style.transition = 'opacity 0.6s ease-in-out 0.2s';
+                        campusName.style.opacity = '1';
+                    }
+                    if (campusTags) {
+                        campusTags.style.transition = 'opacity 0.6s ease-in-out 0.3s';
+                        campusTags.style.opacity = '1';
+                    }
+                    if (campusDesc) {
+                        campusDesc.style.transition = 'opacity 0.6s ease-in-out 0.4s';
+                        campusDesc.style.opacity = '1';
+                    }
                     
                     setTimeout(() => {
                         campusCard.style.transition = '';
+                        if (campusName) campusName.style.transition = '';
+                        if (campusTags) campusTags.style.transition = '';
+                        if (campusDesc) campusDesc.style.transition = '';
                         isAnimating = false;
-                    }, 400);
+                    }, 800);
                 }, 50);
                 
-            }, 200);
+            }, 400);
         } else {
             // 애니메이션 없이 즉시 업데이트
             if (campusCard) {
