@@ -288,13 +288,23 @@
                 font-size: 0.9rem;
             }
 
-            /* 모바일용 초기 좌표 재조정 */
+            /* 모바일용 초기 좌표 재조정 - 사이드에 20px 여유, 위쪽 2개는 위에서 30px */
+            .sec3-new .c1 {
+                top: 30px;
+                left: 20px;
+            }
+
             .sec3-new .c2 {
-                left: calc(85% - 90px);
+                top: 30px;
+                left: calc(100% - 90px - 20px);
+            }
+
+            .sec3-new .c3 {
+                left: 20px;
             }
 
             .sec3-new .c4 {
-                left: calc(85% - 90px);
+                left: calc(100% - 90px - 20px);
             }
 
             .sec3-new .final-message h1 {
@@ -388,17 +398,145 @@
                     let orbSize = isDesktop ? 150 : 90;
                     let offset = orbSize / 2;
 
-                    // 타임라인 설정 (.sec3-new 전용)
+                    // 초기 상태 설정
+                    gsap.set(".sec3-new .intro-item", {
+                        y: 50,
+                        opacity: 0
+                    });
+                    gsap.set(".sec3-new .orb", { opacity: 0 });
+                    gsap.set(".sec3-new .orb-label", { opacity: 0 });
+                    gsap.set(".sec3-new .final-message", {
+                        opacity: 0,
+                        scale: 0.8
+                    });
+                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                    gsap.set(".sec3-new .bg-final", { opacity: 0 });
+                    gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
+
+                    // 타임라인 설정 (.sec3-new 전용) - ScrollTrigger 사용
                     const tl = gsap.timeline({
+                        timeScale: 8, // 8배속 (2배 더 빠르게)
                         scrollTrigger: {
-                            trigger: ".sec3-new", // 새로 만든 클래스 트리거
+                            trigger: ".sec3-new",
                             start: "top top",
                             end: "+=5000", // 애니메이션 길이
                             pin: true,
                             scrub: 1,
                             anticipatePin: 1,
+                            onEnter: () => {
+                                // 섹션 진입 시 자동 스크롤 시작
+                                setTimeout(() => {
+                                    tryStartAutoScroll();
+                                }, 200);
+                            },
+                            onLeave: () => {
+                                // 섹션 벗어날 시 자동 스크롤 중지
+                                stopAutoScroll();
+                            },
+                            onEnterBack: () => {
+                                // 다시 진입 시 자동 스크롤 시작
+                                setTimeout(() => {
+                                    tryStartAutoScroll();
+                                }, 200);
+                            },
+                            onLeaveBack: () => {
+                                // 역방향으로 벗어날 시 자동 스크롤 중지
+                                stopAutoScroll();
+                            }
                         },
                     });
+
+                    // 자동 스크롤 변수
+                    let autoScrollInterval = null;
+                    let scrollSpeed = 16.0; // 스크롤 속도 (픽셀/프레임) - 8배속 - 더 빠르게
+                    let isUserScrolling = false;
+                    let scrollTimeout = null;
+                    let lastUserScrollTime = 0;
+                    let isAutoScrolling = false;
+
+                    // 사용자 스크롤 감지
+                    const handleWheel = (e) => {
+                        lastUserScrollTime = Date.now();
+                        isUserScrolling = true;
+                        if (scrollTimeout) clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(() => {
+                            isUserScrolling = false;
+                        }, 200);
+                    };
+
+                    window.addEventListener('wheel', handleWheel, { passive: true });
+                    window.addEventListener('touchstart', () => {
+                        lastUserScrollTime = Date.now();
+                        isUserScrolling = true;
+                        if (scrollTimeout) clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(() => {
+                            isUserScrolling = false;
+                        }, 200);
+                    }, { passive: true });
+
+                    // 자동 스크롤 시작 함수
+                    function startAutoScroll() {
+                        // 이미 실행 중이면 중복 실행 방지
+                        if (autoScrollInterval) {
+                            return;
+                        }
+
+                        const scrollTrigger = tl.scrollTrigger;
+                        if (!scrollTrigger) {
+                            return;
+                        }
+
+                        // ScrollTrigger가 활성화되지 않았으면 활성화 대기
+                        if (!scrollTrigger.isActive) {
+                            setTimeout(() => {
+                                startAutoScroll();
+                            }, 100);
+                            return;
+                        }
+
+                        isAutoScrolling = true;
+
+                        autoScrollInterval = setInterval(() => {
+                            const scrollTrigger = tl.scrollTrigger;
+                            if (!scrollTrigger || !scrollTrigger.isActive) {
+                                stopAutoScroll();
+                                return;
+                            }
+
+                            // 사용자가 직접 스크롤 중이면 일시 중지
+                            const timeSinceUserScroll = Date.now() - lastUserScrollTime;
+                            if (isUserScrolling && timeSinceUserScroll < 200) {
+                                return;
+                            }
+
+                            // 현재 스크롤 위치 확인
+                            const currentScroll = window.pageYOffset || window.scrollY;
+                            const triggerStart = scrollTrigger.start;
+                            const triggerEnd = scrollTrigger.end;
+
+                            // sec3-new 섹션 범위 내에 있는지 확인
+                            if (currentScroll >= triggerStart && currentScroll < triggerEnd - 10) {
+                                // 스크롤 위치 증가
+                                const newScroll = Math.min(currentScroll + scrollSpeed, triggerEnd - 10);
+                                window.scrollTo({
+                                    top: newScroll,
+                                    behavior: 'auto'
+                                });
+                            } else if (currentScroll >= triggerEnd - 10) {
+                                // 애니메이션 완료 - 자동 스크롤 중지 (반복 없음)
+                                stopAutoScroll();
+                            }
+                        }, 16); // 약 60fps
+                    }
+
+                    // 자동 스크롤 중지 함수
+                    function stopAutoScroll() {
+                        if (autoScrollInterval) {
+                            clearInterval(autoScrollInterval);
+                            autoScrollInterval = null;
+                            isAutoScrolling = false;
+                        }
+                    }
 
                     // 애니메이션 시퀀스
                     tl.to(".sec3-new .intro-item", {
@@ -408,10 +546,22 @@
                         stagger: 1,
                         ease: "power2.out",
                     })
-                        .to(".sec3-new .orb", { opacity: 1, duration: 2 }, "<")
-                        .to(".sec3-new .orb-label", { opacity: 1, duration: 2 }, "<")
+                        .to(".sec3-new .orb", {
+                            opacity: 1,
+                            duration: 2,
+                            ease: "power2.out"
+                        }, "<")
+                        .to(".sec3-new .orb-label", {
+                            opacity: 1,
+                            duration: 2,
+                            ease: "power2.out"
+                        }, "<")
 
-                        .to(".sec3-new .orb-label", { opacity: 0, duration: 1 })
+                        .to(".sec3-new .orb-label", {
+                            opacity: 0,
+                            duration: 1,
+                            ease: "power2.in"
+                        })
                         .call(() => {
                             // 둥둥 떠다니는 애니메이션 일시 정지
                             document
@@ -449,17 +599,18 @@
                             "turnWhite"
                         )
 
+                        .addLabel("flashStart")
                         .to(".sec3-new .flash-overlay", {
                             opacity: 1,
                             duration: 1,
                             ease: "power2.in",
-                        })
+                        }, "flashStart")
 
-                        // 배경 교체
-                        .set(".sec3-new .intro-container", { opacity: 0 })
-                        .set(".sec3-new .orb-container", { opacity: 0 })
-                        .set(".sec3-new .bg-initial", { opacity: 0 })
-                        .set(".sec3-new .bg-final", { opacity: 1 })
+                        // 배경 교체 - 하얀 오버레이가 완전히 나타난 후
+                        .set(".sec3-new .intro-container", { opacity: 0 }, "flashStart+=1")
+                        .set(".sec3-new .orb-container", { opacity: 0 }, "flashStart+=1")
+                        .set(".sec3-new .bg-initial", { opacity: 0 }, "flashStart+=1")
+                        .set(".sec3-new .bg-final", { opacity: 1 }, "flashStart+=1")
 
                         .to(".sec3-new .flash-overlay", {
                             opacity: 0,
@@ -484,6 +635,32 @@
                             .querySelectorAll(".sec3-new .orb-container")
                             .forEach((el) => (el.style.animationPlayState = "running"));
                     });
+
+                    // 자동 스크롤 시작 시도 함수 (섹션에 도착했을 때만 호출)
+                    function tryStartAutoScroll(attempts = 0) {
+                        const maxAttempts = 10;
+                        const scrollTrigger = tl.scrollTrigger;
+
+                        if (!scrollTrigger) {
+                            if (attempts < maxAttempts) {
+                                setTimeout(() => tryStartAutoScroll(attempts + 1), 100);
+                            }
+                            return;
+                        }
+
+                        // ScrollTrigger가 활성화되어 있는지 확인
+                        if (!scrollTrigger.isActive) {
+                            if (attempts < maxAttempts) {
+                                setTimeout(() => tryStartAutoScroll(attempts + 1), 200);
+                            }
+                            return;
+                        }
+
+                        // 자동 스크롤 시작
+                        startAutoScroll();
+                    }
+
+                    // sec3-new 섹션에 도착했을 때만 자동 스크롤 시작 (onEnter, onEnterBack에서 처리됨)
                 }
             );
         });

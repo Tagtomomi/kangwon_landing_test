@@ -4000,19 +4000,21 @@ a.header-univ-btn {
 
     /* 모바일용 초기 좌표 재조정 */
     .sec3-new .c1 {
-        left: 25%;
+        top: 30px;
+        left: 20px;
     }
 
     .sec3-new .c2 {
-        left: calc(75% - 90px);
+        top: 30px;
+        left: calc(100% - 90px - 20px);
     }
 
     .sec3-new .c3 {
-        left: 25%;
+        left: 20px;
     }
 
     .sec3-new .c4 {
-        left: calc(75% - 90px);
+        left: calc(100% - 90px - 20px);
     }
 
     .sec3-new .final-message h1 {
