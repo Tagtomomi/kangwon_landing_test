@@ -998,8 +998,18 @@
                 // sec3-new 섹션인지 확인
                 var isSec3New = targetSection.classList.contains('sec3-new');
                 
-                // 섹션의 실제 위치 계산 (padding-top이 적용되어 있으므로 header 높이를 빼지 않음)
-                var targetPosition = targetElement.offsetTop;
+                // footer 섹션인지 확인
+                var isFooter = targetSection.classList.contains('footer');
+                
+                // 섹션의 실제 위치 계산
+                var targetPosition;
+                if (isFooter) {
+                    // footer는 header 높이만큼 빼서 위치시킴
+                    targetPosition = targetElement.offsetTop - headerH;
+                } else {
+                    // 다른 섹션은 padding-top이 적용되어 있으므로 header 높이를 빼지 않음
+                    targetPosition = targetElement.offsetTop;
+                }
                 
                 // 음수 방지
                 if (targetPosition < 0) {
@@ -1606,7 +1616,9 @@
                             .set(".sec3-new .intro-item", { opacity: 0, display: "none" })
                             .set(".sec3-new .intro-badge", { opacity: 0, display: "none" })
                             .set(".sec3-new .intro-title", { opacity: 0, display: "none" })
-                            .set(".sec3-new .intro-desc", { opacity: 0, display: "none" });
+                            .set(".sec3-new .intro-desc", { opacity: 0, display: "none" })
+                            // flash-overlay를 확실히 숨김 (깜빡임 방지)
+                            .set(".sec3-new .flash-overlay", { opacity: 0 });
 
                         // 역재생 시 애니메이션 복구
                         tl.eventCallback("onReverseComplete", () => {
