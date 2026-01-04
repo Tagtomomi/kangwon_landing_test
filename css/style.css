@@ -3858,7 +3858,7 @@ a.header-univ-btn {
     height: 100%;
     border-radius: 50%;
     opacity: var(--overlay-opacity, 0.3);
-    transition: opacity 0.3s ease;
+    transition: none; /* GSAP 애니메이션이 제어하므로 transition 제거 */
 }
 
 /* 이미지 경로 및 색상 오버레이 */

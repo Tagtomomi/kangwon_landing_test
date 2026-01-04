@@ -1143,9 +1143,9 @@
                                 var currentPosition = startPosition + distance * easeProgress;
                                 window.scrollTo(0, currentPosition);
                                 
-                                // GSAP ScrollTrigger 업데이트 강제
+                                // GSAP ScrollTrigger 업데이트 강제 (매 프레임마다)
                                 if (typeof ScrollTrigger !== 'undefined') {
-                                    ScrollTrigger.refresh();
+                                    ScrollTrigger.update(); // refresh() 대신 update() 사용하여 더 빠른 반응
                                 }
                                 
                                 if (progress < 1) {
@@ -1321,7 +1321,7 @@
                                 end: "bottom+=5000 bottom", // 섹션 하단에서 추가로 5000px 더 스크롤 (더 긴 애니메이션)
                                 pin: true,
                                 pinSpacing: true, // pin-spacer 생성 허용
-                                scrub: 0.15, // scrub 값을 더 낮춰서 매우 부드럽고 느리게
+                                scrub: 0.05, // scrub 값을 더 낮춰서 빠른 반응 (자동 스크롤 시 즉시 반응)
                                 anticipatePin: 1,
                                 invalidateOnRefresh: true, // 리사이즈 시 재계산
                                 onEnter: function() {
@@ -1333,8 +1333,9 @@
                                     gsap.set(".sec3-new .orb", { opacity: 1 });
                                     gsap.set(".sec3-new .orb-label", { opacity: 0 });
                                     // 배경과 컨테이너는 즉시 보이도록 설정
-                                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
-                                    gsap.set(".sec3-new .bg-final", { opacity: 0 });
+                                    // 배경은 타임라인에서 제어하므로 초기 상태만 설정 (깜빡임 방지)
+                                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4, zIndex: 0 });
+                                    gsap.set(".sec3-new .bg-final", { opacity: 0, zIndex: 0 });
                                     gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
                                     gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
                                     gsap.set(".sec3-new .intro-container", { opacity: 1 });
@@ -1351,10 +1352,8 @@
                                 },
                                 onEnterBack: function() {
                                     // 역방향으로 돌아올 때도 초기 상태 설정
-                                    // final-message 숨기기
-                                    gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
-                                    gsap.set(".sec3-new .bg-final", { opacity: 0 });
-                                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                                    // final-message는 타임라인에서 제어하므로 여기서 변경하지 않음 (깜빡임 방지)
+                                    // 배경은 타임라인에서 제어하므로 여기서 변경하지 않음
                                     gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
                                     
                                     // orb-container 초기 위치로 복원
@@ -1373,36 +1372,19 @@
                                         container.style.animationPlayState = "running";
                                     });
                                     
+                                    // intro 요소들은 완전히 숨김 상태 유지 (다시 나타나지 않도록)
                                     gsap.set(".sec3-new .intro-item", { 
                                         y: 50, 
-                                        opacity: 0 
+                                        opacity: 0,
+                                        display: "none"
                                     });
                                     gsap.set(".sec3-new .orb", { opacity: 1 });
                                     gsap.set(".sec3-new .orb-label", { opacity: 0 });
-                                    gsap.set(".sec3-new .intro-container", { opacity: 1 });
+                                    gsap.set(".sec3-new .intro-container", { opacity: 0, display: "none" });
                                     gsap.set(".sec3-new .campus-group", { opacity: 1 });
-                                    
-                                    // 순서대로 올라오는 애니메이션
-                                    gsap.to(".sec3-new .intro-badge", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out"
-                                    });
-                                    gsap.to(".sec3-new .intro-title", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out",
-                                        delay: 0.3
-                                    });
-                                    gsap.to(".sec3-new .intro-desc", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out",
-                                        delay: 0.6
-                                    });
+                                    gsap.set(".sec3-new .intro-badge", { opacity: 0, display: "none" });
+                                    gsap.set(".sec3-new .intro-title", { opacity: 0, display: "none" });
+                                    gsap.set(".sec3-new .intro-desc", { opacity: 0, display: "none" });
                                     
                                     // 스크롤 잠금 시작
                                     if (window.fullpageScroll) {
@@ -1473,56 +1455,57 @@
                                     .forEach((el) => (el.style.animationPlayState = "paused"));
                             })
 
-                            // [중앙 정렬] - 동시에 이미지 오버레이 효과 강화
+                            // 색상 변화를 먼저 시작 (중앙 정렬보다 일찍)
+                            // 각 캠퍼스별 오버레이 강화 (이미지 가리기 효과) - 투명도 1로 증가 (빠르게)
+                            .to(".sec3-new .c1 .orb-bg", {
+                                "--overlay-opacity": 1,
+                                duration: 0.3,
+                                ease: "none",
+                            })
+                            .to(".sec3-new .c2 .orb-bg", {
+                                "--overlay-opacity": 1,
+                                duration: 0.3,
+                                ease: "none",
+                            }, "<")
+                            .to(".sec3-new .c3 .orb-bg", {
+                                "--overlay-opacity": 1,
+                                duration: 0.3,
+                                ease: "none",
+                            }, "<")
+                            .to(".sec3-new .c4 .orb-bg", {
+                                "--overlay-opacity": 1,
+                                duration: 0.3,
+                                ease: "none",
+                            }, "<")
+                            // box-shadow spread 확대 (각 색상별)
+                            .to(".sec3-new .c1 .orb", {
+                                boxShadow: "0 0 70px 40px rgba(26, 88, 175, 0.6)",
+                                duration: 0.8,
+                                ease: "power1.out",
+                            }, "<")
+                            .to(".sec3-new .c2 .orb", {
+                                boxShadow: "0 0 70px 40px rgba(32, 188, 255, 0.6)",
+                                duration: 0.8,
+                                ease: "power1.out",
+                            }, "<")
+                            .to(".sec3-new .c3 .orb", {
+                                boxShadow: "0 0 70px 40px rgba(74, 214, 171, 0.6)",
+                                duration: 0.8,
+                                ease: "power1.out",
+                            }, "<")
+                            .to(".sec3-new .c4 .orb", {
+                                boxShadow: "0 0 70px 40px rgba(255, 106, 32, 0.6)",
+                                duration: 0.8,
+                                ease: "power1.out",
+                            }, "<")
+                            // [중앙 정렬] - 색상 변화가 시작된 후 중앙 정렬 시작
                             .to(".sec3-new .orb-container", {
                                 top: `calc(50% - ${offset}px)`,
                                 left: `calc(50% - ${offset}px)`,
                                 scale: 0.5,
                                 duration: 3,
                                 ease: "power2.inOut",
-                            })
-                            // 각 캠퍼스별 오버레이 강화 (이미지 가리기 효과) - 투명도 1로 증가
-                            .to(".sec3-new .c1 .orb-bg", {
-                                "--overlay-opacity": 1,
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c2 .orb-bg", {
-                                "--overlay-opacity": 1,
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c3 .orb-bg", {
-                                "--overlay-opacity": 1,
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c4 .orb-bg", {
-                                "--overlay-opacity": 1,
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            // box-shadow spread 확대 (각 색상별)
-                            .to(".sec3-new .c1 .orb", {
-                                boxShadow: "0 0 70px 40px rgba(26, 88, 175, 0.6)",
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c2 .orb", {
-                                boxShadow: "0 0 70px 40px rgba(32, 188, 255, 0.6)",
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c3 .orb", {
-                                boxShadow: "0 0 70px 40px rgba(74, 214, 171, 0.6)",
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
-                            .to(".sec3-new .c4 .orb", {
-                                boxShadow: "0 0 70px 40px rgba(255, 106, 32, 0.6)",
-                                duration: 3,
-                                ease: "power2.inOut",
-                            }, "<")
+                            }, "-=1.5") // 색상 변화가 거의 완료된 후 중앙 정렬 시작
 
                             .addLabel("turnWhite")
                             .to(
@@ -1583,10 +1566,20 @@
                                 duration: 0.5,
                                 ease: "power2.in"
                             }, "flashStart+=0.3")
+                            // 요소들을 완전히 숨김 (다시 나타나지 않도록)
+                            .set(".sec3-new .intro-container", { display: "none" }, "flashStart+=0.8")
+                            .set(".sec3-new .intro-item", { display: "none" }, "flashStart+=0.8")
+                            .set(".sec3-new .intro-title", { display: "none" }, "flashStart+=0.8")
+                            .set(".sec3-new .intro-badge", { display: "none" }, "flashStart+=0.8")
+                            .set(".sec3-new .intro-desc", { display: "none" }, "flashStart+=0.8")
+                            .set(".sec3-new .orb-container", { display: "none" }, "flashStart+=0.8")
 
-                            // 배경 교체
-                            .set(".sec3-new .bg-initial", { opacity: 0 })
-                            .set(".sec3-new .bg-final", { opacity: 1 })
+                            // 배경 교체 (flash-overlay가 나타나는 시점에 즉시 교체, z-index로 확실히 위에 표시)
+                            .set(".sec3-new .bg-initial", { opacity: 0, zIndex: 0, display: "none" }, "flashStart")
+                            .set(".sec3-new .bg-final", { opacity: 1, zIndex: 1 }, "flashStart")
+                            // 배경 교체 확정 (깜빡임 방지)
+                            .set(".sec3-new .bg-initial", { opacity: 0, zIndex: 0, display: "none" }, "flashStart+=1")
+                            .set(".sec3-new .bg-final", { opacity: 1, zIndex: 1 }, "flashStart+=1")
 
                             // 플래시가 사라지면서 final-message 나타남
                             .to(".sec3-new .flash-overlay", {
@@ -1602,23 +1595,40 @@
                                     y: 0,
                                     duration: 2,
                                     ease: "back.out(1.7)",
+                                    // final-message 상태 확정 (깜빡임 방지)
+                                    onStart: function() {
+                                        gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1 });
+                                    },
                                     onComplete: function() {
                                         // 애니메이션 완료 시 스크롤 잠금 해제
                                         if (window.fullpageScroll) {
                                             window.fullpageScroll.setSec3NewLock(false);
                                         }
+                                        // 최종 상태 확정: bg-final 유지, bg-initial 완전히 숨김, final-message 유지 (깜빡임 방지)
+                                        gsap.set(".sec3-new .bg-final", { opacity: 1, zIndex: 1 });
+                                        gsap.set(".sec3-new .bg-initial", { opacity: 0, display: "none", zIndex: 0 });
+                                        gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" }); // final-message 상태 확정
+                                        // 추가 확정 (깜빡임 완전 방지)
+                                        setTimeout(function() {
+                                            gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" });
+                                        }, 50);
+                                        setTimeout(function() {
+                                            gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" });
+                                        }, 200);
+                                        gsap.set(".sec3-new .intro-container", { opacity: 0, display: "none" });
+                                        gsap.set(".sec3-new .intro-item", { opacity: 0, display: "none" });
+                                        gsap.set(".sec3-new .intro-title", { opacity: 0, display: "none" });
+                                        gsap.set(".sec3-new .intro-badge", { opacity: 0, display: "none" });
+                                        gsap.set(".sec3-new .intro-desc", { opacity: 0, display: "none" });
+                                        gsap.set(".sec3-new .orb-container", { opacity: 0, display: "none" });
                                     }
                                 },
                                 "-=1.5"
                             )
-                            // 마지막에 intro-container와 intro-item을 확실히 숨김
-                            .set(".sec3-new .intro-container", { opacity: 0, display: "none" })
-                            .set(".sec3-new .intro-item", { opacity: 0, display: "none" })
-                            .set(".sec3-new .intro-badge", { opacity: 0, display: "none" })
-                            .set(".sec3-new .intro-title", { opacity: 0, display: "none" })
-                            .set(".sec3-new .intro-desc", { opacity: 0, display: "none" })
-                            // flash-overlay를 확실히 숨김 (깜빡임 방지)
-                            .set(".sec3-new .flash-overlay", { opacity: 0 });
+                            // final-message 상태 확정 (깜빡임 방지) - 여러 번 확정하여 안정성 확보
+                            .set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" })
+                            .set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" }, "+=0.1")
+                            .set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" }, "+=0.1");
 
                         // 역재생 시 애니메이션 복구
                         tl.eventCallback("onReverseComplete", () => {
@@ -1632,11 +1642,22 @@
                             }
                         });
                         
-                        // 타임라인 완료 시 스크롤 잠금 해제 (안전장치)
+                        // 타임라인 완료 시 스크롤 잠금 해제 및 배경 상태 확정 (안전장치)
                         tl.eventCallback("onComplete", () => {
                             if (window.fullpageScroll) {
                                 window.fullpageScroll.setSec3NewLock(false);
                             }
+                            // 배경 및 final-message 상태 확정 (깜빡임 방지)
+                            gsap.set(".sec3-new .bg-final", { opacity: 1, zIndex: 1 });
+                            gsap.set(".sec3-new .bg-initial", { opacity: 0, display: "none", zIndex: 0 });
+                            gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" }); // final-message 상태 확정
+                            // 추가 확정 (깜빡임 완전 방지)
+                            setTimeout(function() {
+                                gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" });
+                            }, 100);
+                            setTimeout(function() {
+                                gsap.set(".sec3-new .final-message", { opacity: 1, scale: 1, display: "block" });
+                            }, 300);
                         });
                     }
                 );
