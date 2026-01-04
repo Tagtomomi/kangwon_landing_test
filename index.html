@@ -920,10 +920,81 @@
                 // 키보드 이벤트
                 window.addEventListener('keydown', handleKeyDown);
                 
-                // 터치 이벤트 (모바일 - 일반 스크롤만 허용, 섹션 이동 없음)
-                // 모바일에서는 일반 스크롤만 작동하고 드래그로 섹션 이동하지 않음
+                // 터치 이벤트 (모바일 - 스와이프로 섹션 이동)
+                var touchStartY = 0;
+                var touchStartTime = 0;
+                var touchMoved = false;
+                var minSwipeDistance = 50; // 최소 스와이프 거리 (px)
+                var maxSwipeTime = 500; // 최대 스와이프 시간 (ms)
                 
-                // 스크롤 이벤트로 현재 섹션 업데이트 (모바일에서는 자동 섹션 이동 비활성화)
+                document.addEventListener('touchstart', function(e) {
+                    if (isScrolling) return;
+                    
+                    // sec3-new 섹션에서는 터치 이벤트 무시
+                    updateCurrentSection();
+                    var currentSec = sections[currentSection];
+                    var isInSec3New = currentSec && currentSec.classList.contains('sec3-new');
+                    if (isInSec3New) return;
+                    
+                    touchStartY = e.touches[0].clientY;
+                    touchStartTime = Date.now();
+                    touchMoved = false;
+                }, { passive: true });
+                
+                document.addEventListener('touchmove', function(e) {
+                    if (isScrolling) return;
+                    
+                    // sec3-new 섹션에서는 터치 이벤트 무시
+                    updateCurrentSection();
+                    var currentSec = sections[currentSection];
+                    var isInSec3New = currentSec && currentSec.classList.contains('sec3-new');
+                    if (isInSec3New) return;
+                    
+                    if (touchStartY !== 0) {
+                        touchMoved = true;
+                    }
+                }, { passive: true });
+                
+                document.addEventListener('touchend', function(e) {
+                    if (isScrolling || !touchMoved || touchStartY === 0) {
+                        touchStartY = 0;
+                        touchMoved = false;
+                        return;
+                    }
+                    
+                    // sec3-new 섹션에서는 터치 이벤트 무시
+                    updateCurrentSection();
+                    var currentSec = sections[currentSection];
+                    var isInSec3New = currentSec && currentSec.classList.contains('sec3-new');
+                    if (isInSec3New) {
+                        touchStartY = 0;
+                        touchMoved = false;
+                        return;
+                    }
+                    
+                    var touchEndY = e.changedTouches[0].clientY;
+                    var touchEndTime = Date.now();
+                    var swipeDistance = touchStartY - touchEndY; // 양수면 위로 스와이프, 음수면 아래로 스와이프
+                    var swipeTime = touchEndTime - touchStartTime;
+                    
+                    // 스와이프 거리와 시간이 조건을 만족하면 섹션 이동
+                    if (Math.abs(swipeDistance) >= minSwipeDistance && swipeTime <= maxSwipeTime) {
+                        e.preventDefault();
+                        
+                        if (swipeDistance > 0 && currentSection < sections.length - 1) {
+                            // 위로 스와이프 - 다음 섹션으로
+                            scrollToSection(currentSection + 1);
+                        } else if (swipeDistance < 0 && currentSection > 0) {
+                            // 아래로 스와이프 - 이전 섹션으로
+                            scrollToSection(currentSection - 1);
+                        }
+                    }
+                    
+                    touchStartY = 0;
+                    touchMoved = false;
+                }, { passive: false });
+                
+                // 스크롤 이벤트로 현재 섹션 업데이트
                 window.addEventListener('scroll', function() {
                     if (!isScrolling) {
                         updateCurrentSection();
