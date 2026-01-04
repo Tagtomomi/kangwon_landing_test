@@ -277,12 +277,18 @@ const i18n = {
             document.body.classList.remove('lang-en');
         }
         
-        // 영문일 때 전체 폰트 크기를 4px 작게 조절
+        // 영문일 때 전체 폰트 크기를 4px 작게 조절 (섹션2 인라인 스타일 제외)
         const adjustFontSizes = (isEnglish) => {
             // 모든 요소를 가져오되, 스크립트, 스타일, noscript 태그는 제외
             const allElements = document.querySelectorAll('*:not(script):not(style):not(noscript)');
             
             allElements.forEach(element => {
+                // 섹션2 인라인 스타일 요소는 제외 (한글 버전 유지)
+                if (element.classList.contains('sec2-main-text-inline') || 
+                    element.classList.contains('sec2-sub-text-inline')) {
+                    return;
+                }
+                
                 const computedStyle = window.getComputedStyle(element);
                 const fontSize = computedStyle.fontSize;
                 
@@ -296,7 +302,7 @@ const i18n = {
                             element.dataset.originalFontSize = fontSize;
                         }
                         // 4px 작게 조정
-                        element.style.fontSize = (currentSize - 4) + 'px';
+                        element.style.fontSize = (currentSize - 2) + 'px';
                     } else {
                         // 원본으로 복원
                         if (element.dataset.originalFontSize) {
