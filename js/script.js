@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 네비게이션 메뉴 스크롤 이동
+    // 네비게이션 메뉴 스크롤 이동 - 커스텀 풀페이지 스크롤 사용
     const navLinks = document.querySelectorAll('.nav-link[data-section]');
     
     navLinks.forEach(link => {
@@ -36,20 +36,36 @@ document.addEventListener('DOMContentLoaded', function() {
             const sectionId = this.getAttribute('data-section');
             const targetSection = document.getElementById(sectionId);
             
-            if (targetSection) {
+            if (targetSection && typeof window.fullpageScroll !== 'undefined') {
+                // 커스텀 풀페이지 스크롤로 섹션 이동
+                const sections = Array.from(document.querySelectorAll('.fp-section'));
+                const sectionIndex = sections.findIndex(section => section === targetSection || section.id === sectionId);
+                
+                if (sectionIndex !== -1) {
+                    window.fullpageScroll.scrollToSection(sectionIndex);
+                } else {
+                    // Fallback: 직접 스크롤
+                    const headerHeight = document.querySelector('.header').offsetHeight;
+                    const targetPosition = targetSection.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            } else if (targetSection) {
+                // Fallback: 직접 스크롤
                 const headerHeight = document.querySelector('.header').offsetHeight;
                 const targetPosition = targetSection.offsetTop - headerHeight;
-                
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
                 });
-                
-                // 모바일 메뉴가 열려있으면 닫기
-                if (navMenu && navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    mobileMenuBtn.classList.remove('active');
-                }
+            }
+            
+            // 모바일 메뉴가 열려있으면 닫기
+            if (navMenu && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
             }
         });
     });
@@ -74,14 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Scroll button functionality
+    // Scroll button functionality - 커스텀 풀페이지 스크롤 사용
     const scrollBtn = document.querySelector('.sec1-scroll-btn');
-    if (scrollBtn) {
+    if (scrollBtn && typeof window.fullpageScroll !== 'undefined') {
         scrollBtn.addEventListener('click', function() {
-            window.scrollBy({
-                top: window.innerHeight,
-                behavior: 'smooth'
-            });
+            var current = window.fullpageScroll.getCurrentSection();
+            window.fullpageScroll.scrollToSection(current + 1);
         });
     }
     
@@ -2458,4 +2472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.addEventListener('scroll', handleSec6Animation, { passive: true });
     handleSec6Animation(); // 초기 실행
+
+    // FullPage.js가 스크롤을 제어하므로 커스텀 스크롤 코드는 주석 처리
+    // FullPage.js 초기화는 index.html에서 처리됨
 });

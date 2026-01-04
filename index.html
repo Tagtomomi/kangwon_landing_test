@@ -178,23 +178,23 @@
 
         /* 초기 위치 (PC) - 중앙 정렬 계산을 위해 calc 사용 */
         .sec3-new .c1 {
-            top: 15%;
-            left: 15%;
+            top: 25%;
+            left: 25%;
         }
 
         .sec3-new .c2 {
-            top: 15%;
-            left: calc(85% - 150px);
+            top: 25%;
+            left: calc(75% - 150px);
         }
 
         .sec3-new .c3 {
-            top: 75%;
-            left: 15%;
+            top: 65%;
+            left: 25%;
         }
 
         .sec3-new .c4 {
-            top: 75%;
-            left: calc(85% - 150px);
+            top: 65%;
+            left: calc(75% - 150px);
         }
 
         .sec3-new .orb {
@@ -239,11 +239,13 @@
         }
 
         .sec3-new .c1 .orb-bg::after {
-            background-color: #1A58AF; /* 춘천 */
+            background-color: #1A58AF;
+            /* 춘천 */
         }
 
         .sec3-new .c1 .orb {
-            box-shadow: 0 0 70px rgba(26, 88, 175, 0.6); /* 춘천 */
+            box-shadow: 0 0 70px rgba(26, 88, 175, 0.6);
+            /* 춘천 */
         }
 
         .sec3-new .c2 .orb-bg {
@@ -251,11 +253,13 @@
         }
 
         .sec3-new .c2 .orb-bg::after {
-            background-color: #20BCFF; /* 강릉 */
+            background-color: #20BCFF;
+            /* 강릉 */
         }
 
         .sec3-new .c2 .orb {
-            box-shadow: 0 0 70px rgba(32, 188, 255, 0.6); /* 강릉 */
+            box-shadow: 0 0 70px rgba(32, 188, 255, 0.6);
+            /* 강릉 */
         }
 
         .sec3-new .c3 .orb-bg {
@@ -263,11 +267,13 @@
         }
 
         .sec3-new .c3 .orb-bg::after {
-            background-color: #4AD6AB; /* 원주 */
+            background-color: #4AD6AB;
+            /* 원주 */
         }
 
         .sec3-new .c3 .orb {
-            box-shadow: 0 0 70px rgba(74, 214, 171, 0.6); /* 원주 */
+            box-shadow: 0 0 70px rgba(74, 214, 171, 0.6);
+            /* 원주 */
         }
 
         .sec3-new .c4 .orb-bg {
@@ -275,11 +281,13 @@
         }
 
         .sec3-new .c4 .orb-bg::after {
-            background-color: #FF6A20; /* 삼척 */
+            background-color: #FF6A20;
+            /* 삼척 */
         }
 
         .sec3-new .c4 .orb {
-            box-shadow: 0 0 70px rgba(255, 106, 32, 0.6); /* 삼척 */
+            box-shadow: 0 0 70px rgba(255, 106, 32, 0.6);
+            /* 삼척 */
         }
 
         .sec3-new .orb-label {
@@ -344,12 +352,20 @@
             }
 
             /* 모바일용 초기 좌표 재조정 */
+            .sec3-new .c1 {
+                left: 25%;
+            }
+
             .sec3-new .c2 {
-                left: calc(85% - 90px);
+                left: calc(75% - 90px);
+            }
+
+            .sec3-new .c3 {
+                left: 25%;
             }
 
             .sec3-new .c4 {
-                left: calc(85% - 90px);
+                left: calc(75% - 90px);
             }
 
             .sec3-new .final-message h1 {
@@ -398,7 +414,8 @@
                 </ul>
                 <!-- 모바일 메뉴 하단 버튼 및 언어 선택기 -->
                 <div class="mobile-menu-footer">
-                    <a href="https://wwwk.kangwon.ac.kr/www/index.do" target="_blank" class="mobile-menu-univ-btn" data-i18n="header.univ-link">강원대학교
+                    <a href="https://wwwk.kangwon.ac.kr/www/index.do" target="_blank" class="mobile-menu-univ-btn"
+                        data-i18n="header.univ-link">강원대학교
                         바로가기</a>
                     <div class="mobile-menu-lang">
                         <button class="mobile-lang-kr">KR</button>
@@ -410,7 +427,8 @@
 
             <!-- 우측 버튼 및 언어 -->
             <div class="header-right">
-                <a href="https://wwwk.kangwon.ac.kr/www/index.do" target="_blank" class="header-univ-btn" data-i18n="header.univ-link">강원대학교 바로가기</a>
+                <a href="https://wwwk.kangwon.ac.kr/www/index.do" target="_blank" class="header-univ-btn"
+                    data-i18n="header.univ-link">강원대학교 바로가기</a>
                 <div class="language-selector">
                     <button class="header-lang lang-btn-kr">KR</button>
                     <div class="divider-vertical"></div>
@@ -430,7 +448,7 @@
     <!-- 메인 컨텐츠 -->
     <main>
         <!-- Section 1: Hero Section -->
-        <section id="sec1" class="sec1">
+        <section id="sec1" class="sec1 fp-section">
             <div class="sec1-background">
                 <img src="images/sec1/sec1_bg.png" alt="배경 이미지" class="sec1-bg-image">
             </div>
@@ -467,16 +485,20 @@
         </section>
 
         <!-- Section 2 -->
-        <section class="sec2" style="height: auto;">
+        <section class="sec2 fp-section">
             <div class="sec2-background">
                 <img src="images/sec1/sec1_bg.png" alt="배경 이미지" class="sec2-bg-image">
             </div>
-            <div class="sec2-inner-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);flex-direction: column; justify-content: flex-start; align-items: center; gap: 53px; display: inline-flex">
-                <div class="sec2-main-text-inline" style="text-align: center; color: var(--Backgrounds-Primary, white); font-size: 44px; font-family: Outfit; font-weight: 700; line-height: 1.3; word-wrap: break-word">
+            <div class="sec2-inner-content"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);flex-direction: column; justify-content: flex-start; align-items: center; gap: 53px; display: inline-flex">
+                <div class="sec2-main-text-inline"
+                    style="text-align: center; color: var(--Backgrounds-Primary, white); font-size: 44px; font-family: Outfit; font-weight: 700; line-height: 1.3; word-wrap: break-word">
                     <div data-aos-duration="1000" data-aos="fade-up" data-i18n="sec2.date">2026년 3월,</div>
-                    <div data-aos-duration="1000" data-aos-delay="250" data-aos="fade-up" data-i18n="sec2.main">통합 강원대학교 공식 출범합니다</div>
+                    <div data-aos-duration="1000" data-aos-delay="250" data-aos="fade-up" data-i18n="sec2.main">통합 강원대학교
+                        공식 출범합니다</div>
                 </div>
-                <div class="sec2-sub-text-inline" style="text-align: center; color: white; font-size: 28.10px; font-family: Outfit; font-weight: 500; word-wrap: break-word">
+                <div class="sec2-sub-text-inline"
+                    style="text-align: center; color: white; font-size: 28.10px; font-family: Outfit; font-weight: 500; word-wrap: break-word">
                     <p data-aos-duration="1000" data-aos-delay="500" data-aos="fade-up">
                         <span style="color: #9A9A9A;" data-i18n="sec2.sub1">춘천 삼척 강릉 원주 </span>
                         <span data-i18n="sec2.sub2">4개의 캠퍼스가</span>
@@ -490,144 +512,8 @@
             </div>
         </section>
 
-        <!-- Section 3 - PC 버전 (모바일에서 숨김) - 숨김 처리 -->
-        <section class="sec3 sec3-scrollfx sec3-desktop" style="display: none;"
-            <div class="sec3-content">
-                <div class="sec3-main-text">
-                    <div class="sec3-badge" data-i18n="sec3.badge">강원 1도 1국립대학</div>
-                    <div class="sec3-text-group">
-                        <div class="sec3-title" data-i18n="sec3.title">위대한 도약</div>
-                        <div class="sec3-subtitle" data-i18n="sec3.subtitle">4개 캠퍼스의 시너지가 모여<br />글로컬 대학도시를 구현합니다</div>
-                    </div>
-                </div>
-
-                <div class="sec3-campuses">
-                    <div class="sec3-campus sec3-campus-chuncheon">
-                        <div class="sec3-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_춘천.png" alt="춘천 캠퍼스" class="sec3-campus-image">
-                            <div class="sec3-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-campus-info">
-                            <div class="sec3-campus-circle"></div>
-                            <div class="sec3-campus-name" data-i18n="sec3.campus.chuncheon">춘천 캠퍼스</div>
-                            <div class="sec3-campus-dot"></div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-campus sec3-campus-gangneung">
-                        <div class="sec3-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_강릉.png" alt="강릉 캠퍼스" class="sec3-campus-image">
-                            <div class="sec3-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-campus-info">
-                            <div class="sec3-campus-circle"></div>
-                            <div class="sec3-campus-name" data-i18n="sec3.campus.gangneung">강릉 캠퍼스</div>
-                            <div class="sec3-campus-dot"></div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-campus sec3-campus-samcheok">
-                        <div class="sec3-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_삼척.png" alt="삼척 캠퍼스" class="sec3-campus-image">
-                            <div class="sec3-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-campus-info">
-                            <div class="sec3-campus-circle"></div>
-                            <div class="sec3-campus-name" data-i18n="sec3.campus.samcheok">삼척 캠퍼스</div>
-                            <div class="sec3-campus-dot"></div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-campus sec3-campus-wonju">
-                        <div class="sec3-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_원주.png" alt="원주 캠퍼스" class="sec3-campus-image">
-                            <div class="sec3-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-campus-info">
-                            <div class="sec3-campus-circle"></div>
-                            <div class="sec3-campus-name" data-i18n="sec3.campus.wonju">원주 캠퍼스</div>
-                            <div class="sec3-campus-dot"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 플래시 오버레이 -->
-                <div class="sec3-flash-overlay"></div>
-
-                <!-- 텍스트 오버레이 -->
-                <div class="sec3-text-overlay">
-                    <div class="sec3-text-overlay-line1" data-i18n="sec3.overlay.line1">통합 강원대학교의</div>
-                    <div class="sec3-text-overlay-line2" data-i18n="sec3.overlay.line2">지역 혁신 생태계</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3 - 모바일 버전 (PC에서 숨김) - 숨김 처리 -->
-        <section class="sec3-mobile" style="display: none;">
-            <div class="sec3-mobile-content">
-                <!-- 위에 텍스트 -->
-                <div class="sec3-mobile-text">
-                    <div class="sec3-mobile-badge" data-i18n="sec3.badge">강원 1도 1국립대학</div>
-                    <div class="sec3-mobile-title" data-i18n="sec3.title">위대한 도약</div>
-                    <div class="sec3-mobile-subtitle" data-i18n="sec3.subtitle">4개 캠퍼스의 시너지가 모여<br />글로컬 대학도시를 구현합니다</div>
-                </div>
-
-                <!-- 아래 4개의 캠퍼스 -->
-                <div class="sec3-mobile-campuses">
-                    <div class="sec3-mobile-campus sec3-mobile-campus-chuncheon">
-                        <div class="sec3-mobile-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_춘천.png" alt="춘천 캠퍼스" class="sec3-mobile-campus-image">
-                            <div class="sec3-mobile-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-mobile-campus-info">
-                            <div class="sec3-mobile-campus-name" data-i18n="sec3.campus.chuncheon">춘천 캠퍼스</div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-mobile-campus sec3-mobile-campus-gangneung">
-                        <div class="sec3-mobile-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_강릉.png" alt="강릉 캠퍼스" class="sec3-mobile-campus-image">
-                            <div class="sec3-mobile-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-mobile-campus-info">
-                            <div class="sec3-mobile-campus-name" data-i18n="sec3.campus.gangneung">강릉 캠퍼스</div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-mobile-campus sec3-mobile-campus-samcheok">
-                        <div class="sec3-mobile-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_삼척.png" alt="삼척 캠퍼스" class="sec3-mobile-campus-image">
-                            <div class="sec3-mobile-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-mobile-campus-info">
-                            <div class="sec3-mobile-campus-name" data-i18n="sec3.campus.samcheok">삼척 캠퍼스</div>
-                        </div>
-                    </div>
-
-                    <div class="sec3-mobile-campus sec3-mobile-campus-wonju">
-                        <div class="sec3-mobile-campus-image-wrapper">
-                            <img src="images/sec3/cumpus_원주.png" alt="원주 캠퍼스" class="sec3-mobile-campus-image">
-                            <div class="sec3-mobile-campus-overlay"></div>
-                        </div>
-                        <div class="sec3-mobile-campus-info">
-                            <div class="sec3-mobile-campus-name" data-i18n="sec3.campus.wonju">원주 캠퍼스</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 플래시 오버레이 -->
-                <div class="sec3-mobile-flash-overlay"></div>
-
-                <!-- 텍스트 오버레이 -->
-                <div class="sec3-mobile-text-overlay">
-                    <div class="sec3-mobile-text-overlay-line1" data-i18n="sec3.overlay.line1">통합 강원대학교의</div>
-                    <div class="sec3-mobile-text-overlay-line2" data-i18n="sec3.overlay.line2">지역 혁신 생태계</div>
-                </div>
-            </div>
-        </section>
-
         <!-- Section 3 - New (sec3-new) -->
-        <section class="sec3-new">
+        <section class="sec3-new fp-section">
             <div class="vision-stage">
                 <div class="bg-initial"></div>
                 <div class="bg-final"></div>
@@ -675,14 +561,15 @@
         </section>
 
         <!-- Section 4 -->
-        <section class="sec4">
+        <section class="sec4 fp-section">
             <div class="sec4-gradient-overlay"></div>
             <div class="sec4-background">
                 <img src="images/sec4/sec14_bg.png" alt="배경 이미지" class="sec4-bg-image">
             </div>
             <div class="sec4-content">
                 <div class="sec4-text">
-                    <div class="sec4-text-line sec4-text-line-1" data-i18n="sec4.line1">흩어져 있던 캠퍼스의<span class="sec4-mobile-br"><br></span>힘을
+                    <div class="sec4-text-line sec4-text-line-1" data-i18n="sec4.line1">흩어져 있던 캠퍼스의<span
+                            class="sec4-mobile-br"><br></span>힘을
                         하나로 모아,</div>
                     <div class="sec4-text-line sec4-text-line-2" data-i18n="sec4.line2">지역을 넘어 세계로 나아가는</div>
                     <div class="sec4-text-line sec4-text-line-3" data-i18n="sec4.line3">글로컬(Global + Local)<span
@@ -721,7 +608,7 @@
         </section>
 
         <!-- Section 5 -->
-        <section id="sec5" class="sec5">
+        <section id="sec5" class="sec5 fp-section">
             <div class="sec5-background">
                 <img src="images/sec5/sec15_bg.png" alt="배경 이미지" class="sec5-bg-image">
             </div>
@@ -739,7 +626,7 @@
         </section>
 
         <!-- Section 6 -->
-        <section id="sec6" class="sec6">
+        <section id="sec6" class="sec6 fp-section">
             <div class="sec6-gradient-overlay"></div>
             <div class="sec6-background">
                 <img src="images/sec6/sec_campus_bg.jpg" alt="배경 이미지" class="sec6-bg-image">
@@ -761,7 +648,8 @@
                                 <div class="sec6-tag" data-i18n="sec6.tag.global">글로벌 교육</div>
                                 <div class="sec6-tag" data-i18n="sec6.tag.innovation">혁신인재</div>
                             </div>
-                            <div class="sec6-campus-desc" data-i18n="sec6.desc.chuncheon">국제 교류 통합 체계 구축<br />학사구조 혁신 지원 온라인 교육 플랫폼</div>
+                            <div class="sec6-campus-desc" data-i18n="sec6.desc.chuncheon">국제 교류 통합 체계 구축<br />학사구조 혁신 지원
+                                온라인 교육 플랫폼</div>
                         </div>
                     </div>
                     <div class="sec6-campus-navigation">
@@ -782,11 +670,12 @@
         </section>
 
         <!-- Section 7 -->
-        <section id="sec7" class="sec7">
+        <section id="sec7" class="sec7 fp-section">
             <div class="sec7-content">
                 <div class="sec7-text">
                     <span class="sec7-gray" data-i18n="sec7.text.gray1">통합 강원대학교의</span><br />
-                    <span class="sec7-white" data-i18n="sec7.text.white">새로운 도약을</span> <span class="sec7-gray" data-i18n="sec7.text.gray2">응원해 주세요</span>
+                    <span class="sec7-white" data-i18n="sec7.text.white">새로운 도약을</span> <span class="sec7-gray"
+                        data-i18n="sec7.text.gray2">응원해 주세요</span>
                 </div>
                 <div class="sec7-support-card">
                     <div class="sec7-support-title" data-i18n="sec7.support.title">응원 하트 보내기</div>
@@ -825,7 +714,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer fp-section">
         <div class="footer-container">
             <div class="footer-top">
                 <div class="footer-left">
@@ -850,7 +739,8 @@
                                             d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z"
                                             stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33" />
                                     </svg>
-                                    <span data-i18n="footer.campus.address.chuncheon">강원도 춘천시 강원대학길 1(효자동) 강원대학교 춘천캠퍼스</span>
+                                    <span data-i18n="footer.campus.address.chuncheon">강원도 춘천시 강원대학길 1(효자동) 강원대학교
+                                        춘천캠퍼스</span>
                                 </div>
                                 <div class="footer-campus-phone">
                                     <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -873,7 +763,8 @@
                                             d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z"
                                             stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33" />
                                     </svg>
-                                    <span data-i18n="footer.campus.address.gangneung">강원특별자치도 강릉시 죽헌길 7 국립 강릉원주대학교 강릉캠퍼스</span>
+                                    <span data-i18n="footer.campus.address.gangneung">강원특별자치도 강릉시 죽헌길 7 국립 강릉원주대학교
+                                        강릉캠퍼스</span>
                                 </div>
                                 <div class="footer-campus-phone">
                                     <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -919,7 +810,8 @@
                                             d="M8 2C5.24 2 3 4.24 3 7C3 10.5 8 14 8 14C8 14 13 10.5 13 7C13 4.24 10.76 2 8 2ZM8 9C7.17 9 6.5 8.33 6.5 7.5C6.5 6.67 7.17 6 8 6C8.83 6 9.5 6.67 9.5 7.5C9.5 8.33 8.83 9 8 9Z"
                                             stroke="rgba(255, 255, 255, 0.40)" stroke-width="1.33" />
                                     </svg>
-                                    <span data-i18n="footer.campus.address.wonju">강원특별자치도 원주시 흥업면 남원로 150 강릉원주대학교 원주캠퍼스</span>
+                                    <span data-i18n="footer.campus.address.wonju">강원특별자치도 원주시 흥업면 남원로 150 강릉원주대학교
+                                        원주캠퍼스</span>
                                 </div>
                                 <div class="footer-campus-phone">
                                     <svg class="footer-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -936,10 +828,10 @@
             </div>
             <div class="footer-bottom">
                 <div class="footer-links">
-                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=334&" target="_blank"
-                        class="footer-link" data-i18n="footer.link.privacy">개인정보 처리방침</a>
-                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=343&" target="_blank"
-                        class="footer-link" data-i18n="footer.link.email">이메일주소수집거부</a>
+                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=334&" target="_blank" class="footer-link"
+                        data-i18n="footer.link.privacy">개인정보 처리방침</a>
+                    <a href="https://wwwk.kangwon.ac.kr/www/contents.do?key=343&" target="_blank" class="footer-link"
+                        data-i18n="footer.link.email">이메일주소수집거부</a>
                     <a href="https://wwwk.kangwon.ac.kr/www/selectPfEmpList.do?key=55&" target="_blank"
                         class="footer-link" data-i18n="footer.link.phone">전화번호검색</a>
                     <a href="https://www.academyinfo.go.kr/popup/pubinfo1690/list.do?schlId=0000003" target="_blank"
@@ -986,6 +878,398 @@
         AOS.init();
     </script>
 
+    <!-- 커스텀 풀페이지 스크롤 구현 -->
+    <script>
+        (function() {
+            'use strict';
+            
+            var isScrolling = false;
+            var currentSection = 0;
+            var sections = [];
+            var headerHeight = 100;
+            var sec3NewAnimationLocked = false; // sec3-new 애니메이션 잠금 플래그
+            var sec3NewAutoScrolling = false; // sec3-new 자동 스크롤 플래그
+            var sec3NewScrollStarted = false; // sec3-new 스크롤 시작 여부
+            
+            function initFullpageScroll() {
+                // 모든 섹션 가져오기
+                sections = Array.from(document.querySelectorAll('.fp-section'));
+                
+                if (sections.length === 0) {
+                    console.warn('No sections found');
+                    return;
+                }
+                
+                // 헤더 높이 가져오기
+                var header = document.querySelector('.header');
+                if (header) {
+                    headerHeight = header.offsetHeight;
+                }
+                
+                // 현재 섹션 찾기
+                updateCurrentSection();
+                
+                // 마우스 휠 이벤트
+                window.addEventListener('wheel', handleWheel, { passive: false });
+                
+                // 키보드 이벤트
+                window.addEventListener('keydown', handleKeyDown);
+                
+                // 터치 이벤트 (모바일 - 일반 스크롤만 허용, 섹션 이동 없음)
+                // 모바일에서는 일반 스크롤만 작동하고 드래그로 섹션 이동하지 않음
+                
+                // 스크롤 이벤트로 현재 섹션 업데이트 (모바일에서는 자동 섹션 이동 비활성화)
+                window.addEventListener('scroll', function() {
+                    if (!isScrolling) {
+                        updateCurrentSection();
+                    }
+                }, { passive: true });
+                
+                console.log('Fullpage scroll initialized with', sections.length, 'sections');
+                sections.forEach(function(section, index) {
+                    console.log('Section', index + 1, ':', section.id || section.className, '- height:', section.offsetHeight);
+                });
+            }
+            
+            function updateCurrentSection() {
+                var scrollY = window.scrollY;
+                var windowHeight = window.innerHeight;
+                var header = document.querySelector('.header');
+                var headerH = header ? header.offsetHeight : 100;
+                var viewportCenter = scrollY + windowHeight / 2;
+                
+                // 가장 가까운 섹션 찾기
+                var closestIndex = 0;
+                var closestDistance = Infinity;
+                
+                for (var i = 0; i < sections.length; i++) {
+                    var section = sections[i];
+                    
+                    // pin-spacer가 있으면 그것을 사용, 없으면 섹션 자체 사용
+                    var targetElement = section;
+                    var pinSpacer = section.parentElement;
+                    if (pinSpacer && pinSpacer.classList.contains('pin-spacer')) {
+                        targetElement = pinSpacer;
+                    }
+                    
+                    var rect = targetElement.getBoundingClientRect();
+                    var sectionTop = scrollY + rect.top;
+                    var sectionCenter = sectionTop + rect.height / 2;
+                    var distance = Math.abs(viewportCenter - sectionCenter);
+                    
+                    // 현재 뷰포트 중앙이 섹션 범위 내에 있는지 확인
+                    if (viewportCenter >= sectionTop && viewportCenter < sectionTop + rect.height) {
+                        currentSection = i;
+                        return;
+                    }
+                    
+                    // 가장 가까운 섹션 추적
+                    if (distance < closestDistance) {
+                        closestDistance = distance;
+                        closestIndex = i;
+                    }
+                }
+                
+                // 정확히 찾지 못한 경우 가장 가까운 섹션 사용
+                currentSection = closestIndex;
+            }
+            
+            function scrollToSection(index) {
+                if (index < 0 || index >= sections.length || isScrolling) {
+                    return;
+                }
+                
+                // 현재 섹션 저장 (변경 전)
+                var previousSection = currentSection;
+                isScrolling = true;
+                currentSection = index;
+                
+                var targetSection = sections[index];
+                var header = document.querySelector('.header');
+                var headerH = header ? header.offsetHeight : 100;
+                
+                // pin-spacer가 있으면 그것을 사용, 없으면 섹션 자체 사용
+                var targetElement = targetSection;
+                var pinSpacer = targetSection.parentElement;
+                if (pinSpacer && pinSpacer.classList.contains('pin-spacer')) {
+                    targetElement = pinSpacer;
+                }
+                
+                // sec3-new 섹션인지 확인
+                var isSec3New = targetSection.classList.contains('sec3-new');
+                
+                // 섹션의 실제 위치 계산
+                var targetPosition;
+                if (isSec3New) {
+                    // sec3-new는 최상단으로 스크롤 (다른 섹션과 동일)
+                    targetPosition = targetElement.offsetTop - headerH;
+                } else {
+                    // 다른 섹션은 최상단으로 스크롤
+                    targetPosition = targetElement.offsetTop - headerH;
+                }
+                
+                // 음수 방지
+                if (targetPosition < 0) {
+                    targetPosition = 0;
+                }
+                
+                // sec3-new에서 다음 섹션으로 갈 때 속도 조절
+                var isFromSec3New = false;
+                if (previousSection >= 0 && previousSection < sections.length) {
+                    var previousSec = sections[previousSection];
+                    if (previousSec && previousSec.classList.contains('sec3-new')) {
+                        isFromSec3New = true;
+                    }
+                }
+                
+                // 모바일과 데스크톱 모두에서 부드러운 자동 스크롤
+                var startPosition = window.scrollY;
+                var distance = targetPosition - startPosition;
+                var duration = 700; // 0.7초 동안 부드럽게
+                var startTime = null;
+                
+                function smoothScrollAnimation(currentTime) {
+                    if (startTime === null) {
+                        startTime = currentTime;
+                    }
+                    var timeElapsed = currentTime - startTime;
+                    var progress = Math.min(timeElapsed / duration, 1);
+                    
+                    // easeInOutCubic 이징
+                    var easeProgress = progress < 0.5 
+                        ? 4 * progress * progress * progress 
+                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                    
+                    var currentPosition = startPosition + distance * easeProgress;
+                    window.scrollTo(0, currentPosition);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(smoothScrollAnimation);
+                    } else {
+                        // 정확한 위치로 최종 이동
+                        window.scrollTo(0, targetPosition);
+                        isScrolling = false;
+                    }
+                }
+                
+                requestAnimationFrame(smoothScrollAnimation);
+            }
+            
+            var lastWheelTime = 0;
+            var wheelDelta = 0;
+            
+            function handleWheel(e) {
+                if (isScrolling) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                // sec3-new 섹션인지 확인
+                updateCurrentSection();
+                var currentSec = sections[currentSection];
+                var isInSec3New = currentSec && currentSec.classList.contains('sec3-new');
+                
+                // sec3-new가 아닌 다른 섹션에서만 잠금 체크
+                if (!isInSec3New && sec3NewAnimationLocked) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                // sec3-new 내부에서 스크롤 처리
+                if (isInSec3New) {
+                    var delta = e.deltaY;
+                    var scrollY = window.scrollY;
+                    var windowHeight = window.innerHeight;
+                    
+                    // sec3-new의 위치 확인
+                    var sec3NewRect = currentSec.getBoundingClientRect();
+                    var pinSpacer = currentSec.parentElement;
+                    var targetElement = (pinSpacer && pinSpacer.classList.contains('pin-spacer')) ? pinSpacer : currentSec;
+                    var sec3NewTop = targetElement.offsetTop;
+                    var sec3NewBottom = targetElement.offsetTop + targetElement.offsetHeight;
+                    var currentScrollTop = scrollY;
+                    var currentScrollBottom = scrollY + windowHeight;
+                    
+                    // sec3-new 최상단 근처에서 아래로 스크롤할 때 자동 스크롤 시작
+                    if (delta > 0 && !sec3NewAutoScrolling && !sec3NewScrollStarted) {
+                        var distanceFromTop = currentScrollTop - (sec3NewTop - headerHeight);
+                        if (distanceFromTop < 100) { // 최상단에서 100px 이내
+                            e.preventDefault();
+                            sec3NewAutoScrolling = true;
+                            sec3NewScrollStarted = true;
+                            
+                            // sec3-new 최하단까지 자동 스크롤 (GSAP 애니메이션과 함께 작동)
+                            var targetPosition = sec3NewBottom - windowHeight;
+                            var startPosition = scrollY;
+                            var distance = targetPosition - startPosition;
+                            var duration = 8000; // 8초 동안 천천히
+                            var startTime = null;
+                            
+                            function autoScrollAnimation(currentTime) {
+                                if (startTime === null) {
+                                    startTime = currentTime;
+                                }
+                                var timeElapsed = currentTime - startTime;
+                                var progress = Math.min(timeElapsed / duration, 1);
+                                
+                                // easeInOutCubic 이징
+                                var easeProgress = progress < 0.5 
+                                    ? 4 * progress * progress * progress 
+                                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                                
+                                var currentPosition = startPosition + distance * easeProgress;
+                                window.scrollTo(0, currentPosition);
+                                
+                                // GSAP ScrollTrigger 업데이트 강제
+                                if (typeof ScrollTrigger !== 'undefined') {
+                                    ScrollTrigger.refresh();
+                                }
+                                
+                                if (progress < 1) {
+                                    requestAnimationFrame(autoScrollAnimation);
+                                } else {
+                                    sec3NewAutoScrolling = false;
+                                    // 최하단 도착 후 잠깐 멈춤
+                                    setTimeout(function() {
+                                        sec3NewScrollStarted = false;
+                                        // GSAP ScrollTrigger 최종 업데이트
+                                        if (typeof ScrollTrigger !== 'undefined') {
+                                            ScrollTrigger.refresh();
+                                        }
+                                    }, 1000);
+                                }
+                            }
+                            
+                            requestAnimationFrame(autoScrollAnimation);
+                            return;
+                        }
+                    }
+                    
+                    // 자동 스크롤 중이면 스크롤 차단
+                    if (sec3NewAutoScrolling) {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    // sec3-new의 최하단에 거의 도달했고 아래로 스크롤하려고 할 때
+                    if (delta > 0 && currentScrollBottom >= sec3NewBottom - 50) {
+                        // sec4로 이동
+                        e.preventDefault();
+                        sec3NewScrollStarted = false; // 플래그 리셋
+                        if (currentSection < sections.length - 1) {
+                            scrollToSection(currentSection + 1);
+                        }
+                        return;
+                    }
+                    
+                    // sec3-new 내부에서는 자연스러운 스크롤 허용 (GSAP ScrollTrigger가 작동하도록)
+                    // 스크롤을 가로채지 않아서 GSAP가 정상적으로 애니메이션을 제어할 수 있음
+                    return;
+                }
+                
+                // footer 섹션인지 확인
+                var isInFooter = currentSec && currentSec.classList.contains('footer');
+                
+                // footer 내부에서 스크롤 처리
+                if (isInFooter) {
+                    var delta = e.deltaY;
+                    var scrollY = window.scrollY;
+                    var windowHeight = window.innerHeight;
+                    
+                    // footer의 위치 확인
+                    var footerTop = currentSec.offsetTop;
+                    var footerBottom = currentSec.offsetTop + currentSec.offsetHeight;
+                    var currentScrollTop = scrollY;
+                    var currentScrollBottom = scrollY + windowHeight;
+                    
+                    // footer 내부에서는 자연스러운 스크롤 허용 (자동 스크롤 없음)
+                    return;
+                }
+                
+                var now = Date.now();
+                var delta = e.deltaY;
+                
+                // 휠 델타 누적 (빠른 스크롤 감지)
+                if (now - lastWheelTime < 150) {
+                    wheelDelta += delta;
+                } else {
+                    wheelDelta = delta;
+                }
+                lastWheelTime = now;
+                
+                var threshold = 30;
+                
+                if (Math.abs(wheelDelta) < threshold) {
+                    return;
+                }
+                
+                if (wheelDelta > threshold && currentSection < sections.length - 1) {
+                    e.preventDefault();
+                    wheelDelta = 0;
+                    scrollToSection(currentSection + 1);
+                } else if (wheelDelta < -threshold && currentSection > 0) {
+                    e.preventDefault();
+                    wheelDelta = 0;
+                    scrollToSection(currentSection - 1);
+                }
+            }
+            
+            function handleKeyDown(e) {
+                if (isScrolling) return;
+                
+                // sec3-new 애니메이션 진행 중이면 키보드 스크롤 차단
+                if (sec3NewAnimationLocked) {
+                    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'PageDown' || e.key === 'PageUp') {
+                        e.preventDefault();
+                    }
+                    return;
+                }
+                
+                updateCurrentSection();
+                
+                switch(e.key) {
+                    case 'ArrowDown':
+                    case 'PageDown':
+                        e.preventDefault();
+                        if (currentSection < sections.length - 1) {
+                            scrollToSection(currentSection + 1);
+                        }
+                        break;
+                    case 'ArrowUp':
+                    case 'PageUp':
+                        e.preventDefault();
+                        if (currentSection > 0) {
+                            scrollToSection(currentSection - 1);
+                        }
+                        break;
+                    case 'Home':
+                        e.preventDefault();
+                        scrollToSection(0);
+                        break;
+                    case 'End':
+                        e.preventDefault();
+                        scrollToSection(sections.length - 1);
+                        break;
+                }
+            }
+            
+            // 페이지 로드 후 초기화
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initFullpageScroll);
+            } else {
+                initFullpageScroll();
+            }
+            
+            // 전역 변수로 내보내기 (다른 스크립트에서 사용 가능)
+            window.fullpageScroll = {
+                scrollToSection: scrollToSection,
+                getCurrentSection: function() { return currentSection; },
+                setSec3NewLock: function(locked) { sec3NewAnimationLocked = locked; },
+                getSec3NewLock: function() { return sec3NewAnimationLocked; }
+            };
+        })();
+    </script>
+
     <!-- Section 3 New (sec3-new) GSAP Animation -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1012,13 +1296,161 @@
                         const tl = gsap.timeline({
                             scrollTrigger: {
                                 trigger: ".sec3-new", // 새로 만든 클래스 트리거
-                                start: "top top",
-                                end: "+=5000", // 애니메이션 길이
+                                start: "top top", // 섹션 상단이 뷰포트 상단에 도달할 때 시작
+                                end: "bottom+=5000 bottom", // 섹션 하단에서 추가로 5000px 더 스크롤 (더 긴 애니메이션)
                                 pin: true,
-                                scrub: 1,
+                                pinSpacing: true, // pin-spacer 생성 허용
+                                scrub: 0.15, // scrub 값을 더 낮춰서 매우 부드럽고 느리게
                                 anticipatePin: 1,
+                                invalidateOnRefresh: true, // 리사이즈 시 재계산
+                                onEnter: function() {
+                                    // 섹션에 진입했을 때 초기 상태 설정
+                                    gsap.set(".sec3-new .intro-item", { 
+                                        y: 50, 
+                                        opacity: 0 
+                                    });
+                                    gsap.set(".sec3-new .orb", { opacity: 1 });
+                                    gsap.set(".sec3-new .orb-label", { opacity: 0 });
+                                    // 배경과 컨테이너는 즉시 보이도록 설정
+                                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                                    gsap.set(".sec3-new .intro-container", { opacity: 1 });
+                                    gsap.set(".sec3-new .campus-group", { opacity: 1 });
+                                    
+                                    // 순서대로 올라오는 애니메이션
+                                    gsap.to(".sec3-new .intro-badge", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out"
+                                    });
+                                    gsap.to(".sec3-new .intro-title", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out",
+                                        delay: 0.3
+                                    });
+                                    gsap.to(".sec3-new .intro-desc", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out",
+                                        delay: 0.6
+                                    });
+                                    
+                                    // 스크롤 잠금 시작
+                                    if (window.fullpageScroll) {
+                                        window.fullpageScroll.setSec3NewLock(true);
+                                    }
+                                    
+                                    // 자동 스크롤 플래그 리셋
+                                    sec3NewAutoScrolling = false;
+                                    sec3NewScrollStarted = false;
+                                },
+                                onEnterBack: function() {
+                                    // 역방향으로 돌아올 때도 초기 상태 설정
+                                    // final-message 숨기기
+                                    gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
+                                    gsap.set(".sec3-new .bg-final", { opacity: 0 });
+                                    gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                                    gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
+                                    
+                                    // orb-container 초기 위치로 복원
+                                    var orbContainers = document.querySelectorAll(".sec3-new .orb-container");
+                                    orbContainers.forEach(function(container) {
+                                        var className = container.className.split(' ').find(c => c.startsWith('c'));
+                                        if (className === 'c1') {
+                                            gsap.set(container, { top: "25%", left: "25%", scale: 1 });
+                                        } else if (className === 'c2') {
+                                            gsap.set(container, { top: "25%", left: "calc(75% - 150px)", scale: 1 });
+                                        } else if (className === 'c3') {
+                                            gsap.set(container, { top: "65%", left: "25%", scale: 1 });
+                                        } else if (className === 'c4') {
+                                            gsap.set(container, { top: "65%", left: "calc(75% - 150px)", scale: 1 });
+                                        }
+                                        container.style.animationPlayState = "running";
+                                    });
+                                    
+                                    gsap.set(".sec3-new .intro-item", { 
+                                        y: 50, 
+                                        opacity: 0 
+                                    });
+                                    gsap.set(".sec3-new .orb", { opacity: 1 });
+                                    gsap.set(".sec3-new .orb-label", { opacity: 0 });
+                                    gsap.set(".sec3-new .intro-container", { opacity: 1 });
+                                    gsap.set(".sec3-new .campus-group", { opacity: 1 });
+                                    
+                                    // 순서대로 올라오는 애니메이션
+                                    gsap.to(".sec3-new .intro-badge", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out"
+                                    });
+                                    gsap.to(".sec3-new .intro-title", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out",
+                                        delay: 0.3
+                                    });
+                                    gsap.to(".sec3-new .intro-desc", {
+                                        y: 0,
+                                        opacity: 1,
+                                        duration: 0.8,
+                                        ease: "power2.out",
+                                        delay: 0.6
+                                    });
+                                    
+                                    // 스크롤 잠금 시작
+                                    if (window.fullpageScroll) {
+                                        window.fullpageScroll.setSec3NewLock(true);
+                                    }
+                                    
+                                    // 자동 스크롤 플래그 리셋
+                                    sec3NewAutoScrolling = false;
+                                    sec3NewScrollStarted = false;
+                                },
+                                onLeave: function() {
+                                    // 섹션을 떠날 때 스크롤 잠금 해제
+                                    if (window.fullpageScroll) {
+                                        window.fullpageScroll.setSec3NewLock(false);
+                                    }
+                                },
+                                onLeaveBack: function() {
+                                    // 역방향으로 섹션을 떠날 때 스크롤 잠금 해제
+                                    if (window.fullpageScroll) {
+                                        window.fullpageScroll.setSec3NewLock(false);
+                                    }
+                                },
+                                onUpdate: function(self) {
+                                    // 스크롤 진행도에 따라 잠금 상태 조절
+                                    // 애니메이션이 거의 끝나갈 때 (98% 이상) 잠금 해제하여 잠깐 멈춤
+                                    if (self.progress >= 0.98 && window.fullpageScroll) {
+                                        // 최하단에 도착했을 때 잠깐 멈추기 위해 잠금 해제 지연
+                                        setTimeout(function() {
+                                            if (window.fullpageScroll) {
+                                                window.fullpageScroll.setSec3NewLock(false);
+                                            }
+                                        }, 500); // 0.5초 멈춤
+                                    }
+                                }
                             },
                         });
+
+                        // 초기 상태 설정 (타임라인 시작 전)
+                        gsap.set(".sec3-new .intro-item", { 
+                            y: 50, 
+                            opacity: 0 
+                        });
+                        gsap.set(".sec3-new .orb", { opacity: 1 });
+                        gsap.set(".sec3-new .orb-label", { opacity: 0 });
+                        gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                        gsap.set(".sec3-new .intro-container", { opacity: 1 });
+                        gsap.set(".sec3-new .campus-group", { opacity: 1 });
+                        gsap.set(".sec3-new .bg-final", { opacity: 0 });
+                        gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
+                        gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
 
                         // 애니메이션 시퀀스
                         tl.to(".sec3-new .intro-item", {
@@ -1111,21 +1543,53 @@
                                 "turnWhite"
                             )
 
+                            .addLabel("flashStart")
                             .to(".sec3-new .flash-overlay", {
                                 opacity: 1,
                                 duration: 1,
                                 ease: "power2.in",
-                            })
+                            }, "flashStart")
+                            
+                            // 하얗게 밝아진 후 텍스트들이 사라짐
+                            .to(".sec3-new .intro-container", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
+                            .to(".sec3-new .intro-item", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
+                            .to(".sec3-new .intro-title", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
+                            .to(".sec3-new .intro-badge", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
+                            .to(".sec3-new .intro-desc", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
+                            .to(".sec3-new .orb-container", {
+                                opacity: 0,
+                                duration: 0.5,
+                                ease: "power2.in"
+                            }, "flashStart+=0.3")
 
                             // 배경 교체
-                            .set(".sec3-new .intro-container", { opacity: 0 })
-                            .set(".sec3-new .orb-container", { opacity: 0 })
                             .set(".sec3-new .bg-initial", { opacity: 0 })
                             .set(".sec3-new .bg-final", { opacity: 1 })
 
+                            // 플래시가 사라지면서 final-message 나타남
                             .to(".sec3-new .flash-overlay", {
                                 opacity: 0,
-                                duration: 3,
+                                duration: 2,
                                 ease: "power2.out",
                             })
                             .to(
@@ -1134,10 +1598,16 @@
                                     opacity: 1,
                                     scale: 1,
                                     y: 0,
-                                    duration: 3,
+                                    duration: 2,
                                     ease: "back.out(1.7)",
+                                    onComplete: function() {
+                                        // 애니메이션 완료 시 스크롤 잠금 해제
+                                        if (window.fullpageScroll) {
+                                            window.fullpageScroll.setSec3NewLock(false);
+                                        }
+                                    }
                                 },
-                                "-=2.5"
+                                "-=1.5"
                             );
 
                         // 역재생 시 애니메이션 복구
@@ -1145,6 +1615,18 @@
                             document
                                 .querySelectorAll(".sec3-new .orb-container")
                                 .forEach((el) => (el.style.animationPlayState = "running"));
+                            
+                            // 역재생 완료 시 스크롤 잠금 해제
+                            if (window.fullpageScroll) {
+                                window.fullpageScroll.setSec3NewLock(false);
+                            }
+                        });
+                        
+                        // 타임라인 완료 시 스크롤 잠금 해제 (안전장치)
+                        tl.eventCallback("onComplete", () => {
+                            if (window.fullpageScroll) {
+                                window.fullpageScroll.setSec3NewLock(false);
+                            }
                         });
                     }
                 );

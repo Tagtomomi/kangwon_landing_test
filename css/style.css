@@ -21,9 +21,16 @@ html {
     width: 100%;
     overflow-x: hidden;
     position: relative;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-behavior: smooth;
-    scroll-snap-type: y proximity;
+}
+
+/* FullPage.js가 스크롤을 제어 */
+html.fp-enabled,
+html.fp-enabled body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
 }
 
 body {
@@ -33,6 +40,28 @@ body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #000;
     line-height: 1.6;
+}
+
+/* FullPage.js 스타일 - FullPage.js가 활성화되면 자동으로 적용됨 */
+html.fp-enabled,
+html.fp-enabled body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
+
+#fullpage {
+    position: relative;
+    height: 100%;
+}
+
+.fp-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 100vh;
 }
 
 /* Header Styles */
@@ -631,32 +660,29 @@ a.header-univ-btn {
     position: relative;
     background: #151A21;
     overflow: hidden;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* FullPage.js가 스크롤 제어 */
 }
 
 /* Section 2 */
 .sec2 {
     width: 100%;
     max-width: 100vw;
-    height: 200vh;
+    height: 100vh;
     position: relative;
     background: #000000;
     align-items: center;
     justify-content: center;
     overflow-x: hidden;
-    overflow-y: visible; /* sticky stage needs visible overflow */
+    overflow-y: hidden;
     margin-top: 0;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
+    /* FullPage.js가 스크롤 제어 */
 }
 
 .sec2-background {
-    position: sticky;
+    position: absolute;
     top: 0;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     left: 0;
     z-index: 1;
     overflow: hidden;
@@ -1765,9 +1791,7 @@ a.header-univ-btn {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* FullPage.js가 스크롤 제어 */
 }
 
 .sec4-gradient-overlay {
@@ -1905,9 +1929,7 @@ a.header-univ-btn {
     justify-content: center;
     overflow: hidden;
     height: 100vh;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* FullPage.js가 스크롤 제어 */
 }
 
 .sec5-background {
@@ -2002,7 +2024,7 @@ a.header-univ-btn {
 .sec6 {
     width: 100%;
     max-width: 100vw;
-    height: 130vh;
+    height: 100vh;
     position: relative;
     background: #000000;
     display: flex;
@@ -2010,8 +2032,7 @@ a.header-univ-btn {
     justify-content: center;
     padding: 0;
     overflow: hidden;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
+    /* FullPage.js가 스크롤 제어 */
 }
 
 .sec6-gradient-overlay {
@@ -2900,9 +2921,7 @@ a.header-univ-btn {
     align-items: center;
     justify-content: center;
     padding-top: 0;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* FullPage.js가 스크롤 제어 */
     overflow-x: hidden;
 }
 
@@ -3626,9 +3645,7 @@ a.header-univ-btn {
     color: #fff;
     font-family: "Pretendard", sans-serif;
     overflow: hidden;
-    /* 섹션 부드럽게 넘기는 효과 */
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
+    /* FullPage.js가 스크롤 제어 */
     /* 기존 CSS의 * { margin:0; padding:0 } 상속받음 */
 }
 
@@ -3729,6 +3746,19 @@ a.header-univ-btn {
     transform: translateY(50px);
 }
 
+/* sec3-new 섹션 도착 시 배경과 컨테이너는 보이도록 */
+.sec3-new .bg-initial {
+    opacity: 0.4 !important;
+}
+
+.sec3-new .intro-container {
+    opacity: 1 !important;
+}
+
+.sec3-new .campus-group {
+    opacity: 1 !important;
+}
+
 /* 캠퍼스 구슬 그룹 */
 .sec3-new .campus-group {
     position: absolute;
@@ -3769,22 +3799,22 @@ a.header-univ-btn {
 /* 초기 위치 (PC) - 중앙 정렬 계산을 위해 calc 사용 */
 .sec3-new .c1 {
     top: 25%;
-    left: 15%;
+    left: 25%;
 }
 
 .sec3-new .c2 {
     top: 25%;
-    left: calc(85% - 150px);
+    left: calc(75% - 150px);
 }
 
 .sec3-new .c3 {
     top: 65%;
-    left: 15%;
+    left: 25%;
 }
 
 .sec3-new .c4 {
     top: 65%;
-    left: calc(85% - 150px);
+    left: calc(75% - 150px);
 }
 
 .sec3-new .orb {
@@ -3797,7 +3827,7 @@ a.header-univ-btn {
     background-color: transparent;
     border: none;
     overflow: hidden;
-    opacity: 0;
+    opacity: 1;
 }
 
 .sec3-new .orb-bg {
@@ -3961,12 +3991,20 @@ a.header-univ-btn {
     }
 
     /* 모바일용 초기 좌표 재조정 */
+    .sec3-new .c1 {
+        left: 25%;
+    }
+
     .sec3-new .c2 {
-        left: calc(85% - 90px);
+        left: calc(75% - 90px);
+    }
+
+    .sec3-new .c3 {
+        left: 25%;
     }
 
     .sec3-new .c4 {
-        left: calc(85% - 90px);
+        left: calc(75% - 90px);
     }
 
     .sec3-new .final-message h1 {
