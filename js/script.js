@@ -2298,9 +2298,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 캠퍼스 상세 이미지 프리로드 함수 (빠른 로딩을 위해)
+    function preloadCampusDetailImages() {
+        if (!campusData || campusData.length === 0) return;
+        
+        campusData.forEach(campus => {
+            if (campus.image) {
+                const img = new Image();
+                img.src = campus.image;
+            }
+        });
+    }
+    
     // 전역 함수로 노출 (i18n에서 호출 가능하도록)
     window.updateCampusData = function(newData) {
         campusData = newData;
+        // 이미지 프리로드
+        preloadCampusDetailImages();
         // 현재 캠퍼스 인덱스로 다시 업데이트
         if (typeof updateCampus === 'function') {
             updateCampus(currentCampusIndex, false);
@@ -2309,6 +2323,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 초기 캠퍼스 데이터 로드
     updateCampusDataFromI18n();
+    
+    // 페이지 로드 시 즉시 프리로드 시작
+    preloadCampusDetailImages();
     
     let currentCampusIndex = 0;
     let isAnimating = false;
