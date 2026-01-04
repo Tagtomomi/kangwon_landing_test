@@ -363,10 +363,14 @@
             }
 
             .sec3-new .c3 {
+                top: auto;
+                bottom: 80px;
                 left: 20px;
             }
 
             .sec3-new .c4 {
+                top: auto;
+                bottom: 80px;
                 left: calc(100% - 90px - 20px);
             }
 
@@ -1139,17 +1143,18 @@
                         window.scrollTo(0, targetPosition);
                         isScrolling = false;
                         
-                        // sec3-new로 이동한 경우 ScrollTrigger refresh하여 바로 시작되도록
+                        // sec3-new로 이동한 경우 ScrollTrigger refresh하고 자동 스크롤 시작
                         if (isSec3New && typeof ScrollTrigger !== 'undefined') {
                             setTimeout(function() {
                                 ScrollTrigger.refresh();
-                                // ScrollTrigger가 활성화되도록 약간의 스크롤 (1px) 추가
-                                window.scrollTo(0, targetPosition + 1);
-                                setTimeout(function() {
-                                    window.scrollTo(0, targetPosition);
-                                    ScrollTrigger.refresh();
-                                }, 50);
-                            }, 100);
+                                
+                                // 자동 스크롤 시작
+                                if (window.sec3NewTryStartAutoScroll) {
+                                    setTimeout(function() {
+                                        window.sec3NewTryStartAutoScroll();
+                                    }, 300);
+                                }
+                            }, 200);
                         }
                     }
                 }
@@ -1447,7 +1452,13 @@
                             
                             autoScrollInterval = setInterval(() => {
                                 const scrollTrigger = tl.scrollTrigger;
-                                if (!scrollTrigger || !scrollTrigger.isActive) {
+                                if (!scrollTrigger) {
+                                    stopAutoScroll();
+                                    return;
+                                }
+
+                                // ScrollTrigger가 비활성화되었는지 확인
+                                if (!scrollTrigger.isActive) {
                                     stopAutoScroll();
                                     return;
                                 }
@@ -1474,6 +1485,9 @@
                                 } else if (currentScroll >= triggerEnd - 10) {
                                     // 애니메이션 완료 - 자동 스크롤 중지 (반복 없음)
                                     stopAutoScroll();
+                                } else if (currentScroll < triggerStart) {
+                                    // triggerStart보다 작으면 자동 스크롤 중지
+                                    stopAutoScroll();
                                 }
                             }, 16); // 약 60fps
                         }
@@ -1489,7 +1503,7 @@
 
                         // 자동 스크롤 시작 시도 함수 (섹션에 도착했을 때만 호출)
                         function tryStartAutoScroll(attempts = 0) {
-                            const maxAttempts = 10;
+                            const maxAttempts = 30;
                             const scrollTrigger = tl.scrollTrigger;
 
                             if (!scrollTrigger) {
@@ -1499,10 +1513,12 @@
                                 return;
                             }
 
-                            // ScrollTrigger가 활성화되어 있고 섹션 내에 있는지 확인
+                            // ScrollTrigger가 활성화되어 있는지 확인
                             if (!scrollTrigger.isActive) {
+                                // ScrollTrigger refresh 시도
+                                ScrollTrigger.refresh();
                                 if (attempts < maxAttempts) {
-                                    setTimeout(() => tryStartAutoScroll(attempts + 1), 200);
+                                    setTimeout(() => tryStartAutoScroll(attempts + 1), 100);
                                 }
                                 return;
                             }
@@ -1510,6 +1526,9 @@
                             // 자동 스크롤 시작
                             startAutoScroll();
                         }
+
+                        // 전역에서 접근 가능하도록 등록
+                        window.sec3NewTryStartAutoScroll = tryStartAutoScroll;
 
                         // 타임라인 설정 (.sec3-new 전용)
                         // header 높이 계산
@@ -1531,18 +1550,40 @@
                                     // 섹션에 진입했을 때 초기 상태 설정
                                     gsap.set(".sec3-new .intro-item", { 
                                         y: 50, 
-                                        opacity: 0 
+                                        opacity: 0,
+                                        display: "block"
                                     });
-                                    gsap.set(".sec3-new .orb", { opacity: 1 });
+                                    gsap.set(".sec3-new .orb", { opacity: 0 });
                                     gsap.set(".sec3-new .orb-label", { opacity: 0 });
-                                    // 배경과 컨테이너는 즉시 보이도록 설정
-                                    // 배경은 타임라인에서 제어하므로 초기 상태만 설정 (깜빡임 방지)
                                     gsap.set(".sec3-new .bg-initial", { opacity: 0.4, zIndex: 0 });
                                     gsap.set(".sec3-new .bg-final", { opacity: 0, zIndex: 0 });
                                     gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
                                     gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
                                     gsap.set(".sec3-new .intro-container", { opacity: 1 });
                                     gsap.set(".sec3-new .campus-group", { opacity: 1 });
+                                    
+                                    // orb-container 초기 위치로 복원
+                                    var orbContainers = document.querySelectorAll(".sec3-new .orb-container");
+                                    var isMobile = window.innerWidth <= 768;
+                                    orbContainers.forEach(function(container) {
+                                        var className = container.className.split(' ').find(c => c.startsWith('c'));
+                                        if (isMobile) {
+                                            // 모바일에서는 CSS에 맡기고 scale만 설정
+                                            gsap.set(container, { scale: 1, clearProps: "top,left,bottom" });
+                                        } else {
+                                            // PC에서는 위치 설정
+                                            if (className === 'c1') {
+                                                gsap.set(container, { top: "25%", left: "25%", scale: 1 });
+                                            } else if (className === 'c2') {
+                                                gsap.set(container, { top: "25%", left: "calc(75% - 150px)", scale: 1 });
+                                            } else if (className === 'c3') {
+                                                gsap.set(container, { top: "65%", left: "25%", scale: 1 });
+                                            } else if (className === 'c4') {
+                                                gsap.set(container, { top: "65%", left: "calc(75% - 150px)", scale: 1 });
+                                            }
+                                        }
+                                        container.style.animationPlayState = "running";
+                                    });
                                     
                                     // 스크롤 잠금 시작
                                     if (window.fullpageScroll) {
@@ -1553,8 +1594,8 @@
                                     sec3NewAutoScrolling = false;
                                     sec3NewScrollStarted = false;
                                     
-                                    // 자동 스크롤 시작
-                                    setTimeout(() => {
+                                    // 자동 스크롤 시작 (약간의 지연 후)
+                                    setTimeout(function() {
                                         tryStartAutoScroll();
                                     }, 200);
                                 },
@@ -1566,16 +1607,23 @@
                                     
                                     // orb-container 초기 위치로 복원
                                     var orbContainers = document.querySelectorAll(".sec3-new .orb-container");
+                                    var isMobile = window.innerWidth <= 768;
                                     orbContainers.forEach(function(container) {
                                         var className = container.className.split(' ').find(c => c.startsWith('c'));
-                                        if (className === 'c1') {
-                                            gsap.set(container, { top: "25%", left: "25%", scale: 1 });
-                                        } else if (className === 'c2') {
-                                            gsap.set(container, { top: "25%", left: "calc(75% - 150px)", scale: 1 });
-                                        } else if (className === 'c3') {
-                                            gsap.set(container, { top: "65%", left: "25%", scale: 1 });
-                                        } else if (className === 'c4') {
-                                            gsap.set(container, { top: "65%", left: "calc(75% - 150px)", scale: 1 });
+                                        if (isMobile) {
+                                            // 모바일에서는 CSS에 맡기고 scale만 설정
+                                            gsap.set(container, { scale: 1, clearProps: "top,left,bottom" });
+                                        } else {
+                                            // PC에서는 위치 설정
+                                            if (className === 'c1') {
+                                                gsap.set(container, { top: "25%", left: "25%", scale: 1 });
+                                            } else if (className === 'c2') {
+                                                gsap.set(container, { top: "25%", left: "calc(75% - 150px)", scale: 1 });
+                                            } else if (className === 'c3') {
+                                                gsap.set(container, { top: "65%", left: "25%", scale: 1 });
+                                            } else if (className === 'c4') {
+                                                gsap.set(container, { top: "65%", left: "calc(75% - 150px)", scale: 1 });
+                                            }
                                         }
                                         container.style.animationPlayState = "running";
                                     });
@@ -1603,10 +1651,8 @@
                                     sec3NewAutoScrolling = false;
                                     sec3NewScrollStarted = false;
                                     
-                                    // 자동 스크롤 시작
-                                    setTimeout(() => {
-                                        tryStartAutoScroll();
-                                    }, 200);
+                                    // 자동 스크롤 즉시 시작
+                                    tryStartAutoScroll();
                                 },
                                 onLeave: function() {
                                     // 섹션을 떠날 때 스크롤 잠금 해제 및 자동 스크롤 중지
@@ -1640,16 +1686,33 @@
                         // 초기 상태 설정 (타임라인 시작 전)
                         gsap.set(".sec3-new .intro-item", { 
                             y: 50, 
-                            opacity: 0 
+                            opacity: 0,
+                            display: "block"
                         });
-                        gsap.set(".sec3-new .orb", { opacity: 1 });
+                        gsap.set(".sec3-new .orb", { opacity: 0 });
                         gsap.set(".sec3-new .orb-label", { opacity: 0 });
                         gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
-                        gsap.set(".sec3-new .intro-container", { opacity: 1 });
-                        gsap.set(".sec3-new .campus-group", { opacity: 1 });
+                        gsap.set(".sec3-new .intro-container", { opacity: 1, display: "flex" });
+                        gsap.set(".sec3-new .campus-group", { opacity: 1, display: "block" });
                         gsap.set(".sec3-new .bg-final", { opacity: 0 });
                         gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
-                        gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
+                        gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8, display: "block" });
+                        
+                        // orb-container 초기 위치 설정
+                        var orbContainers = document.querySelectorAll(".sec3-new .orb-container");
+                        orbContainers.forEach(function(container) {
+                            var className = container.className.split(' ').find(c => c.startsWith('c'));
+                            if (className === 'c1') {
+                                gsap.set(container, { top: "25%", left: "25%", scale: 1, opacity: 1, display: "flex" });
+                            } else if (className === 'c2') {
+                                gsap.set(container, { top: "25%", left: "calc(75% - 150px)", scale: 1, opacity: 1, display: "flex" });
+                            } else if (className === 'c3') {
+                                gsap.set(container, { top: "65%", left: "25%", scale: 1, opacity: 1, display: "flex" });
+                            } else if (className === 'c4') {
+                                gsap.set(container, { top: "65%", left: "calc(75% - 150px)", scale: 1, opacity: 1, display: "flex" });
+                            }
+                            container.style.animationPlayState = "running";
+                        });
 
                         // 애니메이션 시퀀스
                         tl.to(".sec3-new .intro-item", {

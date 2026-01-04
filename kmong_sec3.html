@@ -424,20 +424,16 @@
                             scrub: 1,
                             anticipatePin: 1,
                             onEnter: () => {
-                                // 섹션 진입 시 자동 스크롤 시작
-                                setTimeout(() => {
-                                    tryStartAutoScroll();
-                                }, 200);
+                                // 섹션 진입 시 자동 스크롤 즉시 시작
+                                tryStartAutoScroll();
                             },
                             onLeave: () => {
                                 // 섹션 벗어날 시 자동 스크롤 중지
                                 stopAutoScroll();
                             },
                             onEnterBack: () => {
-                                // 다시 진입 시 자동 스크롤 시작
-                                setTimeout(() => {
-                                    tryStartAutoScroll();
-                                }, 200);
+                                // 다시 진입 시 자동 스크롤 즉시 시작
+                                tryStartAutoScroll();
                             },
                             onLeaveBack: () => {
                                 // 역방향으로 벗어날 시 자동 스크롤 중지
@@ -638,12 +634,12 @@
 
                     // 자동 스크롤 시작 시도 함수 (섹션에 도착했을 때만 호출)
                     function tryStartAutoScroll(attempts = 0) {
-                        const maxAttempts = 10;
+                        const maxAttempts = 20;
                         const scrollTrigger = tl.scrollTrigger;
 
                         if (!scrollTrigger) {
                             if (attempts < maxAttempts) {
-                                setTimeout(() => tryStartAutoScroll(attempts + 1), 100);
+                                setTimeout(() => tryStartAutoScroll(attempts + 1), 50);
                             }
                             return;
                         }
@@ -651,7 +647,7 @@
                         // ScrollTrigger가 활성화되어 있는지 확인
                         if (!scrollTrigger.isActive) {
                             if (attempts < maxAttempts) {
-                                setTimeout(() => tryStartAutoScroll(attempts + 1), 200);
+                                setTimeout(() => tryStartAutoScroll(attempts + 1), 50);
                             }
                             return;
                         }

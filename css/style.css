@@ -4010,10 +4010,14 @@ a.header-univ-btn {
     }
 
     .sec3-new .c3 {
+        top: auto;
+        bottom: 80px;
         left: 20px;
     }
 
     .sec3-new .c4 {
+        top: auto;
+        bottom: 80px;
         left: calc(100% - 90px - 20px);
     }
 
