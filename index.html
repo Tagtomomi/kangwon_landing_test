@@ -1108,12 +1108,6 @@
                 
                 // sec3-new 내부에서 스크롤 처리
                 if (isInSec3New) {
-                    // 사용자가 스크롤을 시도하면 자동 스크롤 중단
-                    if (sec3NewAutoScrolling) {
-                        sec3NewAutoScrolling = false;
-                        sec3NewScrollStarted = false;
-                    }
-                    
                     var delta = e.deltaY;
                     var scrollY = window.scrollY;
                     var windowHeight = window.innerHeight;
@@ -1127,67 +1121,10 @@
                     var currentScrollTop = scrollY;
                     var currentScrollBottom = scrollY + windowHeight;
                     
-                    // sec3-new 최상단 근처에서 아래로 스크롤할 때 자동 스크롤 시작
-                    if (delta > 0 && !sec3NewAutoScrolling && !sec3NewScrollStarted) {
-                        // padding-top이 적용되어 있으므로 sec3NewTop은 이미 padding을 포함한 위치
-                        var distanceFromTop = currentScrollTop - sec3NewTop;
-                        if (distanceFromTop < 100) { // 최상단에서 100px 이내
-                            e.preventDefault();
-                            sec3NewAutoScrolling = true;
-                            sec3NewScrollStarted = true;
-                            
-                            // sec3-new 최하단까지 자동 스크롤 (GSAP 애니메이션과 함께 작동)
-                            var targetPosition = sec3NewBottom - windowHeight;
-                            var startPosition = scrollY;
-                            var distance = targetPosition - startPosition;
-                            var duration = 8000; // 8초 동안 천천히
-                            var startTime = null;
-                            
-                            function autoScrollAnimation(currentTime) {
-                                if (startTime === null) {
-                                    startTime = currentTime;
-                                }
-                                var timeElapsed = currentTime - startTime;
-                                var progress = Math.min(timeElapsed / duration, 1);
-                                
-                                // easeInOutCubic 이징
-                                var easeProgress = progress < 0.5 
-                                    ? 4 * progress * progress * progress 
-                                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-                                
-                                var currentPosition = startPosition + distance * easeProgress;
-                                window.scrollTo(0, currentPosition);
-                                
-                                // GSAP ScrollTrigger 업데이트 강제 (매 프레임마다)
-                                if (typeof ScrollTrigger !== 'undefined') {
-                                    ScrollTrigger.update(); // refresh() 대신 update() 사용하여 더 빠른 반응
-                                }
-                                
-                                if (progress < 1) {
-                                    requestAnimationFrame(autoScrollAnimation);
-                                } else {
-                                    sec3NewAutoScrolling = false;
-                                    // 최하단 도착 후 잠깐 멈춤
-                                    setTimeout(function() {
-                                        sec3NewScrollStarted = false;
-                                        // GSAP ScrollTrigger 최종 업데이트
-                                        if (typeof ScrollTrigger !== 'undefined') {
-                                            ScrollTrigger.refresh();
-                                        }
-                                    }, 1000);
-                                }
-                            }
-                            
-                            requestAnimationFrame(autoScrollAnimation);
-                            return;
-                        }
-                    }
-                    
                     // sec3-new의 최하단에 거의 도달했고 아래로 스크롤하려고 할 때
                     if (delta > 0 && currentScrollBottom >= sec3NewBottom - 50) {
                         // sec4로 이동
                         e.preventDefault();
-                        sec3NewScrollStarted = false; // 플래그 리셋
                         if (currentSection < sections.length - 1) {
                             scrollToSection(currentSection + 1);
                         }
