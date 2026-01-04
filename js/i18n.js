@@ -5,7 +5,7 @@ const i18n = {
     translations: {
         ko: {
             // Header & Navigation
-            'nav.intro': '소개',
+            'nav.intro': '메인',
             'nav.vision': '비전',
             'nav.video': '홍보영상',
             'nav.campus': '캠퍼스 소개',
@@ -39,9 +39,9 @@ const i18n = {
             'sec3.final.desc': '지역 혁신 생태계의 시작',
             
             // Section 4
-            'sec4.line1': '흩어져 있던 캠퍼스의<span class="sec4-mobile-br"><br></span>힘을 하나로 모아,',
-            'sec4.line2': '지역을 넘어 세계로 나아가는',
-            'sec4.line3': '글로컬(Global + Local)<span class="sec4-mobile-br"><br></span> 혁신대학을 구현합니다.',
+            'sec4.line1': '흩어져 있던 캠퍼스의<span class="sec4-mobile-br"><br></span> <span class="sec4-text-bold">힘을 하나로</span> 모아,',
+            'sec4.line2': '<span class="sec4-text-bold">지역을 넘어 세계로</span> 나아가는',
+            'sec4.line3': '<span class="sec4-text-bold">글로컬(Global + Local)</span><span class="sec4-mobile-br"><br></span> <span class="sec4-text-bold">혁신대학</span>을 구현합니다.',
             
             // Section 5
             'sec5.text': '4개의 캠퍼스<br />하나의 미래',
@@ -57,9 +57,9 @@ const i18n = {
             'sec6.tag.global': '글로벌 교육',
             'sec6.tag.innovation': '혁신인재',
             'sec6.desc.chuncheon': '국제 교류 통합 체계 구축<br />학사구조 혁신 지원 온라인 교육 플랫폼',
-            'sec6.desc.gangneung': '관광문화 특성화 대학<br />글로벌 문화예술 교육',
-            'sec6.desc.samcheok': '해양과학 특성화 대학<br />지속가능한 에너지 연구',
-            'sec6.desc.wonju': '의료보건 특성화 대학<br />지역 건강증진 연구',
+            'sec6.desc.gangneung': '지역산업 연계 교육, 연구<br />지역 인재 확보, 지역정주 프로그램',
+            'sec6.desc.samcheok': '집중교육 프로그램 통합 운영<br />캠퍼스 이동식 창업교육 연합운영',
+            'sec6.desc.wonju': '혁신/기업도시 연계 문제해결형 교육<br />산학융합 캠퍼스 구축',
             'sec6.tag.marine': '해양과학',
             'sec6.tag.energy': '에너지',
             'sec6.tag.environment': '환경',
@@ -69,6 +69,13 @@ const i18n = {
             'sec6.tag.medical': '의료',
             'sec6.tag.health': '보건',
             'sec6.tag.welfare': '복지',
+            'sec6.tag.education': '교육·연구',
+            'sec6.tag.talent': '인재확보',
+            'sec6.tag.local': '지역정주',
+            'sec6.tag.intensive': '집중교육센터',
+            'sec6.tag.venture': '창업미네르바스쿨',
+            'sec6.tag.field': '현장체험 오픈센터',
+            'sec6.tag.industry': '산학융합',
             
             // Section 7
             'sec7.text.gray1': '통합 강원대학교의',
@@ -101,7 +108,7 @@ const i18n = {
         },
         en: {
             // Header & Navigation
-            'nav.intro': 'Introduction',
+            'nav.intro': 'Main',
             'nav.vision': 'Vision',
             'nav.video': 'Promotional Video',
             'nav.campus': 'Campus',
@@ -109,35 +116,35 @@ const i18n = {
             'header.univ-link': 'Kangwon National University',
             
             // Section 1
-            'sec1.text1': 'Great',
+            'sec1.text1': 'The Great',
             'sec1.text2': 'Leap',
             
             // Section 2
-            'sec2.date': 'March 2026,',
-            'sec2.main': 'Kangwon University officially launches',
-            'sec2.sub1': 'Chuncheon Samcheok Gangneung Wonju ',
-            'sec2.sub2': 'Four campuses',
-            'sec2.sub3': 'unite with one vision to ',
-            'sec2.sub4': 'leap forward as a glocal',
-            'sec2.sub5': 'university city.',
+            'sec2.date': 'This March 2026,',
+            'sec2.main': 'Kangwon National University officially launches',
+            'sec2.sub1': 'Chuncheon,Samcheok,Gangneung,Wonju-',
+            'sec2.sub2': 'Four Campuses',
+            'sec2.sub3': 'unite by one vision,',
+            'sec2.sub4': 'leaping forward as a',
+            'sec2.sub5': 'Glocal university city.',
             
             // Section 3
-            'sec3.badge': 'Gangwon\'s One National University',
-            'sec3.title': 'Great Leap',
+            'sec3.badge': 'Gangwon One Province, One University',
+            'sec3.title': 'The Great Leap',
             'sec3.subtitle': 'The synergy of four campuses<br />creates a glocal university city',
             'sec3.campus.chuncheon': 'Chuncheon Campus',
             'sec3.campus.gangneung': 'Gangneung Campus',
             'sec3.campus.samcheok': 'Samcheok Campus',
             'sec3.campus.wonju': 'Wonju Campus',
-            'sec3.overlay.line1': 'Regional Innovation Ecosystem',
+            'sec3.overlay.line1': 'The Regional Innovation Ecosystem',
             'sec3.overlay.line2': 'of Integrated Kangwon University',
             'sec3.final.title': 'Integrated Kangwon University',
             'sec3.final.desc': 'The Beginning of Regional Innovation Ecosystem',
             
             // Section 4
-            'sec4.line1': 'Gathering the scattered power<span class="sec4-mobile-br"><br></span>of campuses into one,',
-            'sec4.line2': 'moving beyond the region to the world,',
-            'sec4.line3': 'we realize a glocal (Global + Local)<span class="sec4-mobile-br"><br></span>innovative university.',
+            'sec4.line1': 'By uniting the strengths<span class="sec4-mobile-br"><br></span>of our once-scattered campuses,',
+            'sec4.line2': 'we build a <span class="sec4-text-bold">glocal (global + local)</span><span class="sec4-mobile-br"><br></span><span class="sec4-text-bold">innovation university</span>',
+            'sec4.line3': '<span class="sec4-text-bold">that advances beyond the region to the world</span>.',
             
             // Section 5
             'sec5.text': 'Four Campuses<br />One Future',
@@ -153,9 +160,9 @@ const i18n = {
             'sec6.tag.global': 'Global Education',
             'sec6.tag.innovation': 'Innovative Talent',
             'sec6.desc.chuncheon': 'Integrated international exchange system<br />Academic structure innovation support online education platform',
-            'sec6.desc.gangneung': 'Tourism and culture specialized university<br />Global culture and arts education',
-            'sec6.desc.samcheok': 'Marine science specialized university<br />Sustainable energy research',
-            'sec6.desc.wonju': 'Medical and health specialized university<br />Regional health promotion research',
+            'sec6.desc.gangneung': 'Regional industry-linked education and research<br />Regional talent acquisition and regional settlement programs',
+            'sec6.desc.samcheok': 'Integrated operation of intensive education programs<br />Inter-campus mobile venture education joint operation',
+            'sec6.desc.wonju': 'Innovation/enterprise city-linked problem-solving education<br />Industry-academia convergence campus construction',
             'sec6.tag.marine': 'Marine Science',
             'sec6.tag.energy': 'Energy',
             'sec6.tag.environment': 'Environment',
@@ -165,11 +172,18 @@ const i18n = {
             'sec6.tag.medical': 'Medical',
             'sec6.tag.health': 'Health',
             'sec6.tag.welfare': 'Welfare',
+            'sec6.tag.education': 'Education·Research',
+            'sec6.tag.talent': 'Talent Acquisition',
+            'sec6.tag.local': 'Regional Settlement',
+            'sec6.tag.intensive': 'Intensive Education Center',
+            'sec6.tag.venture': 'Venture Minerva School',
+            'sec6.tag.field': 'Field Experience Open Center',
+            'sec6.tag.industry': 'Industry-Academia Convergence',
             
             // Section 7
-            'sec7.text.gray1': 'Please support',
-            'sec7.text.white': 'the new leap',
-            'sec7.text.gray2': 'of Integrated Kangwon University',
+            'sec7.text.gray1': 'Join us in supporting',
+            'sec7.text.white': 'Integrated Kangwon National University\'s new leap!',
+            'sec7.text.gray2': '',
             'sec7.support.title': 'Send Support Heart',
             'sec7.support.count': 'people supported',
             'sec7.support.button': 'Send Support Message',
@@ -217,9 +231,8 @@ const i18n = {
                 image: 'images/sec6/campus_detail_삼척.png',
                 url: 'https://wwwk.kangwon.ac.kr/www/index.do',
                 tags: [
-                    this.translations[lang]['sec6.tag.marine'],
-                    this.translations[lang]['sec6.tag.energy'],
-                    this.translations[lang]['sec6.tag.environment']
+                    this.translations[lang]['sec6.tag.intensive'],
+                    this.translations[lang]['sec6.tag.venture']
                 ],
                 desc: this.translations[lang]['sec6.desc.samcheok']
             },
@@ -228,9 +241,9 @@ const i18n = {
                 image: 'images/sec6/campus_detail_강릉.png',
                 url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
                 tags: [
-                    this.translations[lang]['sec6.tag.tourism'],
-                    this.translations[lang]['sec6.tag.culture'],
-                    this.translations[lang]['sec6.tag.art']
+                    this.translations[lang]['sec6.tag.education'],
+                    this.translations[lang]['sec6.tag.talent'],
+                    this.translations[lang]['sec6.tag.local']
                 ],
                 desc: this.translations[lang]['sec6.desc.gangneung']
             },
@@ -239,9 +252,8 @@ const i18n = {
                 image: 'images/sec6/campus_detail_원주.png',
                 url: 'https://www.gwnu.ac.kr/sites/kr/intro/index.html',
                 tags: [
-                    this.translations[lang]['sec6.tag.medical'],
-                    this.translations[lang]['sec6.tag.health'],
-                    this.translations[lang]['sec6.tag.welfare']
+                    this.translations[lang]['sec6.tag.field'],
+                    this.translations[lang]['sec6.tag.industry']
                 ],
                 desc: this.translations[lang]['sec6.desc.wonju']
             }
@@ -257,6 +269,49 @@ const i18n = {
         
         this.currentLang = lang;
         document.documentElement.setAttribute('lang', lang);
+        
+        // 영문일 때 body에 lang-en 클래스 추가, 한글일 때 제거
+        if (lang === 'en') {
+            document.body.classList.add('lang-en');
+        } else {
+            document.body.classList.remove('lang-en');
+        }
+        
+        // 영문일 때 전체 폰트 크기를 4px 작게 조절
+        const adjustFontSizes = (isEnglish) => {
+            // 모든 요소를 가져오되, 스크립트, 스타일, noscript 태그는 제외
+            const allElements = document.querySelectorAll('*:not(script):not(style):not(noscript)');
+            
+            allElements.forEach(element => {
+                const computedStyle = window.getComputedStyle(element);
+                const fontSize = computedStyle.fontSize;
+                
+                // font-size가 있고 0이 아닌 경우에만 처리
+                if (fontSize && fontSize !== '0px' && parseFloat(fontSize) > 0) {
+                    const currentSize = parseFloat(fontSize);
+                    
+                    if (isEnglish) {
+                        // 원본 font-size 저장 (한 번만)
+                        if (!element.dataset.originalFontSize) {
+                            element.dataset.originalFontSize = fontSize;
+                        }
+                        // 4px 작게 조정
+                        element.style.fontSize = (currentSize - 4) + 'px';
+                    } else {
+                        // 원본으로 복원
+                        if (element.dataset.originalFontSize) {
+                            element.style.fontSize = element.dataset.originalFontSize;
+                            delete element.dataset.originalFontSize;
+                        } else {
+                            element.style.fontSize = '';
+                        }
+                    }
+                }
+            });
+        };
+        
+        // 언어 변경 시 폰트 크기 조절 적용
+        adjustFontSizes(lang === 'en');
         
         // 모든 data-i18n 속성을 가진 요소 업데이트
         const elements = document.querySelectorAll('[data-i18n]');
@@ -301,6 +356,30 @@ const i18n = {
         if (typeof window.updateCampusData === 'function') {
             window.updateCampusData(this.getCampusData());
         }
+        
+        // Section 6 캠퍼스 미리보기 이미지 업데이트 (언어에 따라)
+        const campusPreviewImages = document.querySelectorAll('.sec6-campus-preview-img');
+        const campusImageMap = {
+            'ko': {
+                0: 'images/sec6/campus_intro_춘천.png',
+                1: 'images/sec6/campus_intro_삼척.png',
+                2: 'images/sec6/campus_intro_강릉.png',
+                3: 'images/sec6/campus_intro_원주.png'
+            },
+            'en': {
+                0: 'images/sec6/campus_intro_춘천_eng.png',
+                1: 'images/sec6/campus_intro_삼척_eng.png',
+                2: 'images/sec6/campus_intro_강릉_eng.png',
+                3: 'images/sec6/campus_intro_원주_eng.png'
+            }
+        };
+        
+        campusPreviewImages.forEach((img, index) => {
+            const campusIndex = index;
+            if (campusImageMap[lang] && campusImageMap[lang][campusIndex]) {
+                img.src = campusImageMap[lang][campusIndex];
+            }
+        });
         
         // localStorage에 저장
         localStorage.setItem('preferredLanguage', lang);

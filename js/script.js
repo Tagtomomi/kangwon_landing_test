@@ -99,6 +99,54 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // 플로팅 컨테이너의 아래로 스크롤 버튼 기능
+    const scrollDownBtn = document.querySelector('.scroll-down-btn');
+    if (scrollDownBtn && typeof window.fullpageScroll !== 'undefined') {
+        scrollDownBtn.addEventListener('click', function() {
+            var current = window.fullpageScroll.getCurrentSection();
+            window.fullpageScroll.scrollToSection(current + 1);
+        });
+    }
+    
+    // 위로 올라가는 버튼 기능 (모든 scroll-up-btn에 적용)
+    const scrollUpBtns = document.querySelectorAll('.scroll-up-btn');
+    if (scrollUpBtns.length > 0 && typeof window.fullpageScroll !== 'undefined') {
+        // 모든 버튼에 클릭 이벤트 연결
+        scrollUpBtns.forEach(function(scrollUpBtn) {
+            scrollUpBtn.addEventListener('click', function() {
+                var current = window.fullpageScroll.getCurrentSection();
+                if (current > 0) {
+                    window.fullpageScroll.scrollToSection(current - 1);
+                }
+            });
+        });
+        
+        // 섹션 2부터 버튼 표시
+        function updateScrollUpButton() {
+            if (typeof window.fullpageScroll !== 'undefined') {
+                var current = window.fullpageScroll.getCurrentSection();
+                scrollUpBtns.forEach(function(scrollUpBtn) {
+                    if (current >= 1) {
+                        scrollUpBtn.classList.add('visible');
+                    } else {
+                        scrollUpBtn.classList.remove('visible');
+                    }
+                });
+            }
+        }
+        
+        // 스크롤 시 버튼 표시 상태 업데이트
+        window.addEventListener('scroll', function() {
+            setTimeout(updateScrollUpButton, 50);
+        }, { passive: true });
+        
+        // 초기 상태 확인
+        setTimeout(updateScrollUpButton, 200);
+        
+        // 주기적으로 상태 확인 (섹션 변경 감지)
+        setInterval(updateScrollUpButton, 300);
+    }
+    
     // Header scroll effect - change header style when scrolling past sec1
     const header = document.querySelector('.header');
     const sec1 = document.querySelector('.sec1');
@@ -1834,11 +1882,19 @@ document.addEventListener('DOMContentLoaded', function() {
     handleSec3Visibility(); // 초기 실행
     
     // Section 1 text animations - appear on page load
+    // PC 버전 요소들
     const sec1Text1 = document.querySelector('.sec1-text-1');
     const sec1Text2 = document.querySelector('.sec1-text-2');
     const sec1Subtitle1 = document.querySelector('.sec1-subtitle-1');
     const sec1Subtitle2 = document.querySelector('.sec1-subtitle-2');
     const sec1Subtitle1Wrapper = document.querySelector('.sec1-subtitle-1-wrapper');
+    
+    // 모바일 버전 요소들
+    const sec1Text1Mobile = document.querySelector('.sec1-text-1-mobile');
+    const sec1Text2Mobile = document.querySelector('.sec1-text-2-mobile');
+    const sec1Subtitle1Mobile = document.querySelector('.sec1-subtitle-1-mobile');
+    const sec1Subtitle2Mobile = document.querySelector('.sec1-subtitle-2-mobile');
+    const sec1Subtitle1WrapperMobile = document.querySelector('.sec1-mobile-version .sec1-subtitle-1-wrapper');
     
     // 폰트 로드 확인 함수
     function waitForFont(fontFamily, callback, timeout = 3000) {
@@ -1914,31 +1970,56 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // sec1이 뷰포트에 들어오면 애니메이션 시작
             if (scrollY < sec1Top + windowHeight * 0.8) {
-                // "위대한" 먼저 나타남
-                if (sec1Text1) {
-                    sec1Text1.classList.add('visible');
+                // 모바일 버전이 보이는지 확인
+                const isMobile = window.innerWidth <= 480;
+                
+                if (isMobile) {
+                    // 모바일 버전 애니메이션
+                    if (sec1Text1Mobile) {
+                        sec1Text1Mobile.classList.add('visible');
+                    }
+                    setTimeout(() => {
+                        if (sec1Text2Mobile) {
+                            sec1Text2Mobile.classList.add('visible');
+                        }
+                    }, 300);
+                    setTimeout(() => {
+                        if (sec1Subtitle1Mobile) {
+                            sec1Subtitle1Mobile.classList.add('visible');
+                        }
+                        if (sec1Subtitle1WrapperMobile) {
+                            sec1Subtitle1WrapperMobile.classList.add('visible');
+                        }
+                    }, 400);
+                    setTimeout(() => {
+                        if (sec1Subtitle2Mobile) {
+                            sec1Subtitle2Mobile.classList.add('visible');
+                        }
+                    }, 500);
+                } else {
+                    // PC 버전 애니메이션
+                    if (sec1Text1) {
+                        sec1Text1.classList.add('visible');
+                    }
+                    setTimeout(() => {
+                        if (sec1Text2) {
+                            sec1Text2.classList.add('visible');
+                        }
+                    }, 300);
+                    setTimeout(() => {
+                        if (sec1Subtitle1) {
+                            sec1Subtitle1.classList.add('visible');
+                        }
+                        if (sec1Subtitle1Wrapper) {
+                            sec1Subtitle1Wrapper.classList.add('visible');
+                        }
+                    }, 400);
+                    setTimeout(() => {
+                        if (sec1Subtitle2) {
+                            sec1Subtitle2.classList.add('visible');
+                        }
+                    }, 500);
                 }
-                // "도약" 약간의 딜레이 후 나타남
-                setTimeout(() => {
-                    if (sec1Text2) {
-                        sec1Text2.classList.add('visible');
-                    }
-                }, 300);
-                // 영문 텍스트 좌->우로 나타남
-                setTimeout(() => {
-                    if (sec1Subtitle1) {
-                        sec1Subtitle1.classList.add('visible');
-                    }
-                    // wrapper에도 visible 추가하여 divider 애니메이션 트리거
-                    if (sec1Subtitle1Wrapper) {
-                        sec1Subtitle1Wrapper.classList.add('visible');
-                    }
-                }, 400);
-                setTimeout(() => {
-                    if (sec1Subtitle2) {
-                        sec1Subtitle2.classList.add('visible');
-                    }
-                }, 500);
             }
         }
     }
@@ -2371,39 +2452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 자동 전환 함수
-    function nextCampus() {
-        currentCampusIndex = (currentCampusIndex + 1) % campusData.length;
-        updateCampus(currentCampusIndex, true);
-    }
-    
-    // 자동 전환 시작 (2.5초마다) - 초기에는 시작하지 않음, 카드가 나타난 후 시작
-    let autoSlideInterval = null;
-    
-    // 자동 전환 리셋 함수
-    function resetAutoSlide() {
-        if (autoSlideInterval) {
-            clearInterval(autoSlideInterval);
-        }
-        autoSlideInterval = setInterval(nextCampus, 2500);
-    }
-    
-    // 네비게이션 클릭 이벤트
-    if (navItem) {
-        navItem.addEventListener('click', function() {
-            updateCampus(0);
-            resetAutoSlide();
-        });
-    }
-    
-    navDashes.forEach((dash, index) => {
-        dash.addEventListener('click', function() {
-            updateCampus(index + 1);
-            resetAutoSlide();
-        });
-    });
-    
-    // 초기 설정
+    // 초기 설정 (자동 슬라이드 제거됨 - 네비게이션 없음)
     updateCampus(0);
     
     // sec6-campus-link 클릭 시 외부 링크로 이동 보장
@@ -2419,15 +2468,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Section 6 entrance animation - 배경 4개 차례대로 보여주고 카드 나타나게
+    // Section 6 - 새로운 카드 그리드 및 상세 카드 시스템
     const sec6 = document.getElementById('sec6');
-    const sec6IntroImages = document.querySelectorAll('.sec6-campus-intro-img');
-    const sec6Card = document.querySelector('.sec6-campus-card');
     const sec6Title = document.querySelector('.sec6-title');
-    const sec6Navigation = document.querySelector('.sec6-campus-navigation');
+    const sec6CampusGrid = document.getElementById('sec6-campus-grid');
+    const sec6CardWrapper = document.getElementById('sec6-campus-card-wrapper');
+    const sec6PreviewCards = document.querySelectorAll('.sec6-campus-preview-card');
+    const sec6NavBtnPrev = document.getElementById('sec6-nav-btn-prev');
+    const sec6NavBtnNext = document.getElementById('sec6-nav-btn-next');
+    const sec6CloseBtn = document.getElementById('sec6-close-btn');
     
     let sec6AnimationStarted = false;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let currentCardIndex = 0;
     
+    // 섹션 진입 애니메이션
     function handleSec6Animation() {
         if (!sec6 || sec6AnimationStarted) return;
         
@@ -2436,42 +2495,173 @@ document.addEventListener('DOMContentLoaded', function() {
         const windowHeight = window.innerHeight;
         const scrollY = window.scrollY;
         
-        // 섹션 6이 뷰포트에 들어왔는지 확인 (50% 지점)
         const triggerPoint = sec6Top - windowHeight * 0.5;
         
         if (scrollY >= triggerPoint && scrollY < sec6Top + sec6Height) {
             sec6AnimationStarted = true;
             
-            // 모든 요소를 한번에 나타나게 하기
             setTimeout(() => {
-                // 타이틀
                 if (sec6Title) {
                     sec6Title.classList.add('show');
                 }
-                
-                // 배경 이미지 4개 모두 동시에
-                sec6IntroImages.forEach((img) => {
-                    img.classList.add('show');
-                });
-                
-                // 카드와 네비게이션 함께
-                if (sec6Card) {
-                    sec6Card.classList.add('show');
+                if (sec6CampusGrid) {
+                    sec6CampusGrid.style.opacity = '1';
                 }
-                if (sec6Navigation) {
-                    sec6Navigation.classList.add('show');
-                }
-                
-                // 카드가 나타난 후 자동 슬라이드 시작
-                if (!autoSlideInterval) {
-                    autoSlideInterval = setInterval(nextCampus, 2500);
-                }
-            }, 200);
+            }, 300);
         }
     }
     
+    // 카드 클릭 이벤트
+    sec6PreviewCards.forEach((card, index) => {
+        card.addEventListener('click', function() {
+            currentCardIndex = index;
+            showDetailCard(index);
+        });
+    });
+    
+    // 상세 카드 표시
+    function showDetailCard(index) {
+        if (sec6CampusGrid) {
+            sec6CampusGrid.style.display = 'none';
+        }
+        if (sec6CardWrapper) {
+            sec6CardWrapper.classList.add('show');
+        }
+        updateCampus(index, false);
+        updateNavButtons();
+    }
+    
+    // 그리드로 돌아가기 (ESC 키 또는 뒤로가기 버튼)
+    function showGrid() {
+        if (sec6CardWrapper) {
+            sec6CardWrapper.classList.remove('show');
+        }
+        if (sec6CampusGrid) {
+            // 인라인 스타일을 제거하여 CSS의 기본값(flex 또는 grid)을 사용하도록 함
+            sec6CampusGrid.style.display = '';
+        }
+    }
+    
+    // 좌우 버튼 이벤트
+    if (sec6NavBtnPrev) {
+        sec6NavBtnPrev.addEventListener('click', function() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                updateCampus(currentCardIndex, true);
+                updateNavButtons();
+            }
+        });
+    }
+    
+    if (sec6NavBtnNext) {
+        sec6NavBtnNext.addEventListener('click', function() {
+            if (currentCardIndex < campusData.length - 1) {
+                currentCardIndex++;
+                updateCampus(currentCardIndex, true);
+                updateNavButtons();
+            }
+        });
+    }
+    
+    // 네비게이션 버튼 상태 업데이트
+    function updateNavButtons() {
+        if (sec6NavBtnPrev) {
+            sec6NavBtnPrev.disabled = currentCardIndex === 0;
+        }
+        if (sec6NavBtnNext) {
+            sec6NavBtnNext.disabled = currentCardIndex === campusData.length - 1;
+        }
+    }
+    
+    // 카드 드래그 기능
+    const sec6Card = document.getElementById('sec6-campus-card');
+    if (sec6Card) {
+        sec6Card.addEventListener('mousedown', startDrag);
+        sec6Card.addEventListener('touchstart', startDrag, { passive: false });
+        
+        function startDrag(e) {
+            isDragging = true;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            dragStartX = clientX;
+            dragStartY = clientY;
+            dragOffsetX = 0;
+            dragOffsetY = 0;
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('touchmove', onDrag, { passive: false });
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+        
+        function onDrag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            dragOffsetX = clientX - dragStartX;
+            dragOffsetY = clientY - dragStartY;
+            
+            sec6Card.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`;
+            sec6Card.style.transition = 'none';
+        }
+        
+        function endDrag(e) {
+            if (!isDragging) return;
+            
+            isDragging = false;
+            sec6Card.style.transition = 'transform 0.3s ease';
+            
+            // 드래그 거리가 충분하면 다음/이전 카드로 이동
+            const threshold = 100;
+            if (Math.abs(dragOffsetX) > threshold) {
+                if (dragOffsetX > 0 && currentCardIndex > 0) {
+                    // 오른쪽으로 드래그 - 이전 카드
+                    currentCardIndex--;
+                    updateCampus(currentCardIndex, true);
+                    updateNavButtons();
+                } else if (dragOffsetX < 0 && currentCardIndex < campusData.length - 1) {
+                    // 왼쪽으로 드래그 - 다음 카드
+                    currentCardIndex++;
+                    updateCampus(currentCardIndex, true);
+                    updateNavButtons();
+                }
+            }
+            
+            // 원래 위치로 복귀
+            sec6Card.style.transform = 'translate(0, 0)';
+            
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('touchmove', onDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchend', endDrag);
+        }
+    }
+    
+    // 엑스 버튼 클릭 이벤트
+    if (sec6CloseBtn) {
+        sec6CloseBtn.addEventListener('click', function() {
+            showGrid();
+        });
+    }
+    
+    // ESC 키로 그리드로 돌아가기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sec6CardWrapper && sec6CardWrapper.classList.contains('show')) {
+            showGrid();
+        }
+    });
+    
     window.addEventListener('scroll', handleSec6Animation, { passive: true });
     handleSec6Animation(); // 초기 실행
+    
+    // 초기 상태 설정
+    if (sec6CampusGrid) {
+        sec6CampusGrid.style.opacity = '0';
+        sec6CampusGrid.style.transition = 'opacity 0.6s ease-in-out';
+    }
 
     // FullPage.js가 스크롤을 제어하므로 커스텀 스크롤 코드는 주석 처리
     // FullPage.js 초기화는 index.html에서 처리됨
