@@ -998,15 +998,8 @@
                 // sec3-new 섹션인지 확인
                 var isSec3New = targetSection.classList.contains('sec3-new');
                 
-                // 섹션의 실제 위치 계산
-                var targetPosition;
-                if (isSec3New) {
-                    // sec3-new는 최상단으로 스크롤 (다른 섹션과 동일)
-                    targetPosition = targetElement.offsetTop - headerH;
-                } else {
-                    // 다른 섹션은 최상단으로 스크롤
-                    targetPosition = targetElement.offsetTop - headerH;
-                }
+                // 섹션의 실제 위치 계산 (padding-top이 적용되어 있으므로 header 높이를 빼지 않음)
+                var targetPosition = targetElement.offsetTop;
                 
                 // 음수 방지
                 if (targetPosition < 0) {
@@ -1049,6 +1042,19 @@
                         // 정확한 위치로 최종 이동
                         window.scrollTo(0, targetPosition);
                         isScrolling = false;
+                        
+                        // sec3-new로 이동한 경우 ScrollTrigger refresh하여 바로 시작되도록
+                        if (isSec3New && typeof ScrollTrigger !== 'undefined') {
+                            setTimeout(function() {
+                                ScrollTrigger.refresh();
+                                // ScrollTrigger가 활성화되도록 약간의 스크롤 (1px) 추가
+                                window.scrollTo(0, targetPosition + 1);
+                                setTimeout(function() {
+                                    window.scrollTo(0, targetPosition);
+                                    ScrollTrigger.refresh();
+                                }, 50);
+                            }, 100);
+                        }
                     }
                 }
                 
@@ -1077,6 +1083,12 @@
                 
                 // sec3-new 내부에서 스크롤 처리
                 if (isInSec3New) {
+                    // 사용자가 스크롤을 시도하면 자동 스크롤 중단
+                    if (sec3NewAutoScrolling) {
+                        sec3NewAutoScrolling = false;
+                        sec3NewScrollStarted = false;
+                    }
+                    
                     var delta = e.deltaY;
                     var scrollY = window.scrollY;
                     var windowHeight = window.innerHeight;
@@ -1092,7 +1104,8 @@
                     
                     // sec3-new 최상단 근처에서 아래로 스크롤할 때 자동 스크롤 시작
                     if (delta > 0 && !sec3NewAutoScrolling && !sec3NewScrollStarted) {
-                        var distanceFromTop = currentScrollTop - (sec3NewTop - headerHeight);
+                        // padding-top이 적용되어 있으므로 sec3NewTop은 이미 padding을 포함한 위치
+                        var distanceFromTop = currentScrollTop - sec3NewTop;
                         if (distanceFromTop < 100) { // 최상단에서 100px 이내
                             e.preventDefault();
                             sec3NewAutoScrolling = true;
@@ -1143,12 +1156,6 @@
                             requestAnimationFrame(autoScrollAnimation);
                             return;
                         }
-                    }
-                    
-                    // 자동 스크롤 중이면 스크롤 차단
-                    if (sec3NewAutoScrolling) {
-                        e.preventDefault();
-                        return;
                     }
                     
                     // sec3-new의 최하단에 거의 도달했고 아래로 스크롤하려고 할 때
@@ -1293,10 +1300,14 @@
                         let offset = orbSize / 2;
 
                         // 타임라인 설정 (.sec3-new 전용)
+                        // header 높이 계산
+                        var header = document.querySelector('.header');
+                        var headerH = header ? header.offsetHeight : 100;
+                        
                         const tl = gsap.timeline({
                             scrollTrigger: {
                                 trigger: ".sec3-new", // 새로 만든 클래스 트리거
-                                start: "top top", // 섹션 상단이 뷰포트 상단에 도달할 때 시작
+                                start: "top top", // 섹션 상단이 뷰포트 상단에 도달하면 시작 (padding-top이 적용되어 있음)
                                 end: "bottom+=5000 bottom", // 섹션 하단에서 추가로 5000px 더 스크롤 (더 긴 애니메이션)
                                 pin: true,
                                 pinSpacing: true, // pin-spacer 생성 허용
@@ -1313,30 +1324,11 @@
                                     gsap.set(".sec3-new .orb-label", { opacity: 0 });
                                     // 배경과 컨테이너는 즉시 보이도록 설정
                                     gsap.set(".sec3-new .bg-initial", { opacity: 0.4 });
+                                    gsap.set(".sec3-new .bg-final", { opacity: 0 });
+                                    gsap.set(".sec3-new .flash-overlay", { opacity: 0 });
+                                    gsap.set(".sec3-new .final-message", { opacity: 0, scale: 0.8 });
                                     gsap.set(".sec3-new .intro-container", { opacity: 1 });
                                     gsap.set(".sec3-new .campus-group", { opacity: 1 });
-                                    
-                                    // 순서대로 올라오는 애니메이션
-                                    gsap.to(".sec3-new .intro-badge", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out"
-                                    });
-                                    gsap.to(".sec3-new .intro-title", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out",
-                                        delay: 0.3
-                                    });
-                                    gsap.to(".sec3-new .intro-desc", {
-                                        y: 0,
-                                        opacity: 1,
-                                        duration: 0.8,
-                                        ease: "power2.out",
-                                        delay: 0.6
-                                    });
                                     
                                     // 스크롤 잠금 시작
                                     if (window.fullpageScroll) {
@@ -1608,7 +1600,13 @@
                                     }
                                 },
                                 "-=1.5"
-                            );
+                            )
+                            // 마지막에 intro-container와 intro-item을 확실히 숨김
+                            .set(".sec3-new .intro-container", { opacity: 0, display: "none" })
+                            .set(".sec3-new .intro-item", { opacity: 0, display: "none" })
+                            .set(".sec3-new .intro-badge", { opacity: 0, display: "none" })
+                            .set(".sec3-new .intro-title", { opacity: 0, display: "none" })
+                            .set(".sec3-new .intro-desc", { opacity: 0, display: "none" });
 
                         // 역재생 시 애니메이션 복구
                         tl.eventCallback("onReverseComplete", () => {
