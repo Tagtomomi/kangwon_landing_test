@@ -3185,7 +3185,7 @@ a.header-univ-btn {
     width: 100%;
     max-width: 100vw;
     background: #000000;
-    padding-top: 80px;
+    padding-top: 100px; /* header 높이만큼 상단 padding */
     padding-bottom: 80px;
     display: flex;
     justify-content: center;
