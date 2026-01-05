@@ -103,6 +103,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // 플로팅 버튼 컨테이너 내부의 scroll-down-btn 클릭 이벤트
+  const scrollDownBtn = document.querySelector(".floating-buttons-container .scroll-down-btn");
+  if (scrollDownBtn && typeof window.fullpageScroll !== "undefined") {
+    scrollDownBtn.addEventListener("click", function () {
+      var current = window.fullpageScroll.getCurrentSection();
+      window.fullpageScroll.scrollToSection(current + 1);
+    });
+  }
+
+  // 플로팅 버튼 컨테이너 내부의 scroll-up-btn 클릭 이벤트
+  const scrollUpBtn = document.querySelector(".floating-buttons-container .scroll-up-btn");
+  if (scrollUpBtn && typeof window.fullpageScroll !== "undefined") {
+    scrollUpBtn.addEventListener("click", function () {
+      var current = window.fullpageScroll.getCurrentSection();
+      if (current > 0) {
+        window.fullpageScroll.scrollToSection(current - 1);
+      }
+    });
+  }
+
+  // body > .scroll-up-btn 클릭 이벤트 (기존 PC용 버튼)
+  const bodyScrollUpBtn = document.querySelector("body > .scroll-up-btn");
+  if (bodyScrollUpBtn && typeof window.fullpageScroll !== "undefined") {
+    bodyScrollUpBtn.addEventListener("click", function () {
+      var current = window.fullpageScroll.getCurrentSection();
+      if (current > 0) {
+        window.fullpageScroll.scrollToSection(current - 1);
+      }
+    });
+  }
+
   // Header scroll effect - change header style when scrolling past sec1
   const header = document.querySelector(".header");
   const sec1 = document.querySelector(".sec1");
@@ -2332,8 +2363,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // ▼▼▼ 배포한 구글 스크립트 URL ▼▼▼
   const API_URL =
-    "https://script.google.com/macros/s/AKfycbxISMQAhF5V65LFAPW_xCqQwdE20CEb1WPFG2bYZyV3JBIYYeuOAA2dSSqPq1GicIG1pg/exec";
-
+    "https://script.google.com/macros/s/AKfycbxjiEvMbuqVudCy47KB-A8TO3dGf8dFFZC5RRGilnPJlCNZ82bBjmRSwyM0mlQJvDWBWg/exec"
   const heartIcon = document.getElementById("sec7-heart-icon");
   const supportCount = document.getElementById("sec7-support-count");
 
@@ -2604,17 +2634,17 @@ document.addEventListener("DOMContentLoaded", function () {
           campusCard.classList.remove("fade-out");
           campusCard.style.opacity = "1";
 
-          // 텍스트 콘텐츠도 페이드 인
+          // 텍스트 콘텐츠도 페이드 인 (한번에)
           if (campusName) {
-            campusName.style.transition = "opacity 0.6s ease-in-out 0.2s";
+            campusName.style.transition = "opacity 0.6s ease-in-out";
             campusName.style.opacity = "1";
           }
           if (campusTags) {
-            campusTags.style.transition = "opacity 0.6s ease-in-out 0.3s";
+            campusTags.style.transition = "opacity 0.6s ease-in-out";
             campusTags.style.opacity = "1";
           }
           if (campusDesc) {
-            campusDesc.style.transition = "opacity 0.6s ease-in-out 0.4s";
+            campusDesc.style.transition = "opacity 0.6s ease-in-out";
             campusDesc.style.opacity = "1";
           }
 
@@ -2718,6 +2748,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 초기 설정
   updateCampus(0);
+
+  // 프리뷰 카드 클릭 시 상세 카드 표시
+  const campusGrid = document.getElementById("sec6-campus-grid");
+  const campusCardWrapper = document.getElementById("sec6-campus-card-wrapper");
+  const previewCards = document.querySelectorAll(".sec6-campus-preview-card");
+  const closeBtn = document.getElementById("sec6-close-btn");
+  const prevBtn = document.getElementById("sec6-nav-btn-prev");
+  const nextBtn = document.getElementById("sec6-nav-btn-next");
+
+  // 프리뷰 카드 클릭 이벤트
+  previewCards.forEach((card, index) => {
+    card.addEventListener("click", function () {
+      // 그리드 숨기기
+      if (campusGrid) {
+        campusGrid.style.display = "none";
+      }
+      // 카드 래퍼 표시
+      if (campusCardWrapper) {
+        campusCardWrapper.classList.add("show");
+      }
+      // 선택한 캠퍼스로 업데이트 (인덱스 조정: data-campus="0"은 첫 번째 캠퍼스)
+      updateCampus(index, false);
+      // 자동 슬라이드 중지
+      if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+      }
+      // 자동 슬라이드 다시 시작 (2.5초마다)
+      resetAutoSlide();
+    });
+  });
+
+  // 닫기 버튼 클릭 이벤트
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      // 카드 래퍼 숨기기
+      if (campusCardWrapper) {
+        campusCardWrapper.classList.remove("show");
+      }
+      // 그리드 다시 표시
+      if (campusGrid) {
+        campusGrid.style.display = "flex";
+      }
+      // 자동 슬라이드 중지
+      if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+      }
+    });
+  }
+
+  // 좌우 네비게이션 버튼 클릭 이벤트
+  if (prevBtn) {
+    prevBtn.addEventListener("click", function () {
+      const newIndex = currentCampusIndex > 0 ? currentCampusIndex - 1 : campusData.length - 1;
+      updateCampus(newIndex, true);
+      resetAutoSlide();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function () {
+      const newIndex = (currentCampusIndex + 1) % campusData.length;
+      updateCampus(newIndex, true);
+      resetAutoSlide();
+    });
+  }
 
   // sec6-campus-link 클릭 시 외부 링크로 이동 보장
   if (campusLink) {
