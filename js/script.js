@@ -2573,6 +2573,24 @@ document.addEventListener("DOMContentLoaded", function () {
   // 초기 캠퍼스 데이터 로드
   updateCampusDataFromI18n();
 
+  // sec6 캠퍼스 이미지 프리로드 (빠른 로딩을 위해)
+  function preloadCampusImages() {
+    const imageUrls = [
+      'images/sec6/campus_detail_춘천.png',
+      'images/sec6/campus_detail_삼척.png',
+      'images/sec6/campus_detail_강릉.png',
+      'images/sec6/campus_detail_원주.png'
+    ];
+    
+    imageUrls.forEach(url => {
+      const img = new Image();
+      img.src = url;
+    });
+  }
+  
+  // 페이지 로드 시 이미지 프리로드
+  preloadCampusImages();
+
   let currentCampusIndex = 0;
   let isAnimating = false;
 
